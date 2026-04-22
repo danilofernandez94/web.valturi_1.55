@@ -394,13 +394,13 @@ h3 {
 
 .cta-banner-copy {
   display: grid;
-  gap: 2px;
+  gap: 0;
 }
 
 .cta-banner strong {
   font-size: clamp(1.35rem, 3vw, 2rem);
   letter-spacing: -0.04em;
-  line-height: 1.03;
+  line-height: 1.06;
 }
 
 .cta-banner-action {
