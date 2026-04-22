@@ -194,6 +194,8 @@ function setupMenu() {
   window.addEventListener('pageshow', closeMenu);
   window.addEventListener('pagehide', closeMenu);
   window.addEventListener('load', closeMenu);
+  window.addEventListener('beforeunload', closeMenu);
+  window.addEventListener('popstate', closeMenu);
 
   document.addEventListener('keydown', (event) => {
     if (event.key === 'Escape') {
