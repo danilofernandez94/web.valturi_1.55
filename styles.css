@@ -370,15 +370,13 @@ h3 {
   width: min(26vw, 324px);
   aspect-ratio: 4 / 5;
   overflow: hidden;
-  border: 1px solid rgba(255, 255, 255, 0.18);
+  border: none;
   border-radius: 34px;
-  background: rgba(255, 253, 249, 0.78);
-  backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
+  background: transparent;
   box-shadow:
-    0 24px 48px rgba(35, 26, 18, 0.14),
-    0 10px 22px rgba(35, 26, 18, 0.08),
-    inset 0 1px 0 rgba(255, 255, 255, 0.24);
+    0 24px 52px rgba(31, 26, 23, 0.16),
+    0 10px 24px rgba(31, 26, 23, 0.08),
+    inset 0 1px 0 rgba(255, 255, 255, 0.12);
   transform: translate3d(var(--fan-x), var(--fan-y), 0) rotate(var(--fan-rotate)) scale(var(--fan-scale));
   transform-origin: 50% 12%;
   opacity: var(--fan-opacity);
@@ -386,8 +384,7 @@ h3 {
     transform 920ms cubic-bezier(0.22, 1, 0.36, 1),
     opacity 760ms cubic-bezier(0.22, 1, 0.36, 1),
     box-shadow 320ms ease,
-    filter 760ms cubic-bezier(0.22, 1, 0.36, 1),
-    border-color 320ms ease;
+    filter 760ms cubic-bezier(0.22, 1, 0.36, 1);
   will-change: transform, opacity;
   backface-visibility: hidden;
 }
@@ -396,24 +393,19 @@ h3 {
   content: '';
   position: absolute;
   inset: 0;
-  border-radius: inherit;
-  background:
-    linear-gradient(180deg, rgba(255, 255, 255, 0.13) 0%, rgba(255, 255, 255, 0.04) 26%, rgba(255, 255, 255, 0) 55%),
-    linear-gradient(90deg, rgba(255, 255, 255, 0.06) 0%, rgba(255, 255, 255, 0) 18%, rgba(255, 255, 255, 0) 82%, rgba(255, 255, 255, 0.06) 100%);
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.08) 0%, rgba(255, 255, 255, 0.02) 18%, rgba(31, 26, 23, 0.06) 100%);
   pointer-events: none;
 }
-
 
 .hero-fan-carousel.is-dragging .fan-card {
   transition: none !important;
 }
 
 .fan-card:hover {
-  border-color: rgba(255, 255, 255, 0.24);
   box-shadow:
-    0 30px 60px rgba(35, 26, 18, 0.18),
-    0 14px 28px rgba(35, 26, 18, 0.1),
-    inset 0 1px 0 rgba(255, 255, 255, 0.28);
+    0 30px 62px rgba(31, 26, 23, 0.18),
+    0 12px 28px rgba(31, 26, 23, 0.10),
+    inset 0 1px 0 rgba(255, 255, 255, 0.14);
 }
 .hero-fan-carousel .fan-card:first-child { z-index: 4; }
 .fan-card.is-hidden { pointer-events: none; }
