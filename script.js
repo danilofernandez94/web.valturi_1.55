@@ -248,16 +248,21 @@ function setupHomeCarousel() {
   if (!cards.length) return;
 
   const desktopSlots = [
-    { x: 34, y: 266, rotate: -10, scale: 0.98, z: 2, opacity: 1 },
-    { x: 212, y: 82, rotate: -4, scale: 1.04, z: 4, opacity: 1 },
-    { x: 422, y: 16, rotate: 0, scale: 1.18, z: 6, opacity: 1 },
-    { x: 646, y: 92, rotate: 6, scale: 1.04, z: 4, opacity: 1 },
-    { x: 804, y: 284, rotate: 10, scale: 0.98, z: 2, opacity: 1 },
-    { x: 564, y: 426, rotate: 3, scale: 0.78, z: 1, opacity: 0 }
+    { x: 88, y: 234, rotate: -9, scale: 0.98, z: 2, opacity: 1 },
+    { x: 276, y: 64, rotate: -4, scale: 1.05, z: 4, opacity: 1 },
+    { x: 502, y: 0, rotate: 0, scale: 1.18, z: 6, opacity: 1 },
+    { x: 730, y: 74, rotate: 5, scale: 1.05, z: 4, opacity: 1 },
+    { x: 918, y: 252, rotate: 9, scale: 0.98, z: 2, opacity: 1 },
+    { x: 650, y: 408, rotate: 2, scale: 0.8, z: 1, opacity: 0 }
   ];
 
-  let offset = 0;
-  let timer = null;
+  const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  let desktopOffset = 0;
+  let desktopTimer = null;
+  let mobileTimer = null;
+  let resizeTimer = null;
+  let isAnimatingScroll = false;
+  let mobileIndex = 0;
 
   function clearCardStyle(card) {
     card.style.removeProperty('--fan-x');
@@ -272,7 +277,7 @@ function setupHomeCarousel() {
   function applyDesktop() {
     carousel.classList.remove('is-mobile-layout');
     cards.forEach((card, index) => {
-      const slot = desktopSlots[(index + offset) % desktopSlots.length];
+      const slot = desktopSlots[(index + desktopOffset) % desktopSlots.length];
       card.style.setProperty('--fan-x', `${slot.x}px`);
       card.style.setProperty('--fan-y', `${slot.y}px`);
       card.style.setProperty('--fan-rotate', `${slot.rotate}deg`);
@@ -284,44 +289,145 @@ function setupHomeCarousel() {
   }
 
   function applyMobile() {
+    carousel.classList.add('is-mobile-layout');
     cards.forEach(clearCardStyle);
   }
 
-  function stopTimer() {
-    if (timer) {
-      window.clearInterval(timer);
-      timer = null;
+  function stopDesktopTimer() {
+    if (desktopTimer) {
+      window.clearInterval(desktopTimer);
+      desktopTimer = null;
     }
   }
 
-  function startTimer() {
-    stopTimer();
-    timer = window.setInterval(() => {
-      offset = (offset + 1) % cards.length;
+  function stopMobileTimer() {
+    if (mobileTimer) {
+      window.clearInterval(mobileTimer);
+      mobileTimer = null;
+    }
+  }
+
+  function easeInOutQuint(t) {
+    return t < 0.5 ? 16 * t * t * t * t * t : 1 - Math.pow(-2 * t + 2, 5) / 2;
+  }
+
+  function animateScrollTo(element, target, duration = 1100) {
+    if (prefersReducedMotion) {
+      element.scrollLeft = target;
+      return;
+    }
+
+    const start = element.scrollLeft;
+    const change = target - start;
+    const startTime = performance.now();
+    isAnimatingScroll = true;
+
+    function frame(now) {
+      const elapsed = now - startTime;
+      const progress = Math.min(elapsed / duration, 1);
+      const eased = easeInOutQuint(progress);
+      element.scrollLeft = start + change * eased;
+
+      if (progress < 1) {
+        window.requestAnimationFrame(frame);
+      } else {
+        isAnimatingScroll = false;
+      }
+    }
+
+    window.requestAnimationFrame(frame);
+  }
+
+  function goToMobileIndex(index) {
+    const targetCard = cards[index];
+    if (!targetCard) return;
+    mobileIndex = index;
+    animateScrollTo(carousel, targetCard.offsetLeft, 1050);
+  }
+
+  function startDesktopTimer() {
+    stopDesktopTimer();
+    if (prefersReducedMotion) return;
+    desktopTimer = window.setInterval(() => {
+      desktopOffset = (desktopOffset + 1) % cards.length;
       applyDesktop();
     }, 3000);
   }
 
+  function startMobileTimer() {
+    stopMobileTimer();
+    if (prefersReducedMotion) return;
+    mobileTimer = window.setInterval(() => {
+      mobileIndex = (mobileIndex + 1) % cards.length;
+      goToMobileIndex(mobileIndex);
+    }, 3000);
+  }
+
+  function syncMobileIndexFromScroll() {
+    if (isAnimatingScroll) return;
+    let closestIndex = 0;
+    let closestDistance = Infinity;
+
+    cards.forEach((card, index) => {
+      const distance = Math.abs(card.offsetLeft - carousel.scrollLeft);
+      if (distance < closestDistance) {
+        closestDistance = distance;
+        closestIndex = index;
+      }
+    });
+
+    mobileIndex = closestIndex;
+  }
+
   function syncLayout() {
     const isMobile = window.innerWidth <= 760;
+    stopDesktopTimer();
+    stopMobileTimer();
+
     if (isMobile) {
-      stopTimer();
       applyMobile();
+      window.setTimeout(() => goToMobileIndex(mobileIndex), 30);
+      startMobileTimer();
       return;
     }
+
+    carousel.scrollLeft = 0;
     applyDesktop();
-    startTimer();
+    startDesktopTimer();
   }
 
   syncLayout();
-  window.addEventListener('resize', syncLayout);
+  window.addEventListener('resize', () => {
+    window.clearTimeout(resizeTimer);
+    resizeTimer = window.setTimeout(syncLayout, 120);
+  });
 
   carousel.addEventListener('mouseenter', () => {
-    if (window.innerWidth > 760) stopTimer();
+    if (window.innerWidth > 760) stopDesktopTimer();
   });
 
   carousel.addEventListener('mouseleave', () => {
-    if (window.innerWidth > 760) startTimer();
+    if (window.innerWidth > 760) startDesktopTimer();
+  });
+
+  carousel.addEventListener('touchstart', stopMobileTimer, { passive: true });
+  carousel.addEventListener('touchend', () => {
+    syncMobileIndexFromScroll();
+    startMobileTimer();
+  }, { passive: true });
+  carousel.addEventListener('scroll', syncMobileIndexFromScroll, { passive: true });
+
+  document.addEventListener('visibilitychange', () => {
+    if (document.hidden) {
+      stopDesktopTimer();
+      stopMobileTimer();
+      return;
+    }
+    if (window.innerWidth <= 760) {
+      startMobileTimer();
+    } else {
+      startDesktopTimer();
+    }
   });
 }
 

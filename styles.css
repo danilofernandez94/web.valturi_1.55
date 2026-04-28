@@ -308,29 +308,41 @@ h3 {
 }
 
 .home-hero {
-  padding-top: 48px;
-  padding-bottom: 14px;
+  grid-template-columns: 1fr;
+  justify-items: center;
+  text-align: center;
+  min-height: auto;
+  padding-top: 52px;
+  padding-bottom: 16px;
+  gap: 30px;
+}
+
+.home-hero .hero-copy-minimal {
+  display: grid;
+  justify-items: center;
+  text-align: center;
+  max-width: 760px;
 }
 
 .home-hero h1 {
-  max-width: 8.9ch;
-  font-size: clamp(2.36rem, 4.2vw, 3.72rem);
+  max-width: 10.2ch;
+  font-size: clamp(2.5rem, 4.6vw, 4.2rem);
 }
 
 .home-hero p {
-  max-width: 42ch;
-  font-size: 0.985rem;
+  max-width: 58ch;
+  font-size: 1rem;
 }
 
 .hero-fan {
   position: relative;
-  min-height: 760px;
-  width: min(100%, 980px);
-  justify-self: end;
+  min-height: 700px;
+  width: min(100%, 1020px);
+  justify-self: center;
 }
 
 .hero-fan-carousel {
-  min-height: 760px;
+  min-height: 700px;
 }
 
 .fan-card {
@@ -349,7 +361,7 @@ h3 {
   box-shadow: var(--shadow-card);
   transform: translate3d(var(--fan-x), var(--fan-y), 0) rotate(var(--fan-rotate)) scale(var(--fan-scale));
   opacity: var(--fan-opacity);
-  transition: transform 900ms cubic-bezier(0.22, 1, 0.36, 1), opacity 650ms ease, box-shadow 350ms ease;
+  transition: transform 1250ms cubic-bezier(0.16, 1, 0.3, 1), opacity 1050ms cubic-bezier(0.16, 1, 0.3, 1), box-shadow 380ms ease;
   will-change: transform, opacity;
 }
 
@@ -394,13 +406,13 @@ h3 {
 
 .cta-banner-copy {
   display: grid;
-  gap: 0;
+  gap: 2px;
 }
 
 .cta-banner strong {
   font-size: clamp(1.35rem, 3vw, 2rem);
   letter-spacing: -0.04em;
-  line-height: 1.06;
+  line-height: 1.03;
 }
 
 .cta-banner-action {
@@ -614,6 +626,18 @@ h3 {
   height: 18px;
   display: block;
 }
+
+#footerWhatsapp .social-icon {
+  width: 19px;
+  height: 19px;
+}
+
+#footerWhatsapp .social-icon svg {
+  width: 18px;
+  height: 18px;
+  transform: translate(0.35px, -0.75px);
+  transform-origin: center;
+}
 .empty-state {
   grid-column: 1 / -1;
   padding: 26px;
@@ -789,30 +813,37 @@ h3 {
   .hero {
     min-height: auto;
     padding-top: 14px;
-    gap: 16px;
+    gap: 18px;
   }
 
   .home-hero {
-    padding-top: 16px;
-    padding-bottom: 4px;
+    padding-top: 18px;
+    padding-bottom: 8px;
+    gap: 22px;
   }
 
   h1 {
     max-width: none;
-    font-size: clamp(1.88rem, 8.35vw, 2.76rem);
-    line-height: 0.98;
+    font-size: clamp(1.94rem, 8.2vw, 2.92rem);
+    line-height: 1;
     letter-spacing: -0.055em;
   }
 
+  .home-hero .hero-copy-minimal {
+    max-width: 100%;
+    justify-items: center;
+    text-align: center;
+  }
+
   .home-hero h1 {
-    max-width: 10.2ch;
+    max-width: 9.4ch;
   }
 
   .hero-copy p {
-    max-width: 29ch;
-    margin-top: 18px;
-    font-size: 0.96rem;
-    line-height: 1.86;
+    max-width: 32ch;
+    margin-top: 16px;
+    font-size: 0.98rem;
+    line-height: 1.78;
   }
 
   .hero-fan,
@@ -824,11 +855,12 @@ h3 {
   .hero-fan-carousel {
     display: grid;
     grid-auto-flow: column;
-    grid-auto-columns: 88%;
-    gap: 12px;
+    grid-auto-columns: 84%;
+    gap: 14px;
     overflow-x: auto;
-    padding: 2px 2px 12px;
+    padding: 6px 10px 14px;
     scroll-snap-type: x mandatory;
+    scroll-padding-left: 10px;
     -ms-overflow-style: none;
     scrollbar-width: none;
   }
@@ -848,6 +880,7 @@ h3 {
     scroll-snap-align: start;
     scroll-snap-stop: always;
     box-shadow: 0 22px 38px rgba(31, 26, 23, 0.14);
+    transition: transform 1100ms cubic-bezier(0.16, 1, 0.3, 1), box-shadow 320ms ease;
   }
 
   .fan-card.is-hidden { pointer-events: auto; }
@@ -921,9 +954,9 @@ h3 {
   .header { padding: 12px 10px 12px 12px; }
   .brand-wordmark { font-size: 2rem; }
   .hero { gap: 16px; }
-  .hero-fan-carousel { grid-auto-columns: 90%; }
-  .home-hero h1 { max-width: 10.4ch; }
-  .hero-copy p { max-width: 28ch; }
+  .hero-fan-carousel { grid-auto-columns: 88%; }
+  .home-hero h1 { max-width: 9.2ch; }
+  .hero-copy p { max-width: 30ch; }
   .cta-banner strong { font-size: 1.3rem; }
   .product-actions,
   .contact-actions {
