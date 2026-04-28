@@ -311,38 +311,51 @@ h3 {
   grid-template-columns: 1fr;
   justify-items: center;
   text-align: center;
+  max-width: min(100%, 1120px);
+  margin: 0 auto;
   min-height: auto;
-  padding-top: 52px;
-  padding-bottom: 16px;
-  gap: 30px;
+  padding-top: 72px;
+  padding-bottom: 22px;
+  gap: 34px;
 }
 
 .home-hero .hero-copy-minimal {
   display: grid;
   justify-items: center;
   text-align: center;
-  max-width: 760px;
+  align-content: start;
+  max-width: 780px;
+  margin: 0 auto;
 }
 
 .home-hero h1 {
-  max-width: 10.2ch;
-  font-size: clamp(2.5rem, 4.6vw, 4.2rem);
+  max-width: 10.4ch;
+  margin-inline: auto;
+  font-size: clamp(2.9rem, 4.25vw, 4.6rem);
 }
 
 .home-hero p {
-  max-width: 58ch;
-  font-size: 1rem;
+  max-width: 52ch;
+  margin-inline: auto;
+  font-size: 1.02rem;
 }
 
 .hero-fan {
   position: relative;
-  min-height: 700px;
-  width: min(100%, 1020px);
+  width: min(100%, 1080px);
+  height: 620px;
+  min-height: 620px;
+  margin: 0 auto;
   justify-self: center;
 }
 
 .hero-fan-carousel {
-  min-height: 700px;
+  position: relative;
+  width: 100%;
+  height: 100%;
+  min-height: 620px;
+  overflow: visible;
+  perspective: 1600px;
 }
 
 .fan-card {
@@ -352,17 +365,25 @@ h3 {
   --fan-scale: 1;
   --fan-opacity: 1;
   position: absolute;
-  width: min(25.4vw, 336px);
+  left: 0;
+  top: 0;
+  width: min(26vw, 324px);
   aspect-ratio: 4 / 5;
   overflow: hidden;
   border: 1px solid rgba(31, 26, 23, 0.08);
   border-radius: 34px;
   background: var(--surface-solid);
-  box-shadow: var(--shadow-card);
+  box-shadow: 0 28px 52px rgba(31, 26, 23, 0.14);
   transform: translate3d(var(--fan-x), var(--fan-y), 0) rotate(var(--fan-rotate)) scale(var(--fan-scale));
+  transform-origin: 50% 12%;
   opacity: var(--fan-opacity);
-  transition: transform 1250ms cubic-bezier(0.16, 1, 0.3, 1), opacity 1050ms cubic-bezier(0.16, 1, 0.3, 1), box-shadow 380ms ease;
+  transition:
+    transform 920ms cubic-bezier(0.22, 1, 0.36, 1),
+    opacity 760ms cubic-bezier(0.22, 1, 0.36, 1),
+    box-shadow 320ms ease,
+    filter 760ms cubic-bezier(0.22, 1, 0.36, 1);
   will-change: transform, opacity;
+  backface-visibility: hidden;
 }
 
 .fan-card::after {
@@ -373,7 +394,11 @@ h3 {
   pointer-events: none;
 }
 
-.fan-card:hover { box-shadow: 0 30px 56px rgba(31, 26, 23, 0.16); }
+.hero-fan-carousel.is-dragging .fan-card {
+  transition: none !important;
+}
+
+.fan-card:hover { box-shadow: 0 34px 62px rgba(31, 26, 23, 0.18); }
 .hero-fan-carousel .fan-card:first-child { z-index: 4; }
 .fan-card.is-hidden { pointer-events: none; }
 .fan-card img,
@@ -388,8 +413,10 @@ h3 {
 }
 
 .cta-banner-section {
+  width: min(100%, 1040px);
+  margin: 0 auto;
   padding-top: 0;
-  padding-bottom: 76px;
+  padding-bottom: 84px;
 }
 
 .cta-banner {
@@ -633,9 +660,9 @@ h3 {
 }
 
 #footerWhatsapp .social-icon svg {
-  width: 18px;
-  height: 18px;
-  transform: translate(0.35px, -0.75px);
+  width: 17px;
+  height: 17px;
+  transform: translate(0.5px, -0.5px);
   transform-origin: center;
 }
 .empty-state {
@@ -695,6 +722,25 @@ h3 {
 }
 .compact-footer { padding-top: 16px; }
 
+
+@media (min-width: 1440px) {
+  .home-hero {
+    max-width: 1180px;
+    padding-top: 88px;
+    gap: 40px;
+  }
+
+  .hero-fan {
+    width: min(100%, 1120px);
+    height: 640px;
+    min-height: 640px;
+  }
+
+  .hero-fan-carousel {
+    min-height: 640px;
+  }
+}
+
 @media (max-width: 1100px) {
   .hero,
   .split-section,
@@ -705,9 +751,18 @@ h3 {
 
   .hero { min-height: auto; }
   .hero-copy-minimal { max-width: none; }
-  .hero-fan { min-height: 620px; justify-self: stretch; }
+  .hero-fan {
+    width: min(100%, 920px);
+    height: 560px;
+    min-height: 560px;
+    justify-self: stretch;
+  }
+  .hero-fan-carousel {
+    min-height: 560px;
+    height: 560px;
+  }
   .fan-card {
-    width: min(30vw, 248px);
+    width: min(32vw, 280px);
   }
 
   .service-grid,
@@ -820,6 +875,7 @@ h3 {
     padding-top: 18px;
     padding-bottom: 8px;
     gap: 22px;
+    max-width: 100%;
   }
 
   h1 {
@@ -836,54 +892,41 @@ h3 {
   }
 
   .home-hero h1 {
-    max-width: 9.4ch;
+    max-width: 9.2ch;
   }
 
   .hero-copy p {
-    max-width: 32ch;
+    max-width: 31ch;
     margin-top: 16px;
     font-size: 0.98rem;
     line-height: 1.78;
   }
 
-  .hero-fan,
-  .hero-fan-carousel {
-    min-height: auto;
+  .hero-fan {
     width: 100%;
+    height: 430px;
+    min-height: 430px;
   }
 
   .hero-fan-carousel {
-    display: grid;
-    grid-auto-flow: column;
-    grid-auto-columns: 84%;
-    gap: 14px;
-    overflow-x: auto;
-    padding: 6px 10px 14px;
-    scroll-snap-type: x mandatory;
-    scroll-padding-left: 10px;
-    -ms-overflow-style: none;
-    scrollbar-width: none;
+    position: relative;
+    width: 100%;
+    height: 100%;
+    min-height: 430px;
+    overflow: visible;
+    touch-action: pan-y;
+    user-select: none;
   }
-
-  .hero-fan-carousel::-webkit-scrollbar { display: none; }
 
   .fan-card {
-    position: relative;
-    width: auto;
-    max-width: none;
-    aspect-ratio: 4 / 5;
-    height: auto;
-    min-height: unset;
+    width: min(72vw, 320px);
+    max-width: 320px;
     border-radius: 24px;
-    transform: none !important;
-    opacity: 1 !important;
-    scroll-snap-align: start;
-    scroll-snap-stop: always;
-    box-shadow: 0 22px 38px rgba(31, 26, 23, 0.14);
-    transition: transform 1100ms cubic-bezier(0.16, 1, 0.3, 1), box-shadow 320ms ease;
+    transform-origin: 50% 10%;
+    box-shadow: 0 22px 40px rgba(31, 26, 23, 0.14);
   }
 
-  .fan-card.is-hidden { pointer-events: auto; }
+  .fan-card.is-hidden { pointer-events: none; }
 
   .cta-banner {
     flex-direction: column;
@@ -954,7 +997,16 @@ h3 {
   .header { padding: 12px 10px 12px 12px; }
   .brand-wordmark { font-size: 2rem; }
   .hero { gap: 16px; }
-  .hero-fan-carousel { grid-auto-columns: 88%; }
+  .hero-fan {
+    height: 398px;
+    min-height: 398px;
+  }
+  .hero-fan-carousel {
+    min-height: 398px;
+  }
+  .fan-card {
+    width: min(78vw, 300px);
+  }
   .home-hero h1 { max-width: 9.2ch; }
   .hero-copy p { max-width: 30ch; }
   .cta-banner strong { font-size: 1.3rem; }

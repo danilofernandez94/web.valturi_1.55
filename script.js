@@ -245,189 +245,230 @@ function setupHomeCarousel() {
   if (!carousel) return;
 
   const cards = Array.from(carousel.querySelectorAll('[data-home-card]'));
-  if (!cards.length) return;
-
-  const desktopSlots = [
-    { x: 88, y: 234, rotate: -9, scale: 0.98, z: 2, opacity: 1 },
-    { x: 276, y: 64, rotate: -4, scale: 1.05, z: 4, opacity: 1 },
-    { x: 502, y: 0, rotate: 0, scale: 1.18, z: 6, opacity: 1 },
-    { x: 730, y: 74, rotate: 5, scale: 1.05, z: 4, opacity: 1 },
-    { x: 918, y: 252, rotate: 9, scale: 0.98, z: 2, opacity: 1 },
-    { x: 650, y: 408, rotate: 2, scale: 0.8, z: 1, opacity: 0 }
-  ];
+  const total = cards.length;
+  if (total < 2) return;
 
   const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-  let desktopOffset = 0;
-  let desktopTimer = null;
-  let mobileTimer = null;
+  const mobileBreakpoint = 760;
+
+  const desktopSlots = [
+    { x: 0.50, y: 0.02, rotate: 0, scale: 1.12, z: 6, opacity: 1 },
+    { x: 0.73, y: 0.16, rotate: 6, scale: 0.99, z: 4, opacity: 0.94 },
+    { x: 0.88, y: 0.39, rotate: 11, scale: 0.86, z: 2, opacity: 0.78 },
+    { x: 1.06, y: 0.56, rotate: 14, scale: 0.72, z: 1, opacity: 0 },
+    { x: 0.12, y: 0.39, rotate: -11, scale: 0.86, z: 2, opacity: 0.78 },
+    { x: 0.27, y: 0.16, rotate: -6, scale: 0.99, z: 4, opacity: 0.94 }
+  ];
+
+  const mobileSlots = [
+    { x: 0.50, y: 0.02, rotate: 0, scale: 1, z: 6, opacity: 1 },
+    { x: 0.80, y: 0.10, rotate: 8, scale: 0.88, z: 4, opacity: 0.78 },
+    { x: 1.12, y: 0.22, rotate: 12, scale: 0.74, z: 2, opacity: 0 },
+    { x: 1.28, y: 0.28, rotate: 16, scale: 0.66, z: 1, opacity: 0 },
+    { x: -0.12, y: 0.22, rotate: -12, scale: 0.74, z: 2, opacity: 0 },
+    { x: 0.20, y: 0.10, rotate: -8, scale: 0.88, z: 4, opacity: 0.78 }
+  ];
+
+  let activeIndex = 0;
+  let autoTimer = null;
   let resizeTimer = null;
-  let isAnimatingScroll = false;
-  let mobileIndex = 0;
+  let isDragging = false;
+  let dragProgress = 0;
+  let dragDirection = 1;
+  let startX = 0;
+  let startY = 0;
+  let dragLocked = false;
 
-  function clearCardStyle(card) {
-    card.style.removeProperty('--fan-x');
-    card.style.removeProperty('--fan-y');
-    card.style.removeProperty('--fan-rotate');
-    card.style.removeProperty('--fan-scale');
-    card.style.removeProperty('--fan-opacity');
-    card.style.removeProperty('z-index');
-    card.classList.remove('is-hidden');
+  function clamp(value, min, max) {
+    return Math.max(min, Math.min(max, value));
   }
 
-  function applyDesktop() {
-    carousel.classList.remove('is-mobile-layout');
-    cards.forEach((card, index) => {
-      const slot = desktopSlots[(index + desktopOffset) % desktopSlots.length];
-      card.style.setProperty('--fan-x', `${slot.x}px`);
-      card.style.setProperty('--fan-y', `${slot.y}px`);
-      card.style.setProperty('--fan-rotate', `${slot.rotate}deg`);
-      card.style.setProperty('--fan-scale', `${slot.scale}`);
-      card.style.setProperty('--fan-opacity', `${slot.opacity}`);
-      card.style.zIndex = String(slot.z);
-      card.classList.toggle('is-hidden', slot.opacity === 0);
+  function lerp(from, to, progress) {
+    return from + (to - from) * progress;
+  }
+
+  function slotDistance(cardIndex, index) {
+    return (cardIndex - index + total) % total;
+  }
+
+  function getSlots() {
+    return window.innerWidth <= mobileBreakpoint ? mobileSlots : desktopSlots;
+  }
+
+  function getSlotFor(cardIndex, index, slots) {
+    const distance = slotDistance(cardIndex, index);
+    return slots[distance] || slots[slots.length - 1];
+  }
+
+  function applySlot(card, slot, dims) {
+    const cardWidth = card.offsetWidth;
+    const x = dims.width * slot.x - cardWidth / 2;
+    const y = dims.height * slot.y;
+
+    card.style.setProperty('--fan-x', `${x}px`);
+    card.style.setProperty('--fan-y', `${y}px`);
+    card.style.setProperty('--fan-rotate', `${slot.rotate}deg`);
+    card.style.setProperty('--fan-scale', `${slot.scale}`);
+    card.style.setProperty('--fan-opacity', `${slot.opacity}`);
+    card.style.zIndex = String(slot.z);
+    card.classList.toggle('is-hidden', slot.opacity === 0);
+  }
+
+  function render(progress = 0, direction = 1) {
+    const slots = getSlots();
+    const dims = {
+      width: carousel.clientWidth,
+      height: carousel.clientHeight || carousel.offsetHeight
+    };
+
+    cards.forEach((card, cardIndex) => {
+      const currentSlot = getSlotFor(cardIndex, activeIndex, slots);
+      let finalSlot = currentSlot;
+
+      if (progress > 0) {
+        const nextIndex = (activeIndex + direction + total) % total;
+        const targetSlot = getSlotFor(cardIndex, nextIndex, slots);
+
+        finalSlot = {
+          x: lerp(currentSlot.x, targetSlot.x, progress),
+          y: lerp(currentSlot.y, targetSlot.y, progress),
+          rotate: lerp(currentSlot.rotate, targetSlot.rotate, progress),
+          scale: lerp(currentSlot.scale, targetSlot.scale, progress),
+          z: progress < 0.5 ? currentSlot.z : targetSlot.z,
+          opacity: lerp(currentSlot.opacity, targetSlot.opacity, progress)
+        };
+      }
+
+      applySlot(card, finalSlot, dims);
     });
   }
 
-  function applyMobile() {
-    carousel.classList.add('is-mobile-layout');
-    cards.forEach(clearCardStyle);
-  }
-
-  function stopDesktopTimer() {
-    if (desktopTimer) {
-      window.clearInterval(desktopTimer);
-      desktopTimer = null;
+  function stopAuto() {
+    if (autoTimer) {
+      window.clearInterval(autoTimer);
+      autoTimer = null;
     }
   }
 
-  function stopMobileTimer() {
-    if (mobileTimer) {
-      window.clearInterval(mobileTimer);
-      mobileTimer = null;
-    }
-  }
-
-  function easeInOutQuint(t) {
-    return t < 0.5 ? 16 * t * t * t * t * t : 1 - Math.pow(-2 * t + 2, 5) / 2;
-  }
-
-  function animateScrollTo(element, target, duration = 1100) {
-    if (prefersReducedMotion) {
-      element.scrollLeft = target;
-      return;
-    }
-
-    const start = element.scrollLeft;
-    const change = target - start;
-    const startTime = performance.now();
-    isAnimatingScroll = true;
-
-    function frame(now) {
-      const elapsed = now - startTime;
-      const progress = Math.min(elapsed / duration, 1);
-      const eased = easeInOutQuint(progress);
-      element.scrollLeft = start + change * eased;
-
-      if (progress < 1) {
-        window.requestAnimationFrame(frame);
-      } else {
-        isAnimatingScroll = false;
-      }
-    }
-
-    window.requestAnimationFrame(frame);
-  }
-
-  function goToMobileIndex(index) {
-    const targetCard = cards[index];
-    if (!targetCard) return;
-    mobileIndex = index;
-    animateScrollTo(carousel, targetCard.offsetLeft, 1050);
-  }
-
-  function startDesktopTimer() {
-    stopDesktopTimer();
+  function startAuto() {
+    stopAuto();
     if (prefersReducedMotion) return;
-    desktopTimer = window.setInterval(() => {
-      desktopOffset = (desktopOffset + 1) % cards.length;
-      applyDesktop();
+
+    autoTimer = window.setInterval(() => {
+      if (isDragging) return;
+      activeIndex = (activeIndex + 1) % total;
+      render();
     }, 3000);
   }
 
-  function startMobileTimer() {
-    stopMobileTimer();
-    if (prefersReducedMotion) return;
-    mobileTimer = window.setInterval(() => {
-      mobileIndex = (mobileIndex + 1) % cards.length;
-      goToMobileIndex(mobileIndex);
-    }, 3000);
+  function setDraggingState(value) {
+    isDragging = value;
+    carousel.classList.toggle('is-dragging', value);
   }
 
-  function syncMobileIndexFromScroll() {
-    if (isAnimatingScroll) return;
-    let closestIndex = 0;
-    let closestDistance = Infinity;
+  function resetDrag() {
+    dragProgress = 0;
+    dragDirection = 1;
+    dragLocked = false;
+  }
 
-    cards.forEach((card, index) => {
-      const distance = Math.abs(card.offsetLeft - carousel.scrollLeft);
-      if (distance < closestDistance) {
-        closestDistance = distance;
-        closestIndex = index;
-      }
+  function finalizeDrag(shouldAdvance) {
+    const direction = dragDirection;
+    setDraggingState(false);
+
+    if (shouldAdvance) {
+      activeIndex = (activeIndex + direction + total) % total;
+    }
+
+    resetDrag();
+
+    window.requestAnimationFrame(() => {
+      render();
+      startAuto();
     });
+  }
 
-    mobileIndex = closestIndex;
+  function handleTouchStart(event) {
+    if (window.innerWidth > mobileBreakpoint) return;
+    if (!event.touches.length) return;
+
+    const touch = event.touches[0];
+    startX = touch.clientX;
+    startY = touch.clientY;
+    dragProgress = 0;
+    dragDirection = 1;
+    dragLocked = false;
+    stopAuto();
+    setDraggingState(true);
+  }
+
+  function handleTouchMove(event) {
+    if (!isDragging || window.innerWidth > mobileBreakpoint || !event.touches.length) return;
+
+    const touch = event.touches[0];
+    const deltaX = touch.clientX - startX;
+    const deltaY = touch.clientY - startY;
+
+    if (!dragLocked) {
+      if (Math.abs(deltaY) > Math.abs(deltaX) && Math.abs(deltaY) > 8) {
+        setDraggingState(false);
+        resetDrag();
+        startAuto();
+        return;
+      }
+
+      if (Math.abs(deltaX) > 8) {
+        dragLocked = true;
+      }
+    }
+
+    if (!dragLocked) return;
+
+    event.preventDefault();
+
+    dragDirection = deltaX < 0 ? 1 : -1;
+    dragProgress = clamp(Math.abs(deltaX) / (carousel.clientWidth * 0.68), 0, 1);
+    render(dragProgress, dragDirection);
+  }
+
+  function handleTouchEnd() {
+    if (!isDragging) return;
+    finalizeDrag(dragProgress > 0.18);
   }
 
   function syncLayout() {
-    const isMobile = window.innerWidth <= 760;
-    stopDesktopTimer();
-    stopMobileTimer();
-
-    if (isMobile) {
-      applyMobile();
-      window.setTimeout(() => goToMobileIndex(mobileIndex), 30);
-      startMobileTimer();
-      return;
-    }
-
-    carousel.scrollLeft = 0;
-    applyDesktop();
-    startDesktopTimer();
+    setDraggingState(false);
+    resetDrag();
+    render();
+    startAuto();
   }
 
   syncLayout();
+
   window.addEventListener('resize', () => {
     window.clearTimeout(resizeTimer);
     resizeTimer = window.setTimeout(syncLayout, 120);
   });
 
   carousel.addEventListener('mouseenter', () => {
-    if (window.innerWidth > 760) stopDesktopTimer();
+    if (window.innerWidth > mobileBreakpoint) stopAuto();
   });
 
   carousel.addEventListener('mouseleave', () => {
-    if (window.innerWidth > 760) startDesktopTimer();
+    if (window.innerWidth > mobileBreakpoint) startAuto();
   });
 
-  carousel.addEventListener('touchstart', stopMobileTimer, { passive: true });
-  carousel.addEventListener('touchend', () => {
-    syncMobileIndexFromScroll();
-    startMobileTimer();
-  }, { passive: true });
-  carousel.addEventListener('scroll', syncMobileIndexFromScroll, { passive: true });
+  carousel.addEventListener('touchstart', handleTouchStart, { passive: true });
+  carousel.addEventListener('touchmove', handleTouchMove, { passive: false });
+  carousel.addEventListener('touchend', handleTouchEnd, { passive: true });
+  carousel.addEventListener('touchcancel', handleTouchEnd, { passive: true });
 
   document.addEventListener('visibilitychange', () => {
     if (document.hidden) {
-      stopDesktopTimer();
-      stopMobileTimer();
+      stopAuto();
       return;
     }
-    if (window.innerWidth <= 760) {
-      startMobileTimer();
-    } else {
-      startDesktopTimer();
-    }
+    startAuto();
   });
 }
 
