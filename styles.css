@@ -663,15 +663,14 @@ h3 {
 }
 
 #footerWhatsapp .social-icon {
-  width: 19px;
-  height: 19px;
+  width: 18px;
+  height: 18px;
 }
 
 #footerWhatsapp .social-icon svg {
-  width: 17px;
-  height: 17px;
-  transform: translate(0.5px, -0.5px);
-  transform-origin: center;
+  width: 16px;
+  height: 16px;
+  display: block;
 }
 .empty-state {
   grid-column: 1 / -1;
@@ -1052,54 +1051,57 @@ h3 {
   text-align: center;
 }
 
+.contact-panel {
+  padding: 34px 40px;
+}
+
 .contact-panel-copy {
   display: grid;
   justify-items: center;
-  align-content: start;
+  align-content: center;
+  gap: 18px;
 }
 
 .contact-panel-copy h2,
 .contact-panel-copy .contact-panel-lead,
-.contact-panel-copy .contact-panel-text,
 .contact-map-copy,
-.contact-map-copy p,
-.contact-map-copy h3 {
-  max-width: 28ch;
+.contact-map-copy p {
+  max-width: 29ch;
   margin-left: auto;
   margin-right: auto;
 }
 
-.contact-panel-lead {
-  font-size: clamp(1.12rem, 2vw, 1.28rem);
-  line-height: 1.45;
-  color: var(--text);
+.contact-panel-copy h2 {
+  margin-bottom: 2px;
 }
 
-.contact-panel-text {
-  color: var(--muted);
-  line-height: 1.72;
+.contact-panel-lead {
+  font-size: clamp(1.12rem, 2vw, 1.3rem);
+  line-height: 1.55;
+  color: var(--text);
 }
 
 .contact-actions-card {
   justify-content: center;
   width: 100%;
+  margin-top: 6px;
 }
 
-.contact-list-card {
-  width: 100%;
-  justify-items: center;
-  text-align: center;
-}
-
-.contact-list-card div {
-  justify-items: center;
+.contact-actions-card .button {
+  min-width: min(100%, 320px);
 }
 
 .contact-map-copy {
   display: grid;
   justify-items: center;
-  gap: 12px;
-  margin-bottom: 18px;
+  gap: 14px;
+  margin-bottom: 22px;
+}
+
+.contact-map-copy p {
+  font-size: 1.02rem;
+  line-height: 1.72;
+  color: var(--muted);
 }
 
 .map-embed-shell {
@@ -1140,19 +1142,21 @@ h3 {
 }
 
 @media (max-width: 760px) {
+  .contact-panel {
+    padding: 28px 22px;
+  }
+
   .contact-panel-copy h2,
   .contact-panel-copy .contact-panel-lead,
-  .contact-panel-copy .contact-panel-text,
   .contact-map-copy,
   .contact-map-copy p,
-  .contact-map-copy h3,
   .footer-branding p,
   .footer-branding small {
     max-width: 100%;
   }
 
-  .contact-panel {
-    padding-inline: 22px;
+  .contact-panel-copy {
+    gap: 16px;
   }
 
   .map-embed-shell iframe {
