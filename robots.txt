@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://web-valturi-1-55.vercel.app/sitemap.xml
