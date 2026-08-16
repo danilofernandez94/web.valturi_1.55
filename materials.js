@@ -8,13 +8,30 @@ const materialFamilies = [
     title: 'Pana Panne antimancha',
     description:
       'Tela premium para tapizados y cortinería. Ya cargamos el muestrario real con colores, detalle de trama y ficha técnica.',
-    shortMeta: ['20 tonos cargados', 'Proceso antimancha', 'Ideal para tapizados y cortinas'],
+    shortMeta: ['19 tonos cargados', 'Proceso antimancha', 'Ideal para tapizados y cortinas'],
     preview: [
       'assets/materials/pana-panne/gamuza-main.webp',
       'assets/materials/pana-panne/azul-main.webp',
       'assets/materials/pana-panne/borravino-main.webp'
     ],
     href: 'material.html?id=pana-panne',
+    live: true,
+    filters: ['todos', 'tapiceria']
+  },
+  {
+    id: 'pana-thor',
+    group: 'Tapicería',
+    status: 'Disponible',
+    title: 'Pana Thor',
+    description:
+      'Colección tramada para tapicería con lectura más mate y textura visible. Ya cargamos tonos reales y acercamientos para consulta online.',
+    shortMeta: ['12 tonos cargados', 'Trama visible', 'Ideal para tapicería interior'],
+    preview: [
+      'assets/materials/pana-thor/natural-main.webp',
+      'assets/materials/pana-thor/bronce-main.webp',
+      'assets/materials/pana-thor/azul-main.webp'
+    ],
+    href: 'material.html?id=pana-thor',
     live: true,
     filters: ['todos', 'tapiceria']
   },
@@ -135,19 +152,19 @@ const materialCatalog = {
     title: 'Pana Panne antimancha',
     group: 'Tapicería',
     eyebrow: 'Biblioteca de materiales',
+    assetPath: 'assets/materials/pana-panne',
     intro:
       'La Pana Panne es una tela de calidad premium con proceso antimancha (repele líquidos). Tiene un efecto marmolado, es semiopaca y pesada. Es suave al tacto y resistente, ideal para quienes buscan un tejido de excelente calidad para tapizados y cortinas.',
     chips: ['Proceso antimancha', 'Repele líquidos', 'Efecto marmolado', 'Semiopaca', 'Pesada'],
     specs: [
       { label: 'Composición', value: '100% poliéster' },
       { label: 'Ancho', value: '1,45 mts' },
-      { label: 'Peso', value: '540 gr. por metro lineal' },
-      { label: 'Precio', value: 'El precio es por 1 metro' }
+      { label: 'Peso', value: '540 gr. por metro lineal' }
     ],
     uses: ['Tapizados', 'Sillas', 'Sillones', 'Sofás', 'Acolchados', 'Almohadones', 'Cortinería'],
     notes: [
       'El tono puede variar dependiendo de la partida y la pantalla.',
-      'Las fotos fueron optimizadas para web cuidando que la paleta se vea lo más fiel posible.',
+      'Las fotos se optimizaron para web cuidando que la paleta se vea lo más fiel posible.',
       'En tonos oscuros vamos a sumar también referencias sin sol directo para reforzar su lectura real.'
     ],
     future: [
@@ -180,6 +197,50 @@ const materialCatalog = {
       { name: 'Rojo', slug: 'rojo' },
       { name: 'Verde inglés', slug: 'verde-ingles' },
       { name: 'Violeta', slug: 'violeta' }
+    ]
+  },
+  'pana-thor': {
+    title: 'Pana Thor',
+    group: 'Tapicería',
+    eyebrow: 'Biblioteca de materiales',
+    assetPath: 'assets/materials/pana-thor',
+    intro:
+      'La Pana Thor es una colección de tapicería con textura tramada, lectura mate y una presencia sobria que funciona muy bien en piezas contemporáneas. Cargamos el muestrario real con tomas cuidadas para que puedas ver color y trama con la mejor fidelidad posible desde la web.',
+    chips: ['Textura tramada', 'Lectura mate', 'Tapicería interior', '12 tonos cargados'],
+    specs: [
+      { label: 'Colección', value: '12 tonos cargados' },
+      { label: 'Enfoque', value: 'Tapicería y proyectos de interior' },
+      { label: 'Visualización', value: 'Vista principal + zoom de trama' }
+    ],
+    uses: ['Tapizados', 'Sillas', 'Sillones', 'Sofás', 'Cabeceras', 'Almohadones decorativos'],
+    notes: [
+      'El tono puede variar según pantalla, luz ambiente y partida del textil.',
+      'Las fotos se optimizaron priorizando fidelidad visual y detalle de trama, evitando sobreexponer los tonos claros.',
+      'En tonos oscuros podemos sumar también referencias sin sol directo para reforzar su lectura real.'
+    ],
+    future: [
+      {
+        title: 'Aplicado real',
+        text: 'Más adelante podés sumar acá fotos de muebles ya tapizados con cada tono para ayudar a visualizar mejor la tela en contexto.'
+      },
+      {
+        title: 'Prueba hidrófuga',
+        text: 'Cuando el material tenga esa propiedad, ya queda reservado un bloque para mostrar foto o video de la prueba con agua.'
+      }
+    ],
+    colors: [
+      { name: 'Alga', slug: 'alga' },
+      { name: 'Azul', slug: 'azul' },
+      { name: 'Beige', slug: 'beige' },
+      { name: 'Bronce', slug: 'bronce' },
+      { name: 'Dijon', slug: 'dijon' },
+      { name: 'Gamuza', slug: 'gamuza' },
+      { name: 'Gris', slug: 'gris' },
+      { name: 'Gris oscuro', slug: 'gris-oscuro' },
+      { name: 'Lino', slug: 'lino' },
+      { name: 'Natural', slug: 'natural' },
+      { name: 'Perla', slug: 'perla' },
+      { name: 'Topo', slug: 'topo' }
     ]
   }
 };
@@ -311,9 +372,9 @@ function renderMaterialDetail() {
         <div class="material-gallery-grid">
           ${material.colors.map((color) => `
             <article class="material-swatch-card">
-              <button type="button" class="material-swatch-trigger" data-lightbox-name="${color.name}" data-lightbox-main="assets/materials/pana-panne/${color.slug}-main.webp" data-lightbox-detail="assets/materials/pana-panne/${color.slug}-detail.webp">
+              <button type="button" class="material-swatch-trigger" data-lightbox-name="${color.name}" data-lightbox-main="${material.assetPath}/${color.slug}-main.webp" data-lightbox-detail="${material.assetPath}/${color.slug}-detail.webp">
                 <div class="material-swatch-main">
-                  <img src="assets/materials/pana-panne/${color.slug}-main.webp" alt="Tela Pana Panne color ${color.name}" loading="lazy" decoding="async" />
+                  <img src="${material.assetPath}/${color.slug}-main.webp" alt="Tela ${material.title} color ${color.name}" loading="lazy" decoding="async" />
                 </div>
                 <div class="material-swatch-content">
                   <div class="material-swatch-topline">
@@ -322,9 +383,9 @@ function renderMaterialDetail() {
                   </div>
                   <div class="material-swatch-detail">
                     <div class="material-swatch-detail-thumb">
-                      <img src="assets/materials/pana-panne/${color.slug}-detail.webp" alt="Detalle de trama ${color.name}" loading="lazy" decoding="async" />
+                      <img src="${material.assetPath}/${color.slug}-detail.webp" alt="Detalle de trama ${color.name}" loading="lazy" decoding="async" />
                     </div>
-                    <p class="material-swatch-note">Toque suave, trama visible y mejor lectura del color base.</p>
+                    <p class="material-swatch-note">Lectura de color y acercamiento para apreciar mejor la textura del textil.</p>
                   </div>
                 </div>
               </button>
@@ -375,10 +436,10 @@ function renderMaterialDetail() {
     </div>
   `;
 
-  setupMaterialLightbox();
+  setupMaterialLightbox(material.title);
 }
 
-function setupMaterialLightbox() {
+function setupMaterialLightbox(materialTitle) {
   const lightbox = document.getElementById('materialLightbox');
   if (!lightbox) return;
 
@@ -397,9 +458,9 @@ function setupMaterialLightbox() {
   triggers.forEach((trigger) => {
     trigger.addEventListener('click', () => {
       const name = trigger.dataset.lightboxName;
-      title.textContent = `${name} · Pana Panne`;
+      title.textContent = `${name} · ${materialTitle}`;
       main.src = trigger.dataset.lightboxMain;
-      main.alt = `Tela Pana Panne color ${name}`;
+      main.alt = `Tela ${materialTitle} color ${name}`;
       detail.src = trigger.dataset.lightboxDetail;
       detail.alt = `Detalle de trama ${name}`;
       lightbox.classList.add('is-open');
