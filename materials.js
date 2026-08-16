@@ -3,12 +3,13 @@ const MATERIALS_WHATSAPP = typeof WHATSAPP_LINK !== 'undefined' ? WHATSAPP_LINK 
 const materialFamilies = [
   {
     id: 'pana-panne',
-    group: 'Tapicería',
+    family: 'Panas',
+    group: 'Pana',
     status: 'Disponible',
-    title: 'Pana Panne antimancha',
+    title: 'Panne',
     description:
-      'Tela premium para tapizados y cortinería. Ya cargamos el muestrario real con colores, detalle de trama y ficha técnica.',
-    shortMeta: ['19 tonos cargados', 'Proceso antimancha', 'Ideal para tapizados y cortinas'],
+      'Textil premium de tacto suave y efecto marmolado, pensado para tapicería y cortinería.',
+    shortMeta: ['19 tonos cargados', 'Suave al tacto', 'Tapicería y cortinería'],
     preview: [
       'assets/materials/pana-panne/gamuza-main.webp',
       'assets/materials/pana-panne/azul-main.webp',
@@ -16,16 +17,17 @@ const materialFamilies = [
     ],
     href: 'material.html?id=pana-panne',
     live: true,
-    filters: ['todos', 'tapiceria']
+    filters: ['todos', 'panas', 'tapiceria']
   },
   {
     id: 'pana-thor',
-    group: 'Tapicería',
+    family: 'Panas',
+    group: 'Pana',
     status: 'Disponible',
-    title: 'Pana Thor',
+    title: 'Thor',
     description:
-      'Colección tramada para tapicería con lectura más mate y textura visible. Ya cargamos tonos reales y acercamientos para consulta online.',
-    shortMeta: ['12 tonos cargados', 'Trama visible', 'Ideal para tapicería interior'],
+      'Colección tramada de lectura mate y textura visible, pensada para piezas de interior.',
+    shortMeta: ['12 tonos cargados', 'Trama visible', 'Tapicería interior'],
     preview: [
       'assets/materials/pana-thor/natural-main.webp',
       'assets/materials/pana-thor/bronce-main.webp',
@@ -33,16 +35,17 @@ const materialFamilies = [
     ],
     href: 'material.html?id=pana-thor',
     live: true,
-    filters: ['todos', 'tapiceria']
+    filters: ['todos', 'panas', 'tapiceria']
   },
   {
     id: 'pana-hulk',
-    group: 'Tapicería',
+    family: 'Panas',
+    group: 'Pana',
     status: 'Disponible',
-    title: 'Pana Hulk',
+    title: 'Hulk',
     description:
-      'Pana de tacto suave y presencia cálida, pensada para tapicería interior. El muestrario reúne 12 tonos con vista completa y acercamiento de textura.',
-    shortMeta: ['12 tonos cargados', '100% poliéster', 'Suave al tacto'],
+      'Textil suave y cálido, con una textura marcada que funciona especialmente bien en tapicería interior.',
+    shortMeta: ['12 tonos cargados', 'Suave al tacto', 'Tapicería interior'],
     preview: [
       'assets/materials/pana-hulk/latte-main-640.webp',
       'assets/materials/pana-hulk/verde-ingles-main-640.webp',
@@ -50,10 +53,11 @@ const materialFamilies = [
     ],
     href: 'material.html?id=pana-hulk',
     live: true,
-    filters: ['todos', 'tapiceria']
+    filters: ['todos', 'panas', 'tapiceria']
   },
   {
     id: 'lino',
+    family: 'Linos',
     group: 'Tapicería',
     status: 'En preparación',
     title: 'Linos',
@@ -65,6 +69,7 @@ const materialFamilies = [
   },
   {
     id: 'cuero-vacuno',
+    family: 'Cuero',
     group: 'Tapicería',
     status: 'En preparación',
     title: 'Cuero vacuno',
@@ -76,6 +81,7 @@ const materialFamilies = [
   },
   {
     id: 'cuerina-indoor',
+    family: 'Cuerinas',
     group: 'Tapicería',
     status: 'En preparación',
     title: 'Cuerina indoor',
@@ -87,6 +93,7 @@ const materialFamilies = [
   },
   {
     id: 'cuerina-outdoor',
+    family: 'Cuerinas',
     group: 'Exterior',
     status: 'En preparación',
     title: 'Cuerina outdoor',
@@ -98,6 +105,7 @@ const materialFamilies = [
   },
   {
     id: 'gazas',
+    family: 'Cortinería',
     group: 'Cortinería',
     status: 'En preparación',
     title: 'Gazas',
@@ -109,6 +117,7 @@ const materialFamilies = [
   },
   {
     id: 'tejidos',
+    family: 'Cortinería',
     group: 'Cortinería',
     status: 'En preparación',
     title: 'Tejidos',
@@ -120,6 +129,7 @@ const materialFamilies = [
   },
   {
     id: 'tusor-liviano',
+    family: 'Cortinería',
     group: 'Cortinería',
     status: 'En preparación',
     title: 'Tusor liviano',
@@ -131,6 +141,7 @@ const materialFamilies = [
   },
   {
     id: 'tusor-pesado',
+    family: 'Cortinería',
     group: 'Cortinería',
     status: 'En preparación',
     title: 'Tusor pesado',
@@ -142,6 +153,7 @@ const materialFamilies = [
   },
   {
     id: 'blackout',
+    family: 'Cortinería',
     group: 'Cortinería',
     status: 'En preparación',
     title: 'Blackout',
@@ -153,6 +165,7 @@ const materialFamilies = [
   },
   {
     id: 'lonas',
+    family: 'Lonas',
     group: 'Exterior',
     status: 'En preparación',
     title: 'Lonas',
@@ -166,32 +179,34 @@ const materialFamilies = [
 
 const materialCatalog = {
   'pana-panne': {
-    title: 'Pana Panne antimancha',
-    group: 'Tapicería',
+    title: 'Panne',
+    group: 'Pana',
     eyebrow: 'Biblioteca de materiales',
     assetPath: 'assets/materials/pana-panne',
     intro:
-      'La Pana Panne es una tela de calidad premium con proceso antimancha (repele líquidos). Tiene un efecto marmolado, es semiopaca y pesada. Es suave al tacto y resistente, ideal para quienes buscan un tejido de excelente calidad para tapizados y cortinas.',
-    chips: ['Proceso antimancha', 'Repele líquidos', 'Efecto marmolado', 'Semiopaca', 'Pesada'],
+      'Panne es un tejido premium de tacto suave, efecto marmolado y cuerpo pesado. Su lectura cálida y semiopaca funciona especialmente bien en tapizados y también puede utilizarse en cortinería.',
+    chips: ['Tacto suave', 'Efecto marmolado', 'Semiopaca', 'Tapicería y cortinería'],
     specs: [
+      { label: 'Tipo', value: 'Pana' },
       { label: 'Composición', value: '100% poliéster' },
-      { label: 'Ancho', value: '1,45 mts' },
-      { label: 'Peso', value: '540 gr. por metro lineal' }
+      { label: 'Ancho', value: '1,45 m' },
+      { label: 'Peso', value: '540 g por metro lineal' },
+      { label: 'Tratamiento', value: 'Antimancha · repele líquidos' }
     ],
     uses: ['Tapizados', 'Sillas', 'Sillones', 'Sofás', 'Acolchados', 'Almohadones', 'Cortinería'],
     notes: [
-      'El tono puede variar dependiendo de la partida y la pantalla.',
-      'Las fotos se optimizaron para web cuidando que la paleta se vea lo más fiel posible.',
-      'En tonos oscuros vamos a sumar también referencias sin sol directo para reforzar su lectura real.'
+      'El tono puede variar dependiendo de la partida, la pantalla y la iluminación del ambiente.',
+      'Para definir un tono con precisión recomendamos validar la muestra física antes de la confección.',
+      'En tonos oscuros vamos a sumar referencias sin sol directo para reforzar su lectura real.'
     ],
     future: [
       {
         title: 'Aplicado real',
-        text: 'Más adelante podés sumar acá fotos de productos ya tapizados con cada tono para ayudar a visualizar mejor la tela en uso.'
+        text: 'La ficha queda preparada para sumar fotografías de muebles tapizados con cada tono y mostrar el material en una pieza terminada.'
       },
       {
         title: 'Prueba de repelencia',
-        text: 'Para los textiles con tratamiento hidrófugo o antimanchas ya queda reservado un bloque donde luego podés mostrar foto o video de la prueba.'
+        text: 'También queda previsto un bloque para mostrar en foto o video el comportamiento del tratamiento antimancha frente a líquidos.'
       }
     ],
     colors: [
@@ -217,32 +232,29 @@ const materialCatalog = {
     ]
   },
   'pana-thor': {
-    title: 'Pana Thor',
-    group: 'Tapicería',
+    title: 'Thor',
+    group: 'Pana',
     eyebrow: 'Biblioteca de materiales',
     assetPath: 'assets/materials/pana-thor',
     intro:
-      'La Pana Thor es una colección de tapicería con textura tramada, lectura mate y una presencia sobria que funciona muy bien en piezas contemporáneas. Cargamos el muestrario real con tomas cuidadas para que puedas ver color y trama con la mejor fidelidad posible desde la web.',
-    chips: ['Textura tramada', 'Lectura mate', 'Tapicería interior', '12 tonos cargados'],
+      'Thor es una colección de textura tramada y lectura mate, con una presencia sobria que funciona muy bien en piezas contemporáneas de interior. El muestrario combina vistas de color y acercamientos para apreciar la trama con mayor claridad.',
+    chips: ['Textura tramada', 'Lectura mate', 'Tapicería interior'],
     specs: [
-      { label: 'Colección', value: '12 tonos cargados' },
-      { label: 'Enfoque', value: 'Tapicería y proyectos de interior' },
-      { label: 'Visualización', value: 'Vista principal + zoom de trama' }
+      { label: 'Tipo', value: 'Pana' },
+      { label: 'Textura', value: 'Tramada' },
+      { label: 'Apariencia', value: 'Mate' },
+      { label: 'Aplicación', value: 'Tapicería interior' }
     ],
     uses: ['Tapizados', 'Sillas', 'Sillones', 'Sofás', 'Cabeceras', 'Almohadones decorativos'],
     notes: [
       'El tono puede variar según pantalla, luz ambiente y partida del textil.',
-      'Las fotos se optimizaron priorizando fidelidad visual y detalle de trama, evitando sobreexponer los tonos claros.',
-      'En tonos oscuros podemos sumar también referencias sin sol directo para reforzar su lectura real.'
+      'Para definir un tono con precisión recomendamos validar la muestra física antes de la confección.',
+      'En tonos oscuros podemos sumar referencias sin sol directo para reforzar su lectura real.'
     ],
     future: [
       {
         title: 'Aplicado real',
-        text: 'Más adelante podés sumar acá fotos de muebles ya tapizados con cada tono para ayudar a visualizar mejor la tela en contexto.'
-      },
-      {
-        title: 'Prueba hidrófuga',
-        text: 'Cuando el material tenga esa propiedad, ya queda reservado un bloque para mostrar foto o video de la prueba con agua.'
+        text: 'La ficha queda preparada para sumar fotografías de muebles tapizados con cada tono y mostrar cómo se comporta la textura sobre una pieza terminada.'
       }
     ],
     colors: [
@@ -261,15 +273,16 @@ const materialCatalog = {
     ]
   },
   'pana-hulk': {
-    title: 'Pana Hulk',
-    group: 'Tapicería',
+    title: 'Hulk',
+    group: 'Pana',
     eyebrow: 'Biblioteca de materiales',
     assetPath: 'assets/materials/pana-hulk',
     responsiveImages: true,
     intro:
-      'La Pana Hulk es un tejido 100% poliéster de tacto suave, pensado para sumar textura y calidez visual a piezas de interior. Su peso de 380 g y su superficie aterciopelada la convierten en una alternativa especialmente agradable para proyectos de otoño e invierno.',
-    chips: ['Suave al tacto', '100% poliéster', 'Tapicería interior', 'Otoño · invierno'],
+      'Hulk es un tejido 100% poliéster de tacto suave, pensado para sumar textura y calidez visual a piezas de interior. Su peso de 380 g y su superficie aterciopelada la convierten en una alternativa especialmente agradable para proyectos de otoño e invierno.',
+    chips: ['Suave al tacto', 'Tapicería interior', 'Otoño · invierno'],
     specs: [
+      { label: 'Tipo', value: 'Pana' },
       { label: 'Composición', value: '100% poliéster' },
       { label: 'Ancho', value: '1,40 m' },
       { label: 'Peso', value: '380 g' }
@@ -277,7 +290,7 @@ const materialCatalog = {
     uses: ['Tapizados', 'Sillas', 'Sillones', 'Sofás', 'Cabeceras', 'Almohadones decorativos'],
     notes: [
       'El tono puede variar según la pantalla, la luz ambiente y la partida del textil.',
-      'Las imágenes conservan la fotografía original y se normalizaron de tamaño sin recortar información relevante del muestrario.',
+      'Las vistas principales usan la fotografía original a sangre, sin estirar ni agregar fondos artificiales.',
       'Para definir un tono con precisión recomendamos validar la muestra física antes de la confección.'
     ],
     future: [
@@ -338,7 +351,6 @@ function createMaterialFamilyCard(item) {
       <div class="material-family-body">
         <div class="material-family-head">
           <div>
-            <span class="material-group-badge">${item.group}</span>
             <h3>${item.title}</h3>
           </div>
         </div>
@@ -348,6 +360,8 @@ function createMaterialFamilyCard(item) {
       </div>
     </article>`;
 }
+
+const materialFamilyOrder = ['Panas', 'Linos', 'Cuero', 'Cuerinas', 'Cortinería', 'Lonas'];
 
 function renderMaterialsLibrary(activeFilter = 'todos') {
   const container = document.getElementById('materialsLibrary');
@@ -359,7 +373,26 @@ function renderMaterialsLibrary(activeFilter = 'todos') {
     return;
   }
 
-  container.innerHTML = filtered.map(createMaterialFamilyCard).join('');
+  container.innerHTML = materialFamilyOrder
+    .map((family) => {
+      const familyItems = filtered.filter((item) => item.family === family);
+      if (!familyItems.length) return '';
+
+      return `
+        <section class="materials-family-section" aria-labelledby="family-${family.toLowerCase().replace(/[^a-z0-9]+/g, '-')}">
+          <div class="materials-family-heading">
+            <div>
+              <span class="material-data-kicker">Familia</span>
+              <h2 id="family-${family.toLowerCase().replace(/[^a-z0-9]+/g, '-')}">${family}</h2>
+            </div>
+            <span class="materials-family-count">${familyItems.length} ${familyItems.length === 1 ? 'colección' : 'colecciones'}</span>
+          </div>
+          <div class="materials-family-grid">
+            ${familyItems.map(createMaterialFamilyCard).join('')}
+          </div>
+        </section>`;
+    })
+    .join('');
 }
 
 function setupMaterialsFilters() {
