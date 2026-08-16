@@ -696,3 +696,197 @@
     padding-inline: 0;
   }
 }
+
+/* =========================================================
+   Valturi · Materiales 2026
+   Ficha técnica editorial + sombras sin recortes laterales
+   ========================================================= */
+
+.material-hero-card {
+  grid-template-columns: minmax(0, 1.28fr) minmax(290px, 390px);
+  gap: clamp(24px, 3vw, 44px);
+  align-items: stretch;
+  padding: clamp(24px, 3vw, 38px);
+  overflow: visible;
+}
+
+.material-copy-block {
+  align-content: start;
+  gap: 20px;
+}
+
+.material-data-panel {
+  display: grid;
+  align-content: start;
+  gap: 18px;
+  padding: 24px;
+  border: 1px solid rgba(31, 26, 23, 0.07);
+  border-radius: 26px;
+  background:
+    linear-gradient(180deg, rgba(255,255,255,0.56), rgba(255,255,255,0.14)),
+    rgba(236, 227, 217, 0.62);
+  box-shadow:
+    0 20px 42px rgba(31, 26, 23, 0.07),
+    inset 0 1px 0 rgba(255,255,255,0.78);
+}
+
+.material-data-heading {
+  display: flex;
+  align-items: end;
+  justify-content: space-between;
+  gap: 14px;
+}
+
+.material-data-kicker {
+  color: var(--accent-strong);
+  font-size: 0.76rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.material-data-caption {
+  color: var(--muted);
+  font-size: 0.84rem;
+}
+
+.material-data-list {
+  display: grid;
+  margin: 0;
+}
+
+.material-data-row {
+  display: grid;
+  grid-template-columns: minmax(100px, 0.72fr) minmax(0, 1fr);
+  gap: 16px;
+  align-items: baseline;
+  padding: 16px 0;
+  border-top: 1px solid rgba(31, 26, 23, 0.08);
+}
+
+.material-data-row:last-child {
+  padding-bottom: 2px;
+}
+
+.material-data-row dt,
+.material-data-row dd {
+  margin: 0;
+}
+
+.material-data-row dt {
+  color: var(--muted);
+  font-size: 0.88rem;
+  font-weight: 500;
+}
+
+.material-data-row dd {
+  color: var(--text);
+  font-size: 1.02rem;
+  font-weight: 600;
+  text-align: right;
+}
+
+.material-gallery-grid {
+  gap: clamp(18px, 2vw, 26px);
+}
+
+.material-swatch-card {
+  overflow: hidden;
+  border-color: rgba(31, 26, 23, 0.065);
+  box-shadow:
+    0 22px 52px rgba(31, 26, 23, 0.085),
+    0 5px 16px rgba(31, 26, 23, 0.035),
+    inset 0 1px 0 rgba(255,255,255,0.72);
+}
+
+.material-swatch-main {
+  aspect-ratio: 4 / 5;
+  background: #eee7df;
+}
+
+.material-swatch-main img {
+  object-fit: cover;
+}
+
+.material-swatch-content {
+  gap: 16px;
+  padding: 19px;
+}
+
+.material-swatch-detail-thumb {
+  border: 0;
+  box-shadow:
+    0 10px 22px rgba(31, 26, 23, 0.06),
+    inset 0 0 0 1px rgba(255,255,255,0.48);
+}
+
+.material-chip,
+.material-chip-muted,
+.material-group-badge,
+.material-status-badge,
+.material-filter-chip {
+  box-shadow:
+    0 7px 18px rgba(31, 26, 23, 0.035),
+    inset 0 1px 0 rgba(255,255,255,0.72);
+}
+
+.material-callout,
+.material-future-card,
+.material-family-card,
+.material-data-panel,
+.material-hero-card {
+  overflow: visible;
+}
+
+.material-future-card {
+  display: grid;
+  gap: 10px;
+}
+
+.material-lightbox-panel {
+  box-shadow:
+    0 36px 90px rgba(16, 12, 10, 0.24),
+    inset 0 1px 0 rgba(255,255,255,0.8);
+}
+
+@media (max-width: 1080px) {
+  .material-hero-card {
+    grid-template-columns: 1fr;
+  }
+
+  .material-data-panel {
+    max-width: none;
+  }
+}
+
+@media (max-width: 760px) {
+  .material-hero-card {
+    padding: 18px;
+    gap: 20px;
+  }
+
+  .material-data-panel {
+    padding: 20px 18px;
+    border-radius: 22px;
+  }
+
+  .material-data-heading {
+    align-items: start;
+    flex-direction: column;
+    gap: 4px;
+  }
+
+  .material-data-row {
+    grid-template-columns: 1fr auto;
+    gap: 12px;
+    padding: 14px 0;
+  }
+
+  .material-data-row dd {
+    font-size: 0.98rem;
+  }
+
+  .material-swatch-content {
+    padding: 17px;
+  }
+}

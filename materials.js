@@ -36,6 +36,23 @@ const materialFamilies = [
     filters: ['todos', 'tapiceria']
   },
   {
+    id: 'pana-hulk',
+    group: 'Tapicería',
+    status: 'Disponible',
+    title: 'Pana Hulk',
+    description:
+      'Pana de tacto suave y presencia cálida, pensada para tapicería interior. El muestrario reúne 12 tonos con vista completa y acercamiento de textura.',
+    shortMeta: ['12 tonos cargados', '100% poliéster', 'Suave al tacto'],
+    preview: [
+      'assets/materials/pana-hulk/latte-main-640.webp',
+      'assets/materials/pana-hulk/verde-ingles-main-640.webp',
+      'assets/materials/pana-hulk/bronce-main-640.webp'
+    ],
+    href: 'material.html?id=pana-hulk',
+    live: true,
+    filters: ['todos', 'tapiceria']
+  },
+  {
     id: 'lino',
     group: 'Tapicería',
     status: 'En preparación',
@@ -242,6 +259,47 @@ const materialCatalog = {
       { name: 'Perla', slug: 'perla' },
       { name: 'Topo', slug: 'topo' }
     ]
+  },
+  'pana-hulk': {
+    title: 'Pana Hulk',
+    group: 'Tapicería',
+    eyebrow: 'Biblioteca de materiales',
+    assetPath: 'assets/materials/pana-hulk',
+    responsiveImages: true,
+    intro:
+      'La Pana Hulk es un tejido 100% poliéster de tacto suave, pensado para sumar textura y calidez visual a piezas de interior. Su peso de 380 g y su superficie aterciopelada la convierten en una alternativa especialmente agradable para proyectos de otoño e invierno.',
+    chips: ['Suave al tacto', '100% poliéster', 'Tapicería interior', 'Otoño · invierno'],
+    specs: [
+      { label: 'Composición', value: '100% poliéster' },
+      { label: 'Ancho', value: '1,40 m' },
+      { label: 'Peso', value: '380 g' }
+    ],
+    uses: ['Tapizados', 'Sillas', 'Sillones', 'Sofás', 'Cabeceras', 'Almohadones decorativos'],
+    notes: [
+      'El tono puede variar según la pantalla, la luz ambiente y la partida del textil.',
+      'Las imágenes conservan la fotografía original y se normalizaron de tamaño sin recortar información relevante del muestrario.',
+      'Para definir un tono con precisión recomendamos validar la muestra física antes de la confección.'
+    ],
+    future: [
+      {
+        title: 'Aplicado real',
+        text: 'La ficha ya queda preparada para sumar fotografías de muebles tapizados con cada tono y mostrar cómo cambia la lectura del material sobre una pieza terminada.'
+      }
+    ],
+    colors: [
+      { name: 'Latte', slug: 'latte' },
+      { name: 'Ivory', slug: 'ivory' },
+      { name: 'Mustang', slug: 'mustang' },
+      { name: 'Stone', slug: 'stone' },
+      { name: 'Bronce', slug: 'bronce' },
+      { name: 'Dijon', slug: 'dijon' },
+      { name: 'Verde inglés', slug: 'verde-ingles' },
+      { name: 'Musgo', slug: 'musgo' },
+      { name: 'Azul', slug: 'azul' },
+      { name: 'Piedra', slug: 'piedra' },
+      { name: 'Ónix', slug: 'onix' },
+      { name: 'Nickel', slug: 'nickel' }
+    ]
   }
 };
 
@@ -317,6 +375,49 @@ function setupMaterialsFilters() {
   });
 }
 
+function materialImageMarkup(material, color, kind, className, alt) {
+  const isMain = kind === 'main';
+  const src = `${material.assetPath}/${color.slug}-${kind}.webp`;
+  if (!material.responsiveImages) {
+    return `<img class="${className}" src="${src}" alt="${alt}" loading="lazy" decoding="async" />`;
+  }
+
+  const small = isMain
+    ? `${material.assetPath}/${color.slug}-main-640.webp`
+    : `${material.assetPath}/${color.slug}-detail-500.webp`;
+  const srcset = isMain
+    ? `${small} 640w, ${src} 1200w`
+    : `${small} 500w, ${src} 1100w`;
+  const sizes = isMain ? '(max-width: 760px) 92vw, 33vw' : '(max-width: 760px) 26vw, 110px';
+
+  return `<img class="${className}" src="${small}" srcset="${srcset}" sizes="${sizes}" alt="${alt}" loading="lazy" decoding="async" />`;
+}
+
+function renderMaterialSwatch(material, color) {
+  const mainSrc = `${material.assetPath}/${color.slug}-main.webp`;
+  const detailSrc = `${material.assetPath}/${color.slug}-detail.webp`;
+  return `
+    <article class="material-swatch-card">
+      <button type="button" class="material-swatch-trigger" data-lightbox-name="${color.name}" data-lightbox-main="${mainSrc}" data-lightbox-detail="${detailSrc}">
+        <div class="material-swatch-main">
+          ${materialImageMarkup(material, color, 'main', '', `Tela ${material.title} color ${color.name}`)}
+        </div>
+        <div class="material-swatch-content">
+          <div class="material-swatch-topline">
+            <h3>${color.name}</h3>
+            <span class="material-chip-muted">Ver detalle</span>
+          </div>
+          <div class="material-swatch-detail">
+            <div class="material-swatch-detail-thumb">
+              ${materialImageMarkup(material, color, 'detail', '', `Detalle de trama ${color.name}`)}
+            </div>
+            <p class="material-swatch-note">Vista de textura para apreciar mejor trama, matices y profundidad del tono.</p>
+          </div>
+        </div>
+      </button>
+    </article>`;
+}
+
 function renderMaterialDetail() {
   const container = document.getElementById('materialDetail');
   if (!container) return;
@@ -332,14 +433,13 @@ function renderMaterialDetail() {
     <section class="page-hero page-hero-compact">
       <div class="eyebrow">${material.eyebrow}</div>
       <h1>${material.title}</h1>
-      <p>${material.intro}</p>
     </section>
 
     <section class="material-detail-shell top-tight">
       <article class="material-hero-card">
         <div class="material-copy-block">
           <nav class="material-breadcrumb" aria-label="Breadcrumb">
-            <a href="materiales.html">Biblioteca</a>
+            <a href="materiales.html">Materiales</a>
             <span>•</span>
             <span>${material.title}</span>
           </nav>
@@ -350,19 +450,29 @@ function renderMaterialDetail() {
           <p class="material-intro">${material.intro}</p>
           <div class="material-hero-actions">
             <a class="material-link-button" href="${MATERIALS_WHATSAPP}" target="_blank" rel="noreferrer">Consultar por WhatsApp</a>
-            <a class="material-secondary-button" href="materiales.html">Volver a la biblioteca</a>
+            <a class="material-secondary-button" href="materiales.html">Volver a materiales</a>
           </div>
         </div>
-        <div class="material-specs-grid">
-          ${material.specs.map((spec) => `<div class="material-spec-card"><strong>${spec.label}</strong><span>${spec.value}</span></div>`).join('')}
-        </div>
+        <aside class="material-data-panel" aria-label="Ficha técnica">
+          <div class="material-data-heading">
+            <span class="material-data-kicker">Ficha esencial</span>
+            <span class="material-data-caption">Datos del material</span>
+          </div>
+          <dl class="material-data-list">
+            ${material.specs.map((spec) => `
+              <div class="material-data-row">
+                <dt>${spec.label}</dt>
+                <dd>${spec.value}</dd>
+              </div>`).join('')}
+          </dl>
+        </aside>
       </article>
 
       <section class="material-section-block">
         <div class="material-section-heading">
           <div>
             <h2 class="material-section-title">Colores disponibles</h2>
-            <p>Mostramos cada tono con una vista principal y un acercamiento de trama para ayudar a elegir mejor sin sobrecargar la navegación.</p>
+            <p>Cada tono combina una vista completa con un acercamiento de textura para comparar mejor sin sacrificar calidad.</p>
           </div>
           <div class="material-legend">
             <span class="material-chip-muted">Vista principal</span>
@@ -370,27 +480,7 @@ function renderMaterialDetail() {
           </div>
         </div>
         <div class="material-gallery-grid">
-          ${material.colors.map((color) => `
-            <article class="material-swatch-card">
-              <button type="button" class="material-swatch-trigger" data-lightbox-name="${color.name}" data-lightbox-main="${material.assetPath}/${color.slug}-main.webp" data-lightbox-detail="${material.assetPath}/${color.slug}-detail.webp">
-                <div class="material-swatch-main">
-                  <img src="${material.assetPath}/${color.slug}-main.webp" alt="Tela ${material.title} color ${color.name}" loading="lazy" decoding="async" />
-                </div>
-                <div class="material-swatch-content">
-                  <div class="material-swatch-topline">
-                    <h3>${color.name}</h3>
-                    <span class="material-chip-muted">Zoom</span>
-                  </div>
-                  <div class="material-swatch-detail">
-                    <div class="material-swatch-detail-thumb">
-                      <img src="${material.assetPath}/${color.slug}-detail.webp" alt="Detalle de trama ${color.name}" loading="lazy" decoding="async" />
-                    </div>
-                    <p class="material-swatch-note">Lectura de color y acercamiento para apreciar mejor la textura del textil.</p>
-                  </div>
-                </div>
-              </button>
-            </article>
-          `).join('')}
+          ${material.colors.map((color) => renderMaterialSwatch(material, color)).join('')}
         </div>
       </section>
 
@@ -402,21 +492,23 @@ function renderMaterialDetail() {
           </ul>
         </article>
         <article class="material-callout">
-          <h3>Notas importantes</h3>
+          <h3>Antes de elegir</h3>
           <ul>
             ${material.notes.map((note) => `<li>${note}</li>`).join('')}
           </ul>
         </article>
       </section>
 
+      ${material.future?.length ? `
       <section class="material-future-grid">
         ${material.future.map((item) => `
           <article class="material-future-card">
+            <span class="material-data-kicker">Próxima capa</span>
             <h3>${item.title}</h3>
             <p>${item.text}</p>
           </article>
         `).join('')}
-      </section>
+      </section>` : ''}
     </section>
 
     <div class="material-lightbox" id="materialLightbox" aria-hidden="true">
@@ -424,7 +516,7 @@ function renderMaterialDetail() {
         <div class="material-lightbox-head">
           <div>
             <h3 id="materialLightboxTitle">Detalle del material</h3>
-            <p class="material-hint">Vista principal y acercamiento de trama.</p>
+            <p class="material-hint">Vista completa y acercamiento de textura en alta definición.</p>
           </div>
           <button class="material-lightbox-close" type="button" aria-label="Cerrar">✕</button>
         </div>
@@ -452,7 +544,6 @@ function setupMaterialLightbox(materialTitle) {
   const close = () => {
     lightbox.classList.remove('is-open');
     lightbox.setAttribute('aria-hidden', 'true');
-    document.body.classList.remove('menu-open');
   };
 
   triggers.forEach((trigger) => {
