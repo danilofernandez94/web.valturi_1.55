@@ -1,614 +1,446 @@
 const MATERIALS_WHATSAPP = typeof WHATSAPP_LINK !== 'undefined' ? WHATSAPP_LINK : 'https://wa.link/ogxnv3';
 
-const materialFamilies = [
-  {
-    id: 'pana-panne',
-    family: 'Panas',
-    group: 'Pana',
-    status: 'Disponible',
-    title: 'Panne',
-    description:
-      'Textil premium de tacto suave y efecto marmolado, pensado para tapicería y cortinería.',
-    shortMeta: ['19 tonos cargados', 'Suave al tacto', 'Tapicería y cortinería'],
-    preview: [
-      'assets/materials/pana-panne/gamuza-main.webp',
-      'assets/materials/pana-panne/azul-main.webp',
-      'assets/materials/pana-panne/borravino-main.webp'
-    ],
-    href: 'material.html?id=pana-panne',
-    live: true,
-    filters: ['todos', 'panas', 'tapiceria']
-  },
-  {
-    id: 'pana-thor',
-    family: 'Panas',
-    group: 'Pana',
-    status: 'Disponible',
-    title: 'Thor',
-    description:
-      'Colección tramada de lectura mate y textura visible, pensada para piezas de interior.',
-    shortMeta: ['12 tonos cargados', 'Trama visible', 'Tapicería interior'],
-    preview: [
-      'assets/materials/pana-thor/natural-main.webp',
-      'assets/materials/pana-thor/bronce-main.webp',
-      'assets/materials/pana-thor/azul-main.webp'
-    ],
-    href: 'material.html?id=pana-thor',
-    live: true,
-    filters: ['todos', 'panas', 'tapiceria']
-  },
-  {
-    id: 'pana-hulk',
-    family: 'Panas',
-    group: 'Pana',
-    status: 'Disponible',
-    title: 'Hulk',
-    description:
-      'Textil suave y cálido, con una textura marcada que funciona especialmente bien en tapicería interior.',
-    shortMeta: ['12 tonos cargados', 'Suave al tacto', 'Tapicería interior'],
-    preview: [
-      'assets/materials/pana-hulk/latte-main-640.webp',
-      'assets/materials/pana-hulk/verde-ingles-main-640.webp',
-      'assets/materials/pana-hulk/bronce-main-640.webp'
-    ],
-    href: 'material.html?id=pana-hulk',
-    live: true,
-    filters: ['todos', 'panas', 'tapiceria']
-  },
-  {
-    id: 'lino',
-    family: 'Linos',
-    group: 'Tapicería',
-    status: 'En preparación',
-    title: 'Linos',
-    description: 'Estamos curando colores, tramas y composiciones para sumar una biblioteca consistente.',
-    shortMeta: ['Próximamente', 'Tapicería'],
-    placeholder: 'assets/materials/material-placeholder.svg',
-    live: false,
-    filters: ['todos', 'tapiceria']
-  },
-  {
-    id: 'cuero-vacuno',
-    family: 'Cuero',
-    group: 'Tapicería',
-    status: 'En preparación',
-    title: 'Cuero vacuno',
-    description: 'Se cargará con tonos, espesores y observaciones de terminación.',
-    shortMeta: ['Próximamente', 'Tapicería'],
-    placeholder: 'assets/materials/material-placeholder.svg',
-    live: false,
-    filters: ['todos', 'tapiceria']
-  },
-  {
-    id: 'cuerina-indoor',
-    family: 'Cuerinas',
-    group: 'Tapicería',
-    status: 'En preparación',
-    title: 'Cuerina indoor',
-    description: 'Colección pensada para interior, con foco en limpieza y mantenimiento.',
-    shortMeta: ['Próximamente', 'Interior'],
-    placeholder: 'assets/materials/material-placeholder.svg',
-    live: false,
-    filters: ['todos', 'tapiceria', 'interior']
-  },
-  {
-    id: 'cuerina-outdoor',
-    family: 'Cuerinas',
-    group: 'Exterior',
-    status: 'En preparación',
-    title: 'Cuerina outdoor',
-    description: 'Material pensado para exterior. Sumaremos propiedades y recomendaciones de uso.',
-    shortMeta: ['Próximamente', 'Exterior'],
-    placeholder: 'assets/materials/material-placeholder.svg',
-    live: false,
-    filters: ['todos', 'exterior']
-  },
-  {
-    id: 'gazas',
-    family: 'Cortinería',
-    group: 'Cortinería',
-    status: 'En preparación',
-    title: 'Gazas',
-    description: 'Familia liviana para cortinería. Más adelante sumaremos caída, transparencia y tonos.',
-    shortMeta: ['Próximamente', 'Cortinería'],
-    placeholder: 'assets/materials/material-placeholder.svg',
-    live: false,
-    filters: ['todos', 'cortineria']
-  },
-  {
-    id: 'tejidos',
-    family: 'Cortinería',
-    group: 'Cortinería',
-    status: 'En preparación',
-    title: 'Tejidos',
-    description: 'Selección de tejidos para resolver distintos niveles de calidez y textura.',
-    shortMeta: ['Próximamente', 'Cortinería'],
-    placeholder: 'assets/materials/material-placeholder.svg',
-    live: false,
-    filters: ['todos', 'cortineria']
-  },
-  {
-    id: 'tusor-liviano',
-    family: 'Cortinería',
-    group: 'Cortinería',
-    status: 'En preparación',
-    title: 'Tusor liviano',
-    description: 'Se cargará con opciones suaves para acompañar ambientes más livianos.',
-    shortMeta: ['Próximamente', 'Cortinería'],
-    placeholder: 'assets/materials/material-placeholder.svg',
-    live: false,
-    filters: ['todos', 'cortineria']
-  },
-  {
-    id: 'tusor-pesado',
-    family: 'Cortinería',
-    group: 'Cortinería',
-    status: 'En preparación',
-    title: 'Tusor pesado',
-    description: 'Alternativa con mayor cuerpo y caída para resolver cortinería con presencia.',
-    shortMeta: ['Próximamente', 'Cortinería'],
-    placeholder: 'assets/materials/material-placeholder.svg',
-    live: false,
-    filters: ['todos', 'cortineria']
-  },
-  {
-    id: 'blackout',
-    family: 'Cortinería',
-    group: 'Cortinería',
-    status: 'En preparación',
-    title: 'Blackout',
-    description: 'Subiremos opciones con información de oscurecimiento, reverso y composición.',
-    shortMeta: ['Próximamente', 'Cortinería'],
-    placeholder: 'assets/materials/material-placeholder.svg',
-    live: false,
-    filters: ['todos', 'cortineria']
-  },
-  {
-    id: 'lonas',
-    family: 'Lonas',
-    group: 'Exterior',
-    status: 'En preparación',
-    title: 'Lonas',
-    description: 'La familia ya queda creada para sumar subcategorías y usos cuando esté definida la selección final.',
-    shortMeta: ['Próximamente', 'Subcategorías a definir'],
-    placeholder: 'assets/materials/material-placeholder.svg',
-    live: false,
-    filters: ['todos', 'exterior']
-  }
-];
 
-const materialCatalog = {
-  'pana-panne': {
-    title: 'Panne',
-    group: 'Pana',
-    eyebrow: 'Biblioteca de materiales',
-    assetPath: 'assets/materials/pana-panne',
-    intro:
-      'Panne es un tejido premium de tacto suave, efecto marmolado y cuerpo pesado. Su lectura cálida y semiopaca funciona especialmente bien en tapizados y también puede utilizarse en cortinería.',
-    chips: ['Tacto suave', 'Efecto marmolado', 'Semiopaca', 'Tapicería y cortinería'],
-    specs: [
-      { label: 'Tipo', value: 'Pana' },
-      { label: 'Composición', value: '100% poliéster' },
-      { label: 'Ancho', value: '1,45 m' },
-      { label: 'Peso', value: '540 g por metro lineal' },
-      { label: 'Tratamiento', value: 'Antimancha · repele líquidos' }
-    ],
-    uses: ['Tapizados', 'Sillas', 'Sillones', 'Sofás', 'Acolchados', 'Almohadones', 'Cortinería'],
-    notes: [
-      'El tono puede variar dependiendo de la partida, la pantalla y la iluminación del ambiente.',
-      'Para definir un tono con precisión recomendamos validar la muestra física antes de la confección.',
-      'En tonos oscuros vamos a sumar referencias sin sol directo para reforzar su lectura real.'
-    ],
-    future: [
-      {
-        title: 'Aplicado real',
-        text: 'La ficha queda preparada para sumar fotografías de muebles tapizados con cada tono y mostrar el material en una pieza terminada.'
-      },
-      {
-        title: 'Prueba de repelencia',
-        text: 'También queda previsto un bloque para mostrar en foto o video el comportamiento del tratamiento antimancha frente a líquidos.'
-      }
-    ],
-    colors: [
-      { name: 'Azul', slug: 'azul' },
-      { name: 'Beige', slug: 'beige' },
-      { name: 'Borravino', slug: 'borravino' },
-      { name: 'Chocolate', slug: 'chocolate' },
-      { name: 'Dulce de leche', slug: 'dulce-de-leche' },
-      { name: 'Fucsia', slug: 'fucsia' },
-      { name: 'Gamuza', slug: 'gamuza' },
-      { name: 'Gris', slug: 'gris' },
-      { name: 'Jade', slug: 'jade' },
-      { name: 'Lima', slug: 'lima' },
-      { name: 'Naranja', slug: 'naranja' },
-      { name: 'Natural', slug: 'natural' },
-      { name: 'Negro', slug: 'negro' },
-      { name: 'Océano', slug: 'oceano' },
-      { name: 'Orange', slug: 'orange' },
-      { name: 'Perla', slug: 'perla' },
-      { name: 'Rojo', slug: 'rojo' },
-      { name: 'Verde inglés', slug: 'verde-ingles' },
-      { name: 'Violeta', slug: 'violeta' }
-    ]
+const driveImage = (id, width = 1600) => `https://drive.google.com/thumbnail?id=${id}&sz=w${width}`;
+const C = (name, id, options = {}) => ({ name, id, ...options });
+
+
+const FAMILY_META = {
+  panas: { label: 'Panas', order: 1 },
+  linos: { label: 'Linos', order: 2 },
+  cuerinas: { label: 'Cuerinas', order: 3 },
+  cuero: { label: 'Cuero vacuno', order: 4 },
+  texturas: { label: 'Texturas especiales', order: 5 }
+};
+
+
+const APPLICATIONS = {
+  tapiceria: {
+    title: 'Tapicería',
+    eyebrow: 'Para muebles y piezas de interior',
+    description: 'Panas, linos, cuerinas, cuero vacuno y texturas seleccionadas para renovar sillones, sillas, respaldos y piezas a medida.',
+    status: '18 colecciones disponibles',
+    families: ['panas', 'linos', 'cuerinas', 'cuero', 'texturas'],
+    previewIds: ['19lklByGH5HB_ruT7HCHbz-GTAnE9yF4Y', '1ryKE82gLtd2KVjp43lFR5WEgTWoO9Ao1', '1av8UUkba3vqGK3pzG7NXzYFQbUCvTx-2']
   },
-  'pana-thor': {
-    title: 'Thor',
-    group: 'Pana',
-    eyebrow: 'Biblioteca de materiales',
-    assetPath: 'assets/materials/pana-thor',
-    intro:
-      'Thor es una colección de textura tramada y lectura mate, con una presencia sobria que funciona muy bien en piezas contemporáneas de interior. El muestrario combina vistas de color y acercamientos para apreciar la trama con mayor claridad.',
-    chips: ['Textura tramada', 'Lectura mate', 'Tapicería interior'],
-    specs: [
-      { label: 'Tipo', value: 'Pana' },
-      { label: 'Textura', value: 'Tramada' },
-      { label: 'Apariencia', value: 'Mate' },
-      { label: 'Aplicación', value: 'Tapicería interior' }
-    ],
-    uses: ['Tapizados', 'Sillas', 'Sillones', 'Sofás', 'Cabeceras', 'Almohadones decorativos'],
-    notes: [
-      'El tono puede variar según pantalla, luz ambiente y partida del textil.',
-      'Para definir un tono con precisión recomendamos validar la muestra física antes de la confección.',
-      'En tonos oscuros podemos sumar referencias sin sol directo para reforzar su lectura real.'
-    ],
-    future: [
-      {
-        title: 'Aplicado real',
-        text: 'La ficha queda preparada para sumar fotografías de muebles tapizados con cada tono y mostrar cómo se comporta la textura sobre una pieza terminada.'
-      }
-    ],
-    colors: [
-      { name: 'Alga', slug: 'alga' },
-      { name: 'Azul', slug: 'azul' },
-      { name: 'Beige', slug: 'beige' },
-      { name: 'Bronce', slug: 'bronce' },
-      { name: 'Dijon', slug: 'dijon' },
-      { name: 'Gamuza', slug: 'gamuza' },
-      { name: 'Gris', slug: 'gris' },
-      { name: 'Gris oscuro', slug: 'gris-oscuro' },
-      { name: 'Lino', slug: 'lino' },
-      { name: 'Natural', slug: 'natural' },
-      { name: 'Perla', slug: 'perla' },
-      { name: 'Topo', slug: 'topo' }
-    ]
+  cortineria: {
+    title: 'Cortinería',
+    eyebrow: 'Caída, luz y textura',
+    description: 'Gazas, tejidos, tusor liviano y pesado, y blackout. La biblioteca se irá completando con fotos reales, transparencia y caída.',
+    status: 'Colecciones en preparación',
+    families: []
   },
-  'pana-hulk': {
-    title: 'Hulk',
-    group: 'Pana',
-    eyebrow: 'Biblioteca de materiales',
-    assetPath: 'assets/materials/pana-hulk',
-    responsiveImages: true,
-    intro:
-      'Hulk es un tejido 100% poliéster de tacto suave, pensado para sumar textura y calidez visual a piezas de interior. Su peso de 380 g y su superficie aterciopelada la convierten en una alternativa especialmente agradable para proyectos de otoño e invierno.',
-    chips: ['Suave al tacto', 'Tapicería interior', 'Otoño · invierno'],
-    specs: [
-      { label: 'Tipo', value: 'Pana' },
-      { label: 'Composición', value: '100% poliéster' },
-      { label: 'Ancho', value: '1,40 m' },
-      { label: 'Peso', value: '380 g' }
-    ],
-    uses: ['Tapizados', 'Sillas', 'Sillones', 'Sofás', 'Cabeceras', 'Almohadones decorativos'],
-    notes: [
-      'El tono puede variar según la pantalla, la luz ambiente y la partida del textil.',
-      'Las vistas principales usan la fotografía original a sangre, sin estirar ni agregar fondos artificiales.',
-      'Para definir un tono con precisión recomendamos validar la muestra física antes de la confección.'
-    ],
-    future: [
-      {
-        title: 'Aplicado real',
-        text: 'La ficha ya queda preparada para sumar fotografías de muebles tapizados con cada tono y mostrar cómo cambia la lectura del material sobre una pieza terminada.'
-      }
-    ],
-    colors: [
-      { name: 'Latte', slug: 'latte' },
-      { name: 'Ivory', slug: 'ivory' },
-      { name: 'Mustang', slug: 'mustang' },
-      { name: 'Stone', slug: 'stone' },
-      { name: 'Bronce', slug: 'bronce' },
-      { name: 'Dijon', slug: 'dijon' },
-      { name: 'Verde inglés', slug: 'verde-ingles' },
-      { name: 'Musgo', slug: 'musgo' },
-      { name: 'Azul', slug: 'azul' },
-      { name: 'Piedra', slug: 'piedra' },
-      { name: 'Ónix', slug: 'onix' },
-      { name: 'Nickel', slug: 'nickel' }
-    ]
+  exterior: {
+    title: 'Exterior',
+    eyebrow: 'Materiales para intemperie',
+    description: 'Cuerinas outdoor y lonas pensadas para proyectos donde importan resistencia, mantenimiento y comportamiento al exterior.',
+    status: 'Colecciones en preparación',
+    families: []
   }
 };
 
-function createMaterialFamilyCard(item) {
-  const meta = item.shortMeta.map((text) => `<span class="material-chip-muted">${text}</span>`).join('');
-  const media = item.live
-    ? `
-      <div class="material-family-media">
-        <span class="material-status-badge">${item.status}</span>
-        <div class="material-family-preview">
-          <div class="material-preview-main"><img src="${item.preview[0]}" alt="${item.title}" loading="lazy" decoding="async" /></div>
-          <div class="material-preview-stack">
-            <img src="${item.preview[1]}" alt="Detalle ${item.title}" loading="lazy" decoding="async" />
-            <img src="${item.preview[2]}" alt="Detalle ${item.title}" loading="lazy" decoding="async" />
-          </div>
-        </div>
-      </div>`
-    : `
-      <div class="material-family-media">
-        <span class="material-status-badge">${item.status}</span>
-        <img src="${item.placeholder}" alt="${item.title}" loading="lazy" decoding="async" />
-      </div>`;
 
-  const actions = item.live
-    ? `<div class="material-family-actions">
-         <a class="material-link-button" href="${item.href}">Ver ficha completa</a>
-         <a class="material-secondary-button" href="${MATERIALS_WHATSAPP}" target="_blank" rel="noreferrer">Consultar disponibilidad</a>
-       </div>`
-    : `<div class="material-family-actions">
-         <a class="material-secondary-button" href="${MATERIALS_WHATSAPP}" target="_blank" rel="noreferrer">Consultar por WhatsApp</a>
-       </div>`;
+const UPCOMING = {
+  cortineria: [
+    ['Gazas', 'Transparencia, liviandad y movimiento.'],
+    ['Tejidos', 'Texturas para graduar luz y presencia.'],
+    ['Tusor liviano', 'Caída suave para ambientes cálidos y relajados.'],
+    ['Tusor pesado', 'Mayor cuerpo y presencia visual.'],
+    ['Blackout', 'Opciones pensadas para control de luz y privacidad.']
+  ],
+  exterior: [
+    ['Cuerina outdoor', 'Superficies de fácil mantenimiento para exterior.'],
+    ['Lonas', 'La familia queda preparada para las subcategorías que se incorporen.']
+  ]
+};
 
-  return `
-    <article class="material-family-card ${item.live ? 'is-live' : 'is-placeholder'}" data-filters="${item.filters.join(' ')}">
-      ${media}
-      <div class="material-family-body">
-        <div class="material-family-head">
-          <div>
-            <h3>${item.title}</h3>
-          </div>
-        </div>
-        <p>${item.description}</p>
-        <div class="material-family-meta">${meta}</div>
-        ${actions}
-      </div>
-    </article>`;
+
+const MATERIAL_COLLECTIONS = [
+  {
+    id: 'pana-panne',
+    title: 'Pana Panne',
+    shortName: 'Panne',
+    family: 'panas',
+    application: 'tapiceria',
+    description: 'Textil de tacto suave y efecto marmolado, pensado para tapicería y cortinería.',
+    intro: 'La Pana Panne es una tela de calidad premium con proceso antimancha que repele líquidos. Tiene efecto marmolado, es semiopaca y pesada, con tacto suave y buena presencia para tapizados y cortinas.',
+    tags: ['Antimancha', 'Repele líquidos', 'Efecto marmolado'],
+    specs: [
+      ['Tipo', 'Pana'],
+      ['Composición', '100% poliéster'],
+      ['Ancho', '1,45 m'],
+      ['Peso', '540 g por metro lineal'],
+      ['Tratamiento', 'Antimancha · repele líquidos']
+    ],
+    uses: ['Tapizados', 'Sillas', 'Sillones', 'Sofás', 'Acolchados', 'Almohadones', 'Cortinería'],
+    performanceNote: 'Esta colección cuenta con tratamiento antimancha. Más adelante este bloque podrá incorporar la prueba visual de repelencia.',
+    colors: [
+      C('Natural', '19lklByGH5HB_ruT7HCHbz-GTAnE9yF4Y'), C('Gamuza', '1SkcfUWjlHNrMIQudq6wv9sThvK_1ioSP'),
+      C('Dulce de leche', '1nnxUb1TFBXNAGaRMIOnZ3V7Zb2_5-T3R'), C('Orange', '1MJN3_8gBryeDGiYyAapvvpur0qUMo4hG'),
+      C('Rojo', '1NFDkeAh6HU3OyXJ9hRfz9vlmZe6s1M8M'), C('Borravino', '1kt11mii1pjJPcSxAKYq4VnDbq1--gAcA'),
+      C('Fucsia', '1oBAa8f_yixwQXj8vkaenr7bWa_fkQlps'), C('Violeta', '1WnE1JaTiXSW47Qr4PHf4Z-fJsJaqt69v'),
+      C('Lima', '16n1Dlfo5kYwIjDrmgE-Ze35XQEx3qh-d'), C('Verde inglés', '1luxHjWa14OaiKz2kREB2qS8ovoWtja8R'),
+      C('Jade', '1d5Dd6XK7oVcLbFxiUCZP0fxHzaI8cCSI'), C('Perla', '1XNURq-6PH7Q94VRfSlUIaeskvQPAUFGp'),
+      C('Gris', '1yil-CRl8gf9bUSkcMtsInY4UNFbgMA51'), C('Océano', '17bzKSGwGTMVtNQIWFO-dq5ePQFqdrWxb'),
+      C('Azul', '1fkheQERhlZvGDIQs3lwwzbYVHX5Lqywc'), C('Negro', '1p1JWL_M5vxXfVHvjg45kwVEJM4IQk-AT')
+    ]
+  },
+  {
+    id: 'pana-thor', title: 'Pana Thor', shortName: 'Thor', family: 'panas', application: 'tapiceria',
+    description: 'Colección de pana de lectura mate y textura marcada, disponible en una paleta compacta de tonos.',
+    intro: 'Pana Thor reúne una selección de tonos para tapicería interior. La ficha prioriza la lectura real del color y el detalle de textura del muestrario.',
+    tags: ['Textura visible', 'Tapicería interior'],
+    specs: [['Tipo', 'Pana'], ['Colores', '9 tonos cargados'], ['Aplicación', 'Tapicería interior']],
+    uses: ['Sillas', 'Sillones', 'Sofás', 'Respaldos', 'Almohadones'],
+    colors: [
+      C('Topo', '10IzhZpd-6XEwTg82xiTYor0R4_G0gzRq'), C('Natural', '1kWXKkOubmqEKGNCpTHwTjcWjE4hgfYX9'),
+      C('Gris', '1rbBrA99Zf2JI2HmIMHZDAq_jKWXs_hJW'), C('Gris oscuro', '1zgJFsEcMSBvDMNZy9EnHpLPGY_nGNsXv'),
+      C('Gamuza', '1Z85FohKIl88ztjpevVFSizoVvUdq85B3'), C('Dijon', '1tX-P91A2kC9jDEBRDzQzEjqJV6r2bzch'),
+      C('Bronce', '19VqWljzOWDmU0NxrB-SSrpnZ6iGf3KLu'), C('Azul', '12vRCa5oCckATU3Tp8zR3GY3oBxQLc8YB'),
+      C('Alga', '1ZPZhS2mgMRU7Bfb2M8_lUi_tbuivykkU')
+    ]
+  },
+  {
+    id: 'pana-hulk', title: 'Pana Hulk', shortName: 'Hulk', family: 'panas', application: 'tapiceria',
+    description: 'Pana de tacto suave y presencia cálida, pensada para tapicería interior.',
+    intro: 'Pana Hulk es un tejido suave al tacto, de 380 g de peso y composición 100% poliéster. Su textura y calidez visual la hacen especialmente agradable para proyectos de interior.',
+    tags: ['Suave al tacto', '100% poliéster', 'Otoño · invierno'],
+    specs: [['Tipo', 'Pana'], ['Composición', '100% poliéster'], ['Ancho', '1,40 m'], ['Peso', '380 g'], ['Tacto', 'Suave']],
+    uses: ['Sillas', 'Sillones', 'Sofás', 'Respaldos', 'Almohadones'],
+    colors: [
+      C('Ivory', '1ipv_OZBCZpZHvRV_DDNvghdNVYROftWB'), C('Latte', '1qB0VoieQU7IsWCFLyLZ5veXDIpU8lP-O'),
+      C('Mustang', '15U_smBGG0L6y1B4USl6dUNaS5WqoHLPu'), C('Stone', '1wSSVZiuIsylVirQkvy6P4JkZJeFvmvrv'),
+      C('Bronce', '1v77yLJjtAklNQSBuslnluxo8CHRYQerW'), C('Dijon', '1ufZxJO_AifqLzM312SfjBZrZQlEYeJMV'),
+      C('Verde inglés', '1JZ892kt9OK5QQ7PIbGVXzABAnrelBLi1'), C('Musgo', '1Q41ZrHWgmBaNOXHlKSqtCfvhgKNuF0kR'),
+      C('Azul', '14TFWYEg4LzZhK1p-_8VXzq87axP11twi', { rotate: 90 }), C('Piedra', '14AYMa3rscz1m_AHp3rXi44mrthuo5U7O'),
+      C('Ónix', '1uA0e8gBnYRQ9l7c_j9EmEGZqDB5EPFs7'), C('Nickel', '1EKmtNjzppeqvZjJ0G-zxyRID0BhqYQgD')
+    ]
+  },
+  {
+    id: 'pana-velutti', title: 'Pana Velutti', shortName: 'Velutti', family: 'panas', application: 'tapiceria',
+    description: 'Colección de pana en diez tonos, desde neutros hasta azules de mayor intensidad.',
+    specs: [['Tipo', 'Pana'], ['Colores', '10 tonos cargados'], ['Aplicación', 'Tapicería interior']],
+    colors: [
+      C('Park blue', '1idGiU3v7598BAKEY1wuUTaPZTigkiF0o'), C('Ultramar', '143NNbcnaWeC93OxY8-oGENyBJDULFcUD'),
+      C('Ocean', '1SzZ4ZOwl60BN3hA3l-aiLcnkpZ-4kyht'), C('Almond', '1AVYi75RRMWNG1nt7zhJOUE-KIabNKNfi'),
+      C('Yellow', '1mcVHHo8ueIX9Y-FnUKSMnJl_OhAfZMgv'), C('Gris oscuro', '1LZWr6PsKHnLtiH0ezjoTYWCzyEaxSWdO'),
+      C('Chinchilla', '1w120mQ_PBCDqmauzdNSA_sFf7YXrvtdf'), C('Roca', '12wUGFWZUUWR2zEJb4i0J02Q52ITTuSGc'),
+      C('Seco', '1OY3iCSh5lKbg8UcBrjfI8nI8x-_17cLF'), C('White', '1IqZJkOaOpslK0Pk3xk6PJKBhUi5L2N4H')
+    ]
+  },
+  {
+    id: 'pana-velvet', title: 'Pana Velvet', shortName: 'Velvet', family: 'panas', application: 'tapiceria',
+    description: 'Colección de pana con quince tonos que combinan neutros, tierras, verdes, vino e índigo.',
+    specs: [['Tipo', 'Pana'], ['Colores', '15 tonos cargados'], ['Aplicación', 'Tapicería interior']],
+    colors: [
+      C('Marfil', '1fqF1as01nk0bLu90f4zhXyTTheZ5ypib'), C('Sepia', '1T14q4nMJMRDlEZPpHI4SqEsTfBL1Uxw8'),
+      C('Visón', '1_TmTEFKUQA_cRyjosjl2aTGKZhIIp1V-'), C('Tabaco', '1Fxsy0NJ_shTMuhQ9H-0FzhTykC9x5KZB'),
+      C('Azafrán', '1fl0FUbvynR7fucp2zMg8vKUf_IijCul2'), C('Óxido', '1iFphJSgvAHxHE5z4GNMWoZjE_Fuk61as'),
+      C('Castaño', '1_hdnrfhG7DQClY5INjVGfiNGneuiZfeJ'), C('Café', '14PtyjbSqEhzO_49Qu40Z4lDbFql0ynKA'),
+      C('Verde', '1oaAaOBGZpACX6a2iz-RHQzoFyxxVUohv'), C('Vino', '1QrHl1bJWM8k_dNOrbvOiOfyK_CAxCLcY'),
+      C('Plata', '16VNQA2vy8BZ4QgXXvZqSG0nEjYfzLB5B'), C('Grafito', '1EhuhFY2GYRvcrXo3xwmtP7OrVP8QXrKW'),
+      C('Gris pimienta', '1L3eWMRV0t3ssuXxfluuh8237o5EucqQA'), C('Índigo', '1g3Ce9PX24G0u0YsNSA5YmVqnYWu6zPJl'),
+      C('Negro', '1LET6EbLg2ZMdJ_eLMEvpqMyoBfOoOqx_')
+    ]
+  },
+  {
+    id: 'lino-boucle-largo', title: 'Lino Boucle largo', family: 'linos', application: 'tapiceria',
+    description: 'Colección de ocho tonos con una textura de mayor volumen visual.',
+    specs: [['Familia', 'Lino'], ['Colores', '8 tonos cargados'], ['Aplicación', 'Tapicería interior']],
+    colors: [C('Gris claro','1i-XnMHj8NAo6S4Ejm0oSfaqf68MrUMKY'),C('Blanco','1GTZPYMqY3IAygCGHMupPd3ObmjXnoV0H'),C('Beige','1co34INltIOORCAJRUyDs0vLnt39IUZvU'),C('Azul','1WyoV8YlaU-1QqkIo0AnTxEfrdCFeu9Xq'),C('Visón','1Xv6JLkGXILYZO5xCQzEXuccHo8BOUNjR'),C('Gris medio','1VqWGd6ErGqnYuRoLt3EiQRdcApjXecqo'),C('Gris oscuro','1bdm-dAjely8rZPbrsTRLBOuZj6iT3yEH'),C('Gris plomo','1VarEkvjKc0MNoyzkTIl8e4twv8t7n_yj')]
+  },
+  {
+    id: 'lino-dot', title: 'Lino Dot', family: 'linos', application: 'tapiceria',
+    description: 'Paleta de trece tonos que combina neutros, verdes, azules y acentos cálidos.',
+    specs: [['Familia','Lino'],['Colores','13 tonos cargados'],['Aplicación','Tapicería interior']],
+    colors: [C('Onyx','1kKLtzGxXMtZJC1KGZmV7wa8ICX-aY7Bn'),C('Nickel','1VxElmI3ecQ7LKUNUpRneWnmtJdZ25LyJ'),C('Green','1KKLisKsPo85V33K5r6oA6zwN4wxH7Hde'),C('Blue','13rkxIgQ-FUYJoXmslHuOpRZIeMhlOugz'),C('Perla','1GG9hdUBAap2S0UZEh8evBoNGXfgcts6O'),C('Pink','1hzQIL-3rhdck3y_4MKT_3og5ighRS_aF'),C('Bronze','15k8Mf2SfXlXvR7V2y7kqaeAjdUzaHJYH'),C('Gold','1Vm91bBg6u-U3z6iJ7wf1rHv7MqF9a3h8'),C('Mustang','1BV1uEqvdIp-2yZTN0hEDJQFmd3Vp6CCl'),C('Stone','19OTjTcLoM2GAZ8zbp3g9QXcR3D9XeokR'),C('Mastic','12Uw_8O5-2URdVer-ab6OqRLuSuxICbSo'),C('Latte','1pHO99Zp-rsBTJ8ChhSsPBy3wTXRQMN8d'),C('Ivory','1pIVigUyP4wNxlsz6t-npSZzYSeH83728')]
+  },
+  {
+    id: 'lino-mecha', title: 'Lino Mecha', family: 'linos', application: 'tapiceria',
+    description: 'Colección amplia de dieciséis tonos, con una paleta que va de marfiles y arenas a petróleo, navy y negro.',
+    specs: [['Familia','Lino'],['Colores','16 tonos cargados'],['Aplicación','Tapicería interior']],
+    colors: [C('Ivory','1XHUR1nxlWndbN5Hew4D03mGWKIVJ2TFE'),C('Arena','1Bc95ViAkbr06fhaWJJNzbYYOt3YnJPWL'),C('Gamuza','1U7x0juGafSZmmE-4glccZQ4Q1dHt9MEO'),C('Gamo','1YaGS9c5zXLpu-82aUDSoUljPOisBypUp'),C('Tabaco','1EjUgvNIunmV0Wssv9oAlnZotiX5qc7CE'),C('Sambayón','1h9_VA-5BZq8sK97d8zpfatVwreHu8YdB'),C('Cobre','1dF4B4jL_bERv4TCXaS0EVwQuF1Twkqgf'),C('Rojo','13vNAwRmpt4TilunGy_-uCGj0VvvHjTB9'),C('Malbec','1q8SrAgleIko3_FPrK5E_6zkas_rDQU6u'),C('Turquesa','1F6PO9vGsSaLW_B3vbvDgxkvUeEa1zdd0'),C('Petróleo','1Fk86mr7shR_6B5Bw6HK94suhVUJJu_Zn'),C('Navy','1LQtoplkoqTmaTjZT58ygjZDJ8WkfU6cl'),C('Violeta','1IyrnYP7H6qWKdKX5udJHXf8aBjjQ19LK'),C('Plata','1EbyTO9zTEv7VK_XuQCrGReyzMgorOy3o'),C('Gris','1TYnxFumfUBNg7gEAk2yuXHHAaDn1bEDe'),C('Negro','1JhToLvvrvUnlAY6Ld0LH8Dz0wN2iMaZh')]
+  },
+  {
+    id: 'lino-spazio', title: 'Lino Spazio', family: 'linos', application: 'tapiceria',
+    description: 'Diecisiete tonos con una base de neutros y tierras, acompañados por verdes, azul y petróleo.',
+    specs: [['Familia','Lino'],['Colores','17 tonos cargados'],['Aplicación','Tapicería interior']],
+    colors: [C('Gamuza','1FrrcmYreHaUdGJjS7d7k3IhRSmknMHuF'),C('Gris','1KGHVyWQa3542CTAKuNw0ScAczebJgT0v'),C('Borravino','17e4ydSrMg4RnWbgiArkRBoVQD_mA9cGS'),C('Azul','18aKGDLOrDf1oOtU4JYM8bJ81oJhfdIf5'),C('Musgo','1kkKHhlrj3sJE7-992FBJdadPismWpAZb'),C('Verde','11EkQit2I3l3siWTguKzWQOZF-HHMs8Cx'),C('Arena','1iDYZUW6AvDvVqycI7mt6f9MRNelkPxxJ'),C('Lino','12xhNjxH-6iv0JOqQIxZdvhX4pehHfvsk'),C('Beige','1HI95WlEHqYusx9hNiN9BtFi23fwkiGs9'),C('Stone','1NXyNSLMGaGCAYaHlvTfEvCOf8E0g5ZHF'),C('Crudo','1-rcuPL4xoGdZ1sT9nrMPOXv7GqP2uCb6'),C('Óptico','1kD2azoTKpe_-q834UMqgW2iBKw2qF4lv'),C('Chocolate','1TKcHR4qXVXOcB9k55hJFwVua0SFl69KD'),C('Africano','1zF9fS3uzyY1C8zaaP6UM1r1LHDZW2avw'),C('Perla','1VgDKZDJmA8aGKVa4LVQW7I3iPaPHE2Wa'),C('Petróleo','1I-IWv4LYmpvRWSoy33WzT5XD8b7rg_38'),C('Negro','1cEF5Sv6ck4mGFaaOB_PqMKVGWqbzF2Kb')]
+  },
+  {
+    id: 'lino-scandal', title: 'Lino Scandal', family: 'linos', application: 'tapiceria',
+    description: 'Once tonos con una lectura contemporánea que combina marfiles, tierras, verdes y grises profundos.',
+    specs: [['Familia','Lino'],['Colores','11 tonos cargados'],['Aplicación','Tapicería interior']],
+    colors: [C('Black','1Utb9E3fRqnFYmabnMw91LtgccCgG6vmJ'),C('Nickel','1SQHdT64LUuxVr64CVTkV1ppaI3gPivZt'),C('Ónix','1GI8HcIxYrnB3o-Zdh8kgZ5CmsW0lee-O'),C('Stone','1EH_i-GxyMidmaDn1tTW0NHRunmPIyIQf'),C('Pine','11BR7vXJlsuIdsc_jkjkXwiDPUSX2lOrG'),C('Coral','1l3_t8e8u-TkfLTwh-Bvb5a7fqCKVhJyH'),C('Mostaza','1AJRDmV3bnkLrRDzT4QvLkqFu9VoSsPSL'),C('Kaki','1kaSAnCE3wlUDXovtxIouhO36agcxj-z2'),C('Yute','1hSD70ojN9vYK2YY1Wk8WDmtHSy6LFaP1'),C('Antique','1ryKE82gLtd2KVjp43lFR5WEgTWoO9Ao1'),C('Ivory','1xW_GSMUvg0bFQqKGSkox94lA72pBJRBT')]
+  },
+  {
+    id: 'cuerina-legards', title: 'Cuerina Legards', family: 'cuerinas', application: 'tapiceria',
+    description: 'Colección de cuerina disponible en cinco tonos para explorar visualmente antes de definir el proyecto.',
+    specs: [['Familia','Cuerina'],['Colores','5 tonos cargados']],
+    colors: [C('Negro','1FNxFSY8yHupOmjLX4fQ3kSk6h27x8QG9'),C('Verde','1dvuX322iE8rylk4V2-L0aVcHS-aYpJZD'),C('Saddle','1GWS0IoxB9LeFHp4pvpwvE4l38X0xYFrI'),C('Grey','1iNT4C-jYvV8vcmNOuxiKyslIati1JWKR'),C('Light grey','1KprNsYlDyBDa6qup-3wppczWj10pJx5j')]
+  },
+  {
+    id: 'cuerina-marbella', title: 'Cuerina Marbella', family: 'cuerinas', application: 'tapiceria',
+    description: 'Diez tonos centrados en neutros, tierras y grises para combinaciones versátiles.',
+    specs: [['Familia','Cuerina'],['Colores','10 tonos cargados']],
+    colors: [C('Negro','17gyl4C2057Qz1pWjaOZvVYZ5V1ZfIK9x'),C('Dark grey','1j7xDRnkOaYhQ-naASCznx7-4ZxxNK7eX'),C('Gris','1___WPNlLQItMfM0yHyeDfJ9XBXSmENuK'),C('Tostado','1voP5adC5fxyfPFdb3yJUVoq4Bgsxm_0O'),C('Miel','1Foq1dD3gK20sNXHuLqiMjChiHkuXY21Y'),C('Arena','1bVEM8V46Jdz0zMPnIRadsWzPg3CHecRS'),C('Hueso','1hASQMZDR3LMtjuESPXr4Ed_HoHXwMSCj'),C('Piedra','1QDjYxH__wA7V76GTI3ExSk5vH-s84Whs'),C('Perla','1g7bsGCgIodRLAUOLM4sbEWIngUW_NzJU'),C('Blanco','1CbAR4s2b7FzhkHOuWF-jRctLNGihrbVh')]
+  },
+  {
+    id: 'cuerina-nebraska', title: 'Cuerina Nebraska', family: 'cuerinas', application: 'tapiceria',
+    description: 'Nueve tonos con una paleta clásica de negros, grises, marrones y neutros claros.',
+    specs: [['Familia','Cuerina'],['Colores','9 tonos cargados']],
+    colors: [C('Grey','1zicWCdEIeW0qWZcSEX6K-y6GGrD_E8qL'),C('Chocolate','1GlAf32se5JdX3JZU6DXWfYyfn87JPo9r'),C('Tabaco','1TIBX6U6_DGB8a3pTRduMcx5MBKDFDbsK'),C('Saddle','1pk40XrboB05X80oQZBKAGXycSWnLbryX'),C('Miel','1FpMWlFogRG_t3-SRgjwmHmU3aPb2ZgTi'),C('Light grey','1zbAtiRpTQlm_Ivt4_Yga5N1yn5HRYAt6'),C('Pearl','1CNKUrQMsFtv7Nw6mU4ycuPPqOfbdjSrc'),C('Hueso','14F1OENCbUbkWXap-UQnB06AQ5lpAKzz9'),C('Black','1Ggwmd5DBFQBXRjGSmeOcZ8M4mhhV7nYA')]
+  },
+  {
+    id: 'cuero-vacuno-mantra', title: 'Cuero vacuno Mantra', family: 'cuero', application: 'tapiceria',
+    description: 'Cinco tonos de cuero vacuno que recorren negro, chocolate, suela y rojos profundos.',
+    specs: [['Familia','Cuero vacuno'],['Colores','5 tonos cargados']],
+    colors: [C('Red','1nMdRRaOD45-bxKhoY6XzQKZ61pg_fvmt'),C('Suela','1J9htfv8kj_eN32dWP1PfbmZ3rRTWlOJX'),C('Cogñac','1dBnNs96Taw5vgIF9gtgQ_4-MpICrCo6D'),C('Chocolate','183sBndMUiGD6547gEc76NFeo74QpMjbj'),C('Negro','1c4cpwcB5CkE7Wx1-Nu5aOdlGdix_U4Kl')]
+  },
+  {
+    id: 'cuero-vacuno-novapelli', title: 'Cuero vacuno Novapelli', family: 'cuero', application: 'tapiceria',
+    description: 'Colección compacta de cuero vacuno en dos tonos.',
+    specs: [['Familia','Cuero vacuno'],['Colores','2 tonos cargados']],
+    colors: [C('Grey','1EJbld0IDLBksTWJNzxosERpwtuui0DRO'),C('Moss','1G9QUJp4hYFYoX93qP0t3ZcFzCylAScYl')]
+  },
+  {
+    id: 'cuero-vacuno-riviera', title: 'Cuero vacuno Riviera', family: 'cuero', application: 'tapiceria',
+    description: 'Dieciséis tonos de cuero vacuno con una paleta amplia de tierras, grises, rojos y neutros.',
+    specs: [['Familia','Cuero vacuno'],['Colores','16 tonos cargados']],
+    colors: [C('Negro','1wyx2xKFB3riYWs-omiJpY9ywe6pfregg'),C('Light grey','14B0hm5tkVrTbMwE2JjNlmyuGVubcdxTd'),C('Charcoal','11GSMFELOjRrpFlDNElcGyH5lJkYmr6vk'),C('Gris','13dvOGPBqohjn_1ntHsIamN4oaGXIPq2b'),C('Ceniza','1xZZiktpf5lzK6yHTk9tJ5MYQF6mVU4DY'),C('Angora','1hVEnoVQwj1WN5-um4HmYrzoqbwAV4SWk'),C('Visón','1pyw_meAnSNnBX0cfGoV8YQc_L-50F4hS'),C('Miel','1zvcJSvuYoyJ0nxADT28U2Df3Mr8nywvu'),C('Saddle','1av8UUkba3vqGK3pzG7NXzYFQbUCvTx-2'),C('Óxido','1huhrxtvGw4wkZ7Mt09Pf2SoEoRTEwv3L'),C('Almond','1xdCVJGvwJyax7uPllS8SJxDB0dEBiL9l'),C('Red','12azrqf4YGDGZYVnm4F_AaDryguZjo3w4'),C('Burgundy','1klvlq9IDLmVxhqSnNsy7-JeUg0CQD8FE'),C('Coconut','1L13m4qYlkgbK6UxHskdY3IAuzALX1N1o'),C('Habano','1zGKDjgtvswB-AZQkqVofmGlE9z2EMEZ-'),C('Chocolate','1fUyZ1hcFfGZ1ODacynurhzUlctLXQbHJ')]
+  },
+  {
+    id: 'cuero-vacuno-stragrain', title: 'Cuero vacuno Stragrain', family: 'cuero', application: 'tapiceria',
+    description: 'Ocho tonos de cuero vacuno, desde blanco y hueso hasta chocolate, rojo y negro.',
+    specs: [['Familia','Cuero vacuno'],['Colores','8 tonos cargados']],
+    colors: [C('Chocolate','1erSxJESHEKyGkN4NTkbBBhh5zV7qrSfm'),C('Camel','154SksI1svqcUmx_R0f17o6Ld8VH4bj5L'),C('Hueso','1cbgzg9wEC7t7_dZvS_GlOMdJIwNHS1cv'),C('Biscuit','1DGqNPytllpnH5XaxZlWx6KOSsCEyGOiO'),C('Red','1MqtfyKnZVw2m_r2MMn4lIxFITm57BDfs'),C('Pebble','1eElzqIxsMIavZSbuFR1o7TxFuCL_frCt'),C('Blanco','1trGSMPyrufaHdighCFSaAZyAxCV4S3sm'),C('Negro','1gxb6Mi_UPqX9YqVEgbJsk-s3TX3GLTp2')]
+  },
+  {
+    id: 'sheep', title: 'Sheep', family: 'texturas', application: 'tapiceria',
+    description: 'Colección de cuatro referencias claras y naturales para explorar textura y tono.',
+    specs: [['Colección','Sheep'],['Colores','4 referencias cargadas']],
+    colors: [C('White','1muKL0G_UXLa4wU-fWZH7z2exGX1y2fCp'),C('Crudo 02','1QTMagzDRXUHl1R2CdJgoyUBSim3yFwtx'),C('Natural','1m6iwDN1wdyZN27Bs8xhdFvQ4aWZUCNHE'),C('Crudo 04','1AbiM8idmLHdmIqe6coBlgzQyIbbJBHK0')]
+  }
+];
+
+
+const state = { application: 'tapiceria', family: 'all', query: '' };
+
+
+function trackMaterialEvent(event, payload = {}) {
+  if (Array.isArray(window.dataLayer)) window.dataLayer.push({ event, ...payload });
 }
 
-const materialFamilyOrder = ['Panas', 'Linos', 'Cuero', 'Cuerinas', 'Cortinería', 'Lonas'];
 
-function renderMaterialsLibrary(activeFilter = 'todos') {
-  const container = document.getElementById('materialsLibrary');
-  if (!container) return;
+function familyLabel(key) { return FAMILY_META[key]?.label || key; }
+function collectionName(item) { return item.shortName || item.title; }
+function colorHaystack(item) { return item.colors.map((color) => color.name).join(' ').toLowerCase(); }
 
-  const filtered = materialFamilies.filter((item) => item.filters.includes(activeFilter));
-  if (!filtered.length) {
-    container.innerHTML = `<div class="materials-empty">No encontramos materiales para ese filtro todavía.</div>`;
+
+function imageClass(color, zoom = false) {
+  const classes = ['texture-img'];
+  if (color.rotate === 90) classes.push('is-rotated-90');
+  if (zoom) classes.push('is-zoomed');
+  return classes.join(' ');
+}
+
+
+function renderPortalMedia(appKey) {
+  const app = APPLICATIONS[appKey];
+  if (app.previewIds?.length) {
+    return `<div class="portal-media portal-media-mosaic">
+      <img src="${driveImage(app.previewIds[0], 900)}" alt="Textura de tapicería" loading="lazy" decoding="async" />
+      <img src="${driveImage(app.previewIds[1], 700)}" alt="Textura de tapicería" loading="lazy" decoding="async" />
+      <img src="${driveImage(app.previewIds[2], 700)}" alt="Textura de tapicería" loading="lazy" decoding="async" />
+    </div>`;
+  }
+  return `<div class="portal-media portal-media-abstract portal-${appKey}" aria-hidden="true"><span></span><span></span><span></span></div>`;
+}
+
+
+function renderApplicationPortals() {
+  const root = document.getElementById('materialPortals');
+  if (!root) return;
+  root.innerHTML = Object.entries(APPLICATIONS).map(([key, app], index) => `
+    <button type="button" class="application-portal ${state.application === key ? 'is-active' : ''} ${index === 0 ? 'is-featured' : ''}" data-application="${key}" aria-pressed="${state.application === key}">
+      ${renderPortalMedia(key)}
+      <div class="portal-overlay"></div>
+      <div class="portal-copy">
+        <span class="portal-eyebrow">${app.eyebrow}</span>
+        <div class="portal-title-row"><h2>${app.title}</h2><span aria-hidden="true">↗</span></div>
+        <p>${app.description}</p>
+        <span class="portal-status">${app.status}</span>
+      </div>
+    </button>`).join('');
+
+
+  root.querySelectorAll('[data-application]').forEach((button) => {
+    button.addEventListener('click', () => {
+      state.application = button.dataset.application;
+      state.family = 'all';
+      renderApplicationPortals();
+      renderFamilyNavigation();
+      renderMaterialsLibrary();
+      trackMaterialEvent('materials_application_select', { materials_application: state.application });
+      document.getElementById('collectionsStart')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    });
+  });
+}
+
+
+function renderFamilyNavigation() {
+  const root = document.getElementById('materialsFamilyNav');
+  if (!root) return;
+  if (state.application !== 'tapiceria') {
+    root.innerHTML = '';
     return;
   }
-
-  container.innerHTML = materialFamilyOrder
-    .map((family) => {
-      const familyItems = filtered.filter((item) => item.family === family);
-      if (!familyItems.length) return '';
-
-      return `
-        <section class="materials-family-section" aria-labelledby="family-${family.toLowerCase().replace(/[^a-z0-9]+/g, '-')}">
-          <div class="materials-family-heading">
-            <div>
-              <span class="material-data-kicker">Familia</span>
-              <h2 id="family-${family.toLowerCase().replace(/[^a-z0-9]+/g, '-')}">${family}</h2>
-            </div>
-            <span class="materials-family-count">${familyItems.length} ${familyItems.length === 1 ? 'colección' : 'colecciones'}</span>
-          </div>
-          <div class="materials-family-grid">
-            ${familyItems.map(createMaterialFamilyCard).join('')}
-          </div>
-        </section>`;
-    })
-    .join('');
+  const keys = [...new Set(MATERIAL_COLLECTIONS.filter((item) => item.application === state.application).map((item) => item.family))]
+    .sort((a, b) => (FAMILY_META[a]?.order || 99) - (FAMILY_META[b]?.order || 99));
+  root.innerHTML = [`<button type="button" class="family-chip ${state.family === 'all' ? 'is-active' : ''}" data-family="all">Todas</button>`, ...keys.map((key) => `<button type="button" class="family-chip ${state.family === key ? 'is-active' : ''}" data-family="${key}">${familyLabel(key)}</button>`)].join('');
+  root.querySelectorAll('[data-family]').forEach((button) => button.addEventListener('click', () => {
+    state.family = button.dataset.family;
+    renderFamilyNavigation();
+    renderMaterialsLibrary();
+    trackMaterialEvent('materials_family_select', { materials_family: state.family });
+  }));
 }
 
-function setupMaterialsFilters() {
-  const buttons = document.querySelectorAll('[data-material-filter]');
-  if (!buttons.length) return;
 
-  buttons.forEach((button) => {
-    button.addEventListener('click', () => {
-      buttons.forEach((btn) => btn.classList.remove('is-active'));
-      button.classList.add('is-active');
-      renderMaterialsLibrary(button.dataset.materialFilter);
-    });
-  });
+function collectionPreview(item) {
+  const samples = item.colors.slice(0, 3);
+  return `<div class="collection-preview ${samples.length < 3 ? 'is-compact' : ''}">
+    <div class="collection-preview-main"><img src="${driveImage(samples[0].id, 760)}" alt="${item.title} · ${samples[0].name}" loading="lazy" decoding="async" class="${imageClass(samples[0])}" /></div>
+    <div class="collection-preview-stack">${samples.slice(1).map((color) => `<img src="${driveImage(color.id, 560)}" alt="${item.title} · ${color.name}" loading="lazy" decoding="async" class="${imageClass(color)}" />`).join('')}</div>
+  </div>`;
 }
 
-function materialImageMarkup(material, color, kind, className, alt) {
-  const isMain = kind === 'main';
-  const src = `${material.assetPath}/${color.slug}-${kind}.webp`;
-  if (!material.responsiveImages) {
-    return `<img class="${className}" src="${src}" alt="${alt}" loading="lazy" decoding="async" />`;
+
+function renderCollectionCard(item) {
+  return `<a class="collection-card" href="material.html?id=${encodeURIComponent(item.id)}" data-collection-id="${item.id}">
+    ${collectionPreview(item)}
+    <div class="collection-card-copy">
+      <div class="collection-card-meta"><span>${familyLabel(item.family)}</span><span>${item.colors.length} colores</span></div>
+      <div class="collection-card-title"><h3>${collectionName(item)}</h3><span aria-hidden="true">↗</span></div>
+      <p>${item.description}</p>
+    </div>
+  </a>`;
+}
+
+
+function renderUpcoming(application) {
+  const items = UPCOMING[application] || [];
+  return `<section class="upcoming-shell">
+    <div class="upcoming-intro"><span class="eyebrow">En preparación</span><h2>${APPLICATIONS[application].title}</h2><p>${APPLICATIONS[application].description}</p></div>
+    <div class="upcoming-grid">${items.map(([title, text]) => `<article class="upcoming-card"><div class="upcoming-pattern" aria-hidden="true"></div><span>Próximamente</span><h3>${title}</h3><p>${text}</p></article>`).join('')}</div>
+  </section>`;
+}
+
+
+function renderMaterialsLibrary() {
+  const root = document.getElementById('materialsLibrary');
+  if (!root) return;
+  if (state.application !== 'tapiceria') {
+    root.innerHTML = renderUpcoming(state.application);
+    return;
   }
-
-  const small = isMain
-    ? `${material.assetPath}/${color.slug}-main-640.webp`
-    : `${material.assetPath}/${color.slug}-detail-500.webp`;
-  const srcset = isMain
-    ? `${small} 640w, ${src} 1200w`
-    : `${small} 500w, ${src} 1100w`;
-  const sizes = isMain ? '(max-width: 760px) 92vw, 33vw' : '(max-width: 760px) 26vw, 110px';
-
-  return `<img class="${className}" src="${small}" srcset="${srcset}" sizes="${sizes}" alt="${alt}" loading="lazy" decoding="async" />`;
+  const query = state.query.trim().toLowerCase();
+  const filtered = MATERIAL_COLLECTIONS.filter((item) => item.application === state.application)
+    .filter((item) => state.family === 'all' || item.family === state.family)
+    .filter((item) => !query || `${item.title} ${item.description} ${familyLabel(item.family)} ${colorHaystack(item)}`.toLowerCase().includes(query));
+  if (!filtered.length) {
+    root.innerHTML = `<div class="materials-empty"><strong>No encontramos coincidencias.</strong><p>Probá buscando otra colección, familia o color.</p></div>`;
+    return;
+  }
+  const grouped = {};
+  filtered.forEach((item) => { (grouped[item.family] ||= []).push(item); });
+  const orderedFamilies = Object.keys(grouped).sort((a, b) => (FAMILY_META[a]?.order || 99) - (FAMILY_META[b]?.order || 99));
+  root.innerHTML = orderedFamilies.map((key) => `<section class="collection-family-section">
+    <div class="collection-family-heading"><div><span class="eyebrow">Familia</span><h2>${familyLabel(key)}</h2></div><span>${grouped[key].length} ${grouped[key].length === 1 ? 'colección' : 'colecciones'}</span></div>
+    <div class="collections-grid">${grouped[key].map(renderCollectionCard).join('')}</div>
+  </section>`).join('');
+  root.querySelectorAll('[data-collection-id]').forEach((link) => link.addEventListener('click', () => trackMaterialEvent('material_collection_select', { material_collection: link.dataset.collectionId })));
 }
 
-function renderMaterialSwatch(material, color) {
-  const mainSrc = `${material.assetPath}/${color.slug}-main.webp`;
-  const detailSrc = `${material.assetPath}/${color.slug}-detail.webp`;
-  return `
-    <article class="material-swatch-card">
-      <button type="button" class="material-swatch-trigger" data-lightbox-name="${color.name}" data-lightbox-main="${mainSrc}" data-lightbox-detail="${detailSrc}">
-        <div class="material-swatch-main">
-          ${materialImageMarkup(material, color, 'main', '', `Tela ${material.title} color ${color.name}`)}
-        </div>
-        <div class="material-swatch-content">
-          <div class="material-swatch-topline">
-            <h3>${color.name}</h3>
-            <span class="material-chip-muted">Ver detalle</span>
-          </div>
-          <div class="material-swatch-detail">
-            <div class="material-swatch-detail-thumb">
-              ${materialImageMarkup(material, color, 'detail', '', `Detalle de trama ${color.name}`)}
-            </div>
-            <p class="material-swatch-note">Vista de textura para apreciar mejor trama, matices y profundidad del tono.</p>
-          </div>
-        </div>
-      </button>
-    </article>`;
+
+function setupMaterialSearch() {
+  const input = document.getElementById('materialsSearch');
+  if (!input) return;
+  input.addEventListener('input', () => {
+    state.query = input.value;
+    renderMaterialsLibrary();
+  });
+  input.addEventListener('search', () => { state.query = input.value; renderMaterialsLibrary(); });
 }
+
+
+function findCollection(id) { return MATERIAL_COLLECTIONS.find((item) => item.id === id); }
+
+
+function renderEssentialSheet(item) {
+  const specs = item.specs?.length ? item.specs : [['Familia', familyLabel(item.family)], ['Colores', `${item.colors.length} tonos cargados`]];
+  return `<section class="essential-sheet">
+    <div class="essential-heading"><span class="eyebrow">Ficha esencial</span><h2>Lo importante, de un vistazo.</h2></div>
+    <div class="essential-grid">${specs.map(([label, value]) => `<div class="essential-row"><span>${label}</span><strong>${value}</strong></div>`).join('')}</div>
+  </section>`;
+}
+
 
 function renderMaterialDetail() {
-  const container = document.getElementById('materialDetail');
-  if (!container) return;
-
+  const root = document.getElementById('materialDetail');
+  if (!root) return;
   const params = new URLSearchParams(window.location.search);
-  const materialId = params.get('id') || 'pana-panne';
-  const material = materialCatalog[materialId];
-  if (!material) return;
-
-  document.title = `${material.title} | Valturi`;
-
-  container.innerHTML = `
-    <section class="page-hero page-hero-compact">
-      <div class="eyebrow">${material.eyebrow}</div>
-      <h1>${material.title}</h1>
-    </section>
-
-    <section class="material-detail-shell top-tight">
-      <article class="material-hero-card">
-        <div class="material-copy-block">
-          <nav class="material-breadcrumb" aria-label="Breadcrumb">
-            <a href="materiales.html">Materiales</a>
-            <span>•</span>
-            <span>${material.title}</span>
-          </nav>
-          <div class="material-hero-tags">
-            <span class="material-group-badge">${material.group}</span>
-            ${material.chips.map((chip) => `<span class="material-chip">${chip}</span>`).join('')}
-          </div>
-          <p class="material-intro">${material.intro}</p>
-          <div class="material-hero-actions">
-            <a class="material-link-button" href="${MATERIALS_WHATSAPP}" target="_blank" rel="noreferrer">Consultar por WhatsApp</a>
-            <a class="material-secondary-button" href="materiales.html">Volver a materiales</a>
-          </div>
-        </div>
-        <aside class="material-data-panel" aria-label="Ficha técnica">
-          <div class="material-data-heading">
-            <span class="material-data-kicker">Ficha esencial</span>
-            <span class="material-data-caption">Datos del material</span>
-          </div>
-          <dl class="material-data-list">
-            ${material.specs.map((spec) => `
-              <div class="material-data-row">
-                <dt>${spec.label}</dt>
-                <dd>${spec.value}</dd>
-              </div>`).join('')}
-          </dl>
-        </aside>
-      </article>
-
-      <section class="material-section-block">
-        <div class="material-section-heading">
-          <div>
-            <h2 class="material-section-title">Colores disponibles</h2>
-            <p>Cada tono combina una vista completa con un acercamiento de textura para comparar mejor sin sacrificar calidad.</p>
-          </div>
-          <div class="material-legend">
-            <span class="material-chip-muted">Vista principal</span>
-            <span class="material-chip-muted">Detalle de trama</span>
-          </div>
-        </div>
-        <div class="material-gallery-grid">
-          ${material.colors.map((color) => renderMaterialSwatch(material, color)).join('')}
-        </div>
-      </section>
-
-      <section class="material-info-grid">
-        <article class="material-callout">
-          <h3>Usos sugeridos</h3>
-          <ul class="material-uses-list">
-            ${material.uses.map((use) => `<li>${use}</li>`).join('')}
-          </ul>
-        </article>
-        <article class="material-callout">
-          <h3>Antes de elegir</h3>
-          <ul>
-            ${material.notes.map((note) => `<li>${note}</li>`).join('')}
-          </ul>
-        </article>
-      </section>
-
-      ${material.future?.length ? `
-      <section class="material-future-grid">
-        ${material.future.map((item) => `
-          <article class="material-future-card">
-            <span class="material-data-kicker">Próxima capa</span>
-            <h3>${item.title}</h3>
-            <p>${item.text}</p>
-          </article>
-        `).join('')}
-      </section>` : ''}
-    </section>
-
-    <div class="material-lightbox" id="materialLightbox" aria-hidden="true">
-      <div class="material-lightbox-panel">
-        <div class="material-lightbox-head">
-          <div>
-            <h3 id="materialLightboxTitle">Detalle del material</h3>
-            <p class="material-hint">Vista completa y acercamiento de textura en alta definición.</p>
-          </div>
-          <button class="material-lightbox-close" type="button" aria-label="Cerrar">✕</button>
-        </div>
-        <div class="material-lightbox-grid">
-          <img id="materialLightboxMain" src="" alt="" />
-          <img id="materialLightboxDetail" src="" alt="" />
-        </div>
+  const item = findCollection(params.get('id')) || MATERIAL_COLLECTIONS[0];
+  document.title = `${item.title} | Valturi`;
+  const intro = item.intro || `${item.title} reúne ${item.colors.length} referencias de color. Explorá cada tono en detalle y usá la ficha como punto de partida para conversar el proyecto con Valturi.`;
+  const tags = item.tags || [familyLabel(item.family), `${item.colors.length} colores`];
+  const uses = item.uses || ['Tapicería interior', 'Selección de color según proyecto'];
+  root.innerHTML = `
+    <section class="material-detail-hero">
+      <nav class="material-breadcrumb" aria-label="Breadcrumb"><a href="materiales.html">Materiales</a><span>•</span><span>${familyLabel(item.family)}</span><span>•</span><span>${item.title}</span></nav>
+      <div class="material-detail-grid">
+        <div class="material-detail-copy"><span class="eyebrow">${familyLabel(item.family)}</span><h1>${item.title}</h1><p>${intro}</p><div class="material-tags">${tags.map((tag) => `<span>${tag}</span>`).join('')}</div><div class="material-detail-actions"><a class="material-primary-button" href="${MATERIALS_WHATSAPP}" target="_blank" rel="noreferrer">Consultar por WhatsApp</a><a class="material-secondary-button" href="materiales.html">Volver a materiales</a></div></div>
+        ${renderEssentialSheet(item)}
       </div>
-    </div>
-  `;
-
-  setupMaterialLightbox(material.title);
+    </section>
+    <section class="material-colors-section">
+      <div class="material-section-heading"><div><span class="eyebrow">Muestrario</span><h2>Colores disponibles</h2><p>Las imágenes ayudan a comparar tono y textura. Para una definición final, recomendamos validar la muestra física porque cada pantalla y tipo de luz puede modificar la percepción del color.</p></div><span class="color-count">${item.colors.length} ${item.colors.length === 1 ? 'color' : 'colores'}</span></div>
+      <div class="material-colors-grid">${item.colors.map((color, index) => `<button type="button" class="material-color-card" data-color-index="${index}"><div class="material-color-media"><img src="${driveImage(color.id, 1000)}" alt="${item.title} · ${color.name}" loading="lazy" decoding="async" class="${imageClass(color)}" /></div><div class="material-color-caption"><strong>${color.name}</strong><span>Ver textura</span></div></button>`).join('')}</div>
+    </section>
+    <section class="material-info-grid"><article class="material-info-card"><span class="eyebrow">Aplicación</span><h3>Usos sugeridos</h3><ul>${uses.map((use) => `<li>${use}</li>`).join('')}</ul></article><article class="material-info-card"><span class="eyebrow">Referencia de color</span><h3>La luz también es parte del material.</h3><p>Los tonos oscuros pueden verse más claros bajo sol directo. Para esas referencias conviene sumar una segunda toma sin incidencia directa de sol y validar el tono final con la muestra física.</p></article></section>
+    <section class="material-future-grid"><article class="material-future-card"><span class="eyebrow">Próxima capa</span><h3>Aplicado en proyectos</h3><p>Esta sección queda preparada para sumar trabajos reales de Valturi realizados con cada colección y, cuando corresponda, con el tono exacto.</p></article>${item.performanceNote ? `<article class="material-future-card"><span class="eyebrow">Performance</span><h3>Propiedades en acción</h3><p>${item.performanceNote}</p></article>` : ''}</section>
+    <div class="material-lightbox" id="materialLightbox" aria-hidden="true"><div class="material-lightbox-panel"><div class="material-lightbox-head"><div><strong id="materialLightboxTitle"></strong><span>Vista completa y acercamiento de textura</span></div><button type="button" class="material-lightbox-close" aria-label="Cerrar">×</button></div><div class="material-lightbox-views"><figure><figcaption>Vista completa</figcaption><div class="lightbox-image-stage"><img id="materialLightboxMain" src="" alt="" /></div></figure><figure><figcaption>Detalle 2×</figcaption><div class="lightbox-image-stage is-detail"><img id="materialLightboxZoom" src="" alt="" /></div></figure></div><p class="material-lightbox-note">El tono puede variar según pantalla, iluminación y partida del material.</p></div></div>`;
+  setupMaterialLightbox(item);
 }
 
-function setupMaterialLightbox(materialTitle) {
+
+function setupMaterialLightbox(item) {
   const lightbox = document.getElementById('materialLightbox');
   if (!lightbox) return;
-
   const title = document.getElementById('materialLightboxTitle');
   const main = document.getElementById('materialLightboxMain');
-  const detail = document.getElementById('materialLightboxDetail');
+  const zoom = document.getElementById('materialLightboxZoom');
   const closeButton = lightbox.querySelector('.material-lightbox-close');
-  const triggers = document.querySelectorAll('.material-swatch-trigger');
-
-  const close = () => {
-    lightbox.classList.remove('is-open');
-    lightbox.setAttribute('aria-hidden', 'true');
-  };
-
-  triggers.forEach((trigger) => {
-    trigger.addEventListener('click', () => {
-      const name = trigger.dataset.lightboxName;
-      title.textContent = `${name} · ${materialTitle}`;
-      main.src = trigger.dataset.lightboxMain;
-      main.alt = `Tela ${materialTitle} color ${name}`;
-      detail.src = trigger.dataset.lightboxDetail;
-      detail.alt = `Detalle de trama ${name}`;
-      lightbox.classList.add('is-open');
-      lightbox.setAttribute('aria-hidden', 'false');
-    });
-  });
-
+  const close = () => { lightbox.classList.remove('is-open'); lightbox.setAttribute('aria-hidden', 'true'); document.body.classList.remove('material-modal-open'); };
+  document.querySelectorAll('[data-color-index]').forEach((button) => button.addEventListener('click', () => {
+    const color = item.colors[Number(button.dataset.colorIndex)];
+    const src = driveImage(color.id, 1800);
+    title.textContent = `${color.name} · ${item.title}`;
+    main.src = src; zoom.src = src;
+    main.alt = `${item.title} · ${color.name}`; zoom.alt = `Detalle ampliado ${item.title} · ${color.name}`;
+    main.className = imageClass(color); zoom.className = imageClass(color, true);
+    lightbox.classList.add('is-open'); lightbox.setAttribute('aria-hidden', 'false'); document.body.classList.add('material-modal-open');
+    trackMaterialEvent('material_color_view', { material_collection: item.id, material_color: color.name });
+  }));
   closeButton?.addEventListener('click', close);
-  lightbox.addEventListener('click', (event) => {
-    if (event.target === lightbox) close();
-  });
-
-  document.addEventListener('keydown', (event) => {
-    if (event.key === 'Escape') close();
-  });
+  lightbox.addEventListener('click', (event) => { if (event.target === lightbox) close(); });
+  document.addEventListener('keydown', (event) => { if (event.key === 'Escape') close(); });
 }
 
-window.addEventListener('DOMContentLoaded', () => {
-  if (document.getElementById('materialsLibrary')) {
-    renderMaterialsLibrary();
-    setupMaterialsFilters();
-  }
 
-  if (document.getElementById('materialDetail')) {
-    renderMaterialDetail();
+window.addEventListener('DOMContentLoaded', () => {
+  if (document.getElementById('materialPortals')) {
+    renderApplicationPortals(); renderFamilyNavigation(); renderMaterialsLibrary(); setupMaterialSearch();
   }
+  if (document.getElementById('materialDetail')) renderMaterialDetail();
 });
