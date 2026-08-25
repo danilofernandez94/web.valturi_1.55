@@ -318,3 +318,34 @@
   .application-portal,.collection-card,.material-color-card,.family-chip { transition:none !important; }
   .application-portal:hover,.collection-card:hover,.material-color-card:hover,.family-chip:hover { transform:none !important; }
 }
+
+
+/* --- Valturi 2026 update: active application cards + real photo covers --- */
+.portal-media-photo,
+.portal-media-photo img { width: 100%; height: 100%; }
+.portal-media-photo img { display:block; object-fit: cover; }
+.application-portal.is-active { box-shadow: 0 38px 78px rgba(31,26,23,.16), 0 10px 26px rgba(31,26,23,.08); }
+.application-portal.is-active .portal-copy { inset: auto 32px 30px; }
+.application-portal.is-active .portal-copy p { max-width: 52ch; }
+.application-portal.is-active .portal-title-row h2 { font-size: clamp(2.9rem, 4vw, 4.8rem); }
+
+@media (min-width: 961px) {
+  .application-portals {
+    display: flex;
+    align-items: stretch;
+    gap: 16px;
+  }
+  .application-portal {
+    flex: .88;
+    min-width: 0;
+    min-height: 460px;
+    transition: flex .45s cubic-bezier(.2,.8,.2,1), transform .45s cubic-bezier(.2,.8,.2,1), box-shadow .45s ease;
+  }
+  .application-portal.is-active {
+    flex: 1.42;
+  }
+}
+
+@media (max-width: 960px) {
+  .portal-media-photo img { object-position: center center; }
+}
