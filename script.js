@@ -257,71 +257,412 @@ function setupBeforeAfter() {
 function setupHomeCarousel() {
   const carousel = document.querySelector('.hero-fan-carousel');
   if (!carousel) return;
+
   const cards = Array.from(carousel.querySelectorAll('[data-home-card]'));
   const total = cards.length;
   if (total < 2) return;
-  const prevButton=document.getElementById('carouselPrev');
-  const nextButton=document.getElementById('carouselNext');
-  const pauseButton=document.getElementById('carouselPause');
-  const pauseIcon=pauseButton?.querySelector('[data-pause-icon]');
-  const pauseLabel=pauseButton?.querySelector('.carousel-control-label');
-  const status=document.getElementById('carouselStatus');
-  const prefersReducedMotion=window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-  const mobileBreakpoint=760;
-  const desktopSlots=[{x:.50,y:.02,rotate:0,scale:1.12,z:6,opacity:1},{x:.73,y:.16,rotate:6,scale:.99,z:4,opacity:.94},{x:.88,y:.39,rotate:11,scale:.86,z:2,opacity:.78},{x:1.06,y:.56,rotate:14,scale:.72,z:1,opacity:0},{x:.12,y:.39,rotate:-11,scale:.86,z:2,opacity:.78},{x:.27,y:.16,rotate:-6,scale:.99,z:4,opacity:.94}];
-  const mobileSlots=[{x:.50,y:.02,rotate:0,scale:1,z:6,opacity:1},{x:.80,y:.10,rotate:8,scale:.88,z:4,opacity:.78},{x:1.12,y:.22,rotate:12,scale:.74,z:2,opacity:0},{x:1.28,y:.28,rotate:16,scale:.66,z:1,opacity:0},{x:-.12,y:.22,rotate:-12,scale:.74,z:2,opacity:0},{x:.20,y:.10,rotate:-8,scale:.88,z:4,opacity:.78}];
-  let activeIndex=0, autoTimer=null, resizeTimer=null, isDragging=false, dragProgress=0, dragDirection=1, startX=0, startY=0, dragLocked=false, userPaused=prefersReducedMotion, hoverPaused=false;
-  const clamp=(value,min,max)=>Math.max(min,Math.min(max,value));
-  const lerp=(from,to,progress)=>from+(to-from)*progress;
-  const slotDistance=(cardIndex,index)=>(cardIndex-index+total)%total;
-  const getSlots=()=>window.innerWidth<=mobileBreakpoint?mobileSlots:desktopSlots;
-  const getSlotFor=(cardIndex,index,slots)=>slots[slotDistance(cardIndex,index)]||slots[slots.length-1];
-  function applySlot(card,slot,dims){
-    const x=dims.width*slot.x-card.offsetWidth/2;
-    const y=dims.height*slot.y;
-    card.style.setProperty('--fan-x',`${x}px`); card.style.setProperty('--fan-y',`${y}px`); card.style.setProperty('--fan-rotate',`${slot.rotate}deg`); card.style.setProperty('--fan-scale',slot.scale); card.style.setProperty('--fan-opacity',slot.opacity); card.style.zIndex=String(slot.z); card.classList.toggle('is-hidden',slot.opacity===0);
+
+  const prevButton = document.getElementById('carouselPrev');
+  const nextButton = document.getElementById('carouselNext');
+  const pauseButton = document.getElementById('carouselPause');
+  const pauseIcon = pauseButton?.querySelector('[data-pause-icon]');
+  const pauseLabel = pauseButton?.querySelector('.carousel-control-label');
+  const status = document.getElementById('carouselStatus');
+  const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const mobileBreakpoint = 760;
+
+  /*
+   * Motion system
+   * - rAF drives every frame instead of relying on a CSS transition timer.
+   * - hidden cards wrap outside the visible fan, so no card crosses the whole
+   *   carousel when the sequence loops.
+   * - timings are deliberately longer than a typical UI slider so the motion
+   *   feels calm and premium rather than mechanical.
+   */
+  const AUTO_INTERVAL = 3000;
+  const MOTION_DURATION = 1080;
+  const DRAG_SETTLE_MIN = 280;
+  const AUTO_HOLD_AFTER_MOTION = Math.max(900, AUTO_INTERVAL - MOTION_DURATION);
+
+  const desktopSlots = [
+    { x: .50, y: .02, rotate: 0, scale: 1.12, z: 6, opacity: 1 },
+    { x: .73, y: .16, rotate: 6, scale: .99, z: 4, opacity: .94 },
+    { x: .88, y: .39, rotate: 11, scale: .86, z: 2, opacity: .78 },
+    { x: 1.06, y: .56, rotate: 14, scale: .72, z: 1, opacity: 0 },
+    { x: .12, y: .39, rotate: -11, scale: .86, z: 2, opacity: .78 },
+    { x: .27, y: .16, rotate: -6, scale: .99, z: 4, opacity: .94 }
+  ];
+
+  const mobileSlots = [
+    { x: .50, y: .02, rotate: 0, scale: 1, z: 6, opacity: 1 },
+    { x: .80, y: .10, rotate: 8, scale: .88, z: 4, opacity: .78 },
+    { x: 1.12, y: .22, rotate: 12, scale: .74, z: 2, opacity: 0 },
+    { x: 1.28, y: .28, rotate: 16, scale: .66, z: 1, opacity: 0 },
+    { x: -.12, y: .22, rotate: -12, scale: .74, z: 2, opacity: 0 },
+    { x: .20, y: .10, rotate: -8, scale: .88, z: 4, opacity: .78 }
+  ];
+
+  let activeIndex = 0;
+  let autoTimer = null;
+  let resizeTimer = null;
+  let animationFrame = null;
+  let isAnimating = false;
+  let isDragging = false;
+  let dragProgress = 0;
+  let dragDirection = 1;
+  let startX = 0;
+  let startY = 0;
+  let dragLocked = false;
+  let userPaused = prefersReducedMotion;
+  let hoverPaused = false;
+
+  const clamp = (value, min, max) => Math.max(min, Math.min(max, value));
+  const lerp = (from, to, progress) => from + (to - from) * progress;
+  const slotDistance = (cardIndex, index) => (cardIndex - index + total) % total;
+  const getSlots = () => window.innerWidth <= mobileBreakpoint ? mobileSlots : desktopSlots;
+  const getSlotFor = (cardIndex, index, slots) => slots[slotDistance(cardIndex, index)] || slots[slots.length - 1];
+
+  // Symmetric easing: very gentle take-off and landing, no abrupt velocity change.
+  const easeInOutQuint = (t) => t < .5
+    ? 16 * t * t * t * t * t
+    : 1 - Math.pow(-2 * t + 2, 5) / 2;
+
+  function applySlot(card, slot, dims) {
+    const x = dims.width * slot.x - card.offsetWidth / 2;
+    const y = dims.height * slot.y;
+    card.style.setProperty('--fan-x', `${x}px`);
+    card.style.setProperty('--fan-y', `${y}px`);
+    card.style.setProperty('--fan-rotate', `${slot.rotate}deg`);
+    card.style.setProperty('--fan-scale', slot.scale);
+    card.style.setProperty('--fan-opacity', slot.opacity);
+    card.style.zIndex = String(slot.z);
+    card.classList.toggle('is-hidden', slot.opacity <= .01);
   }
-  function updateA11y(){
-    cards.forEach((card,index)=>card.setAttribute('aria-hidden',index===activeIndex?'false':'true'));
-    if(status) status.textContent=`Imagen ${activeIndex+1} de ${total}`;
+
+  function updateA11y() {
+    cards.forEach((card, index) => card.setAttribute('aria-hidden', index === activeIndex ? 'false' : 'true'));
+    if (status) status.textContent = `Imagen ${activeIndex + 1} de ${total}`;
   }
-  function render(progress=0,direction=1){
-    const slots=getSlots(); const dims={width:carousel.clientWidth,height:carousel.clientHeight||carousel.offsetHeight};
-    cards.forEach((card,cardIndex)=>{
-      const current=getSlotFor(cardIndex,activeIndex,slots); let final=current;
-      if(progress>0){ const next=(activeIndex+direction+total)%total; const target=getSlotFor(cardIndex,next,slots); final={x:lerp(current.x,target.x,progress),y:lerp(current.y,target.y,progress),rotate:lerp(current.rotate,target.rotate,progress),scale:lerp(current.scale,target.scale,progress),z:progress<.5?current.z:target.z,opacity:lerp(current.opacity,target.opacity,progress)}; }
-      applySlot(card,final,dims);
+
+  function getWrapSafePair(current, target, direction) {
+    const crossesStage = Math.abs(target.x - current.x) > .5;
+    if (!crossesStage) return { current, target };
+
+    // Forward: the last visible card exits naturally through the left edge.
+    // It is repositioned on the right only once it is completely transparent.
+    if (direction > 0 && current.opacity > .01 && target.opacity <= .01) {
+      return {
+        current,
+        target: {
+          ...target,
+          x: window.innerWidth <= mobileBreakpoint ? -.34 : -.10,
+          y: Math.max(current.y, target.y),
+          rotate: current.rotate - 5,
+          scale: Math.min(current.scale, .70),
+          opacity: 0,
+          z: 1
+        }
+      };
+    }
+
+    // Reverse: an invisible card is allowed to teleport to the hidden left side
+    // before it starts fading in. Because opacity is 0, the reposition is unseen.
+    if (direction < 0 && current.opacity <= .01 && target.opacity > .01) {
+      return {
+        current: {
+          ...current,
+          x: window.innerWidth <= mobileBreakpoint ? -.34 : -.10,
+          y: Math.max(current.y, target.y),
+          rotate: target.rotate - 5,
+          scale: Math.min(target.scale, .70),
+          opacity: 0,
+          z: 1
+        },
+        target
+      };
+    }
+
+    return { current, target };
+  }
+
+  function renderStatic(index = activeIndex) {
+    const slots = getSlots();
+    const dims = { width: carousel.clientWidth, height: carousel.clientHeight || carousel.offsetHeight };
+    cards.forEach((card, cardIndex) => applySlot(card, getSlotFor(cardIndex, index, slots), dims));
+    updateA11y();
+  }
+
+  function renderTransition(progress, direction, fromIndex = activeIndex) {
+    const slots = getSlots();
+    const dims = { width: carousel.clientWidth, height: carousel.clientHeight || carousel.offsetHeight };
+    const targetIndex = (fromIndex + direction + total) % total;
+
+    cards.forEach((card, cardIndex) => {
+      const rawCurrent = getSlotFor(cardIndex, fromIndex, slots);
+      const rawTarget = getSlotFor(cardIndex, targetIndex, slots);
+      const pair = getWrapSafePair(rawCurrent, rawTarget, direction);
+      const z = progress < .48 ? pair.current.z : pair.target.z;
+      const slot = {
+        x: lerp(pair.current.x, pair.target.x, progress),
+        y: lerp(pair.current.y, pair.target.y, progress),
+        rotate: lerp(pair.current.rotate, pair.target.rotate, progress),
+        scale: lerp(pair.current.scale, pair.target.scale, progress),
+        opacity: lerp(pair.current.opacity, pair.target.opacity, progress),
+        z
+      };
+      applySlot(card, slot, dims);
     });
-    if(progress===0) updateA11y();
   }
-  function stopAuto(){ if(autoTimer){clearInterval(autoTimer); autoTimer=null;} }
-  function startAuto(){ stopAuto(); if(userPaused||hoverPaused||document.hidden||prefersReducedMotion)return; autoTimer=setInterval(()=>go(1,false),3000); }
-  function updatePauseControl(){
-    if(!pauseButton)return;
-    pauseButton.setAttribute('aria-pressed',String(userPaused));
-    pauseButton.setAttribute('aria-label',userPaused?'Reanudar carrusel':'Pausar carrusel');
-    if(pauseIcon)pauseIcon.textContent=userPaused?'▶':'Ⅱ';
-    if(pauseLabel)pauseLabel.textContent=userPaused?'Reanudar':'Pausar';
+
+  function stopAuto() {
+    if (autoTimer) {
+      clearTimeout(autoTimer);
+      autoTimer = null;
+    }
   }
-  function go(direction,manual=true){ activeIndex=(activeIndex+direction+total)%total; render(); if(manual){pushDataLayer('carousel_navigation',{direction:direction>0?'next':'previous',image_index:activeIndex+1});} startAuto(); }
-  function setDraggingState(value){isDragging=value;carousel.classList.toggle('is-dragging',value);}
-  function resetDrag(){dragProgress=0;dragDirection=1;dragLocked=false;}
-  function finalizeDrag(advance){const direction=dragDirection;setDraggingState(false);if(advance)activeIndex=(activeIndex+direction+total)%total;resetDrag();requestAnimationFrame(()=>{render();startAuto();});}
-  function handleTouchStart(event){if(window.innerWidth>mobileBreakpoint||!event.touches.length)return;const touch=event.touches[0];startX=touch.clientX;startY=touch.clientY;resetDrag();stopAuto();setDraggingState(true);}
-  function handleTouchMove(event){if(!isDragging||window.innerWidth>mobileBreakpoint||!event.touches.length)return;const touch=event.touches[0];const dx=touch.clientX-startX,dy=touch.clientY-startY;if(!dragLocked){if(Math.abs(dy)>Math.abs(dx)&&Math.abs(dy)>8){setDraggingState(false);resetDrag();startAuto();return;}if(Math.abs(dx)>8)dragLocked=true;}if(!dragLocked)return;event.preventDefault();dragDirection=dx<0?1:-1;dragProgress=clamp(Math.abs(dx)/(carousel.clientWidth*.68),0,1);render(dragProgress,dragDirection);}
-  function handleTouchEnd(){if(isDragging)finalizeDrag(dragProgress>.18);}
-  function syncLayout(){setDraggingState(false);resetDrag();render();startAuto();}
-  prevButton?.addEventListener('click',()=>go(-1)); nextButton?.addEventListener('click',()=>go(1));
-  pauseButton?.addEventListener('click',()=>{userPaused=!userPaused;updatePauseControl();userPaused?stopAuto():startAuto();pushDataLayer('carousel_pause_toggle',{paused:userPaused});});
-  carousel.addEventListener('keydown',(event)=>{if(event.key==='ArrowLeft'){event.preventDefault();go(-1);}if(event.key==='ArrowRight'){event.preventDefault();go(1);}});
-  window.addEventListener('resize',()=>{clearTimeout(resizeTimer);resizeTimer=setTimeout(syncLayout,120);});
-  carousel.addEventListener('mouseenter',()=>{if(window.innerWidth>mobileBreakpoint){hoverPaused=true;stopAuto();}});
-  carousel.addEventListener('mouseleave',()=>{if(window.innerWidth>mobileBreakpoint){hoverPaused=false;startAuto();}});
-  carousel.addEventListener('focusin',()=>{hoverPaused=true;stopAuto();});
-  carousel.addEventListener('focusout',()=>{hoverPaused=false;startAuto();});
-  carousel.addEventListener('touchstart',handleTouchStart,{passive:true});carousel.addEventListener('touchmove',handleTouchMove,{passive:false});carousel.addEventListener('touchend',handleTouchEnd,{passive:true});carousel.addEventListener('touchcancel',handleTouchEnd,{passive:true});
-  document.addEventListener('visibilitychange',()=>document.hidden?stopAuto():startAuto());
-  updatePauseControl(); syncLayout();
+
+  function startAuto(delay = AUTO_INTERVAL) {
+    stopAuto();
+    if (userPaused || hoverPaused || document.hidden || prefersReducedMotion || isDragging || isAnimating) return;
+    autoTimer = setTimeout(() => animateStep(1, false, 0), delay);
+  }
+
+  function updatePauseControl() {
+    if (!pauseButton) return;
+    pauseButton.setAttribute('aria-pressed', String(userPaused));
+    pauseButton.setAttribute('aria-label', userPaused ? 'Reanudar carrusel' : 'Pausar carrusel');
+    if (pauseIcon) pauseIcon.textContent = userPaused ? '▶' : 'Ⅱ';
+    if (pauseLabel) pauseLabel.textContent = userPaused ? 'Reanudar' : 'Pausar';
+  }
+
+  function cancelAnimation() {
+    if (animationFrame) cancelAnimationFrame(animationFrame);
+    animationFrame = null;
+    isAnimating = false;
+    carousel.classList.remove('is-animating');
+  }
+
+  function animateProgress({ direction, fromIndex, fromProgress, toProgress, duration, commit, manual }) {
+    cancelAnimation();
+    stopAuto();
+    isAnimating = true;
+    carousel.classList.add('is-animating');
+
+    const startedAt = performance.now();
+    const distance = Math.abs(toProgress - fromProgress);
+    const scaledDuration = Math.max(DRAG_SETTLE_MIN, duration * Math.max(.28, distance));
+
+    const frame = (now) => {
+      const elapsed = clamp((now - startedAt) / scaledDuration, 0, 1);
+      const eased = easeInOutQuint(elapsed);
+      const progress = lerp(fromProgress, toProgress, eased);
+      renderTransition(progress, direction, fromIndex);
+
+      if (elapsed < 1) {
+        animationFrame = requestAnimationFrame(frame);
+        return;
+      }
+
+      animationFrame = null;
+      if (commit) activeIndex = (fromIndex + direction + total) % total;
+
+      // Keep transitions disabled while the invisible wrap card is put in its
+      // true resting slot. This is the key to eliminating the quick snap.
+      renderStatic(activeIndex);
+      requestAnimationFrame(() => {
+        isAnimating = false;
+        carousel.classList.remove('is-animating');
+        if (manual) {
+          pushDataLayer('carousel_navigation', {
+            direction: direction > 0 ? 'next' : 'previous',
+            image_index: activeIndex + 1
+          });
+          startAuto(AUTO_INTERVAL);
+        } else {
+          startAuto(AUTO_HOLD_AFTER_MOTION);
+        }
+      });
+    };
+
+    animationFrame = requestAnimationFrame(frame);
+  }
+
+  function animateStep(direction, manual = true, startProgress = 0) {
+    if (isAnimating || isDragging) return;
+    if (prefersReducedMotion) {
+      activeIndex = (activeIndex + direction + total) % total;
+      renderStatic();
+      if (manual) {
+        pushDataLayer('carousel_navigation', {
+          direction: direction > 0 ? 'next' : 'previous',
+          image_index: activeIndex + 1
+        });
+      }
+      startAuto();
+      return;
+    }
+
+    animateProgress({
+      direction,
+      fromIndex: activeIndex,
+      fromProgress: startProgress,
+      toProgress: 1,
+      duration: MOTION_DURATION,
+      commit: true,
+      manual
+    });
+  }
+
+  function setDraggingState(value) {
+    isDragging = value;
+    carousel.classList.toggle('is-dragging', value);
+  }
+
+  function resetDrag() {
+    dragProgress = 0;
+    dragDirection = 1;
+    dragLocked = false;
+  }
+
+  function settleDrag(advance) {
+    const direction = dragDirection;
+    const fromProgress = dragProgress;
+    setDraggingState(false);
+
+    if (prefersReducedMotion) {
+      if (advance) activeIndex = (activeIndex + direction + total) % total;
+      resetDrag();
+      renderStatic();
+      startAuto();
+      return;
+    }
+
+    if (advance) {
+      resetDrag();
+      animateProgress({
+        direction,
+        fromIndex: activeIndex,
+        fromProgress,
+        toProgress: 1,
+        duration: MOTION_DURATION,
+        commit: true,
+        manual: true
+      });
+    } else {
+      resetDrag();
+      animateProgress({
+        direction,
+        fromIndex: activeIndex,
+        fromProgress,
+        toProgress: 0,
+        duration: 520,
+        commit: false,
+        manual: false
+      });
+    }
+  }
+
+  function handleTouchStart(event) {
+    if (window.innerWidth > mobileBreakpoint || !event.touches.length || isAnimating) return;
+    const touch = event.touches[0];
+    startX = touch.clientX;
+    startY = touch.clientY;
+    resetDrag();
+    stopAuto();
+    setDraggingState(true);
+  }
+
+  function handleTouchMove(event) {
+    if (!isDragging || window.innerWidth > mobileBreakpoint || !event.touches.length) return;
+    const touch = event.touches[0];
+    const dx = touch.clientX - startX;
+    const dy = touch.clientY - startY;
+
+    if (!dragLocked) {
+      if (Math.abs(dy) > Math.abs(dx) && Math.abs(dy) > 8) {
+        setDraggingState(false);
+        resetDrag();
+        startAuto();
+        return;
+      }
+      if (Math.abs(dx) > 8) dragLocked = true;
+    }
+
+    if (!dragLocked) return;
+    event.preventDefault();
+    dragDirection = dx < 0 ? 1 : -1;
+    dragProgress = clamp(Math.abs(dx) / (carousel.clientWidth * .68), 0, 1);
+    renderTransition(dragProgress, dragDirection, activeIndex);
+  }
+
+  function handleTouchEnd() {
+    if (isDragging) settleDrag(dragProgress > .18);
+  }
+
+  function syncLayout() {
+    cancelAnimation();
+    setDraggingState(false);
+    resetDrag();
+    renderStatic();
+    startAuto();
+  }
+
+  prevButton?.addEventListener('click', () => animateStep(-1));
+  nextButton?.addEventListener('click', () => animateStep(1));
+
+  pauseButton?.addEventListener('click', () => {
+    userPaused = !userPaused;
+    updatePauseControl();
+    userPaused ? stopAuto() : startAuto();
+    pushDataLayer('carousel_pause_toggle', { paused: userPaused });
+  });
+
+  carousel.addEventListener('keydown', (event) => {
+    if (event.key === 'ArrowLeft') {
+      event.preventDefault();
+      animateStep(-1);
+    }
+    if (event.key === 'ArrowRight') {
+      event.preventDefault();
+      animateStep(1);
+    }
+  });
+
+  window.addEventListener('resize', () => {
+    clearTimeout(resizeTimer);
+    resizeTimer = setTimeout(syncLayout, 140);
+  });
+
+  carousel.addEventListener('mouseenter', () => {
+    if (window.innerWidth > mobileBreakpoint) {
+      hoverPaused = true;
+      stopAuto();
+    }
+  });
+  carousel.addEventListener('mouseleave', () => {
+    if (window.innerWidth > mobileBreakpoint) {
+      hoverPaused = false;
+      startAuto();
+    }
+  });
+  carousel.addEventListener('focusin', () => {
+    hoverPaused = true;
+    stopAuto();
+  });
+  carousel.addEventListener('focusout', () => {
+    hoverPaused = false;
+    startAuto();
+  });
+
+  carousel.addEventListener('touchstart', handleTouchStart, { passive: true });
+  carousel.addEventListener('touchmove', handleTouchMove, { passive: false });
+  carousel.addEventListener('touchend', handleTouchEnd, { passive: true });
+  carousel.addEventListener('touchcancel', handleTouchEnd, { passive: true });
+  document.addEventListener('visibilitychange', () => document.hidden ? stopAuto() : startAuto());
+
+  updatePauseControl();
+  renderStatic();
+  startAuto();
 }
 
 renderProducts(products);
