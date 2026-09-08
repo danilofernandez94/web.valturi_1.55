@@ -28,6 +28,51 @@
           "value": "on"
         }
       ]
+    },
+    {
+      "source": "/assets/(.*)",
+      "headers": [
+        {
+          "key": "Cache-Control",
+          "value": "public, max-age=86400, stale-while-revalidate=604800"
+        }
+      ]
+    }
+  ],
+  "framework": null,
+  "buildCommand": "node scripts/build-site.mjs",
+  "outputDirectory": "dist",
+  "cleanUrls": false,
+  "trailingSlash": false,
+  "redirects": [
+    {
+      "source": "/index.html",
+      "destination": "/",
+      "permanent": true
+    },
+    {
+      "source": "/material.html",
+      "has": [
+        {
+          "type": "query",
+          "key": "id",
+          "value": "(?<materialId>pana-panne|pana-thor|pana-hulk|pana-velutti|pana-velvet|lino-boucle-largo|lino-dot|lino-mecha|lino-spazio|lino-scandal|cuerina-dakota|cuerina-legards|cuerina-marbella|cuerina-nebraska|cuero-vacuno-mantra|cuero-vacuno-novapelli|cuero-vacuno-riviera|cuero-vacuno-stragrain|sheep)"
+        }
+      ],
+      "destination": "/materiales/:materialId.html",
+      "permanent": true
+    },
+    {
+      "source": "/producto.html",
+      "has": [
+        {
+          "type": "query",
+          "key": "id",
+          "value": "(?<productId>silla-nordica-lino|banqueta-canelon|cabecera-curva|almohadon-premium|sillon-curvo|respaldo-botones)"
+        }
+      ],
+      "destination": "/productos/:productId.html",
+      "permanent": true
     }
   ]
 }

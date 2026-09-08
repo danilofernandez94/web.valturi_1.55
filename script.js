@@ -5,9 +5,9 @@ const SITE_CONFIG = {
 };
 
 const products = [
-  { id:'silla-nordica-lino', name:'Silla Nórdica Lino', price:'$ 185.000', priceValue:185000, category:'Sillas', shortDescription:'Silla tapizada para comedor o escritorio con terminación en lino.', description:'Ideal para sumar calidez y textura a livings, comedores o espacios de trabajo. El objetivo de este catálogo es mostrar el producto y derivar la consulta a WhatsApp.', features:['Tapizado premium','Terminación prolija','Consulta personalizada por color'], image:'assets/product-01.svg' },
+  { id:'silla-nordica-lino', name:'Silla Nórdica Lino', price:'$ 185.000', priceValue:185000, category:'Sillas', shortDescription:'Silla tapizada para comedor o escritorio con terminación en lino.', description:'Ideal para sumar calidez y textura a livings, comedores o espacios de trabajo. Consultanos por las opciones de tapizado y terminación para tu espacio.', features:['Tapizado premium','Terminación prolija','Consulta personalizada por color'], image:'assets/product-01.svg' },
   { id:'banqueta-canelon', name:'Banqueta Canelón', price:'$ 142.000', priceValue:142000, category:'Banquetas', shortDescription:'Banqueta compacta con detalle canelón y estructura firme.', description:'Pensada para barras, desayunadores o sectores de apoyo. Podés adaptar tela, tono y terminación según disponibilidad.', features:['Opciones de tela','Medidas consultables','Salida directa a WhatsApp'], image:'assets/product-02.svg' },
-  { id:'cabecera-curva', name:'Cabecera Curva', price:'$ 260.000', priceValue:260000, category:'Dormitorio', shortDescription:'Cabecera tapizada con líneas suaves y estética contemporánea.', description:'Una pieza pensada para vestir el dormitorio con una solución elegante y funcional. En la versión final podés sumar más variantes.', features:['Diseño a medida','Asesoramiento en telas','Presupuesto por WhatsApp'], image:'assets/product-03.svg' },
+  { id:'cabecera-curva', name:'Cabecera Curva', price:'$ 260.000', priceValue:260000, category:'Dormitorio', shortDescription:'Cabecera tapizada con líneas suaves y estética contemporánea.', description:'Una pieza pensada para vestir el dormitorio con una solución elegante y funcional. Consultanos por las medidas y alternativas de tapizado.', features:['Diseño a medida','Asesoramiento en telas','Presupuesto por WhatsApp'], image:'assets/product-03.svg' },
   { id:'almohadon-premium', name:'Almohadón Premium', price:'$ 38.000', priceValue:38000, category:'Decoración', shortDescription:'Almohadón decorativo para sumar textura y contraste.', description:'Producto ideal para acompañar trabajos de tapicería o complementar una ambientación ya resuelta.', features:['Varias medidas','Diferentes tonos','Consulta directa'], image:'assets/product-04.svg' },
   { id:'sillon-curvo', name:'Sillón Curvo', price:'$ 590.000', priceValue:590000, category:'Sillones', shortDescription:'Sillón protagonista para living, lobby o rincón de lectura.', description:'Modelo pensado para destacar en espacios con una estética más cálida y contemporánea.', features:['Opciones de género','Posibilidad de personalización','Atención por WhatsApp'], image:'assets/product-05.svg' },
   { id:'respaldo-botones', name:'Respaldo Botones', price:'$ 320.000', priceValue:320000, category:'Dormitorio', shortDescription:'Respaldo capitoné para dormitorios con una presencia clásica.', description:'Una opción visualmente fuerte para proyectos que buscan un detalle decorativo más marcado.', features:['Capitoné artesanal','Hecho a medida','Consulta personalizada'], image:'assets/product-06.svg' }
@@ -40,57 +40,24 @@ function trackWhatsapp(location, product = null) {
   pushDataLayer('whatsapp_click', params);
   trackGoogleEvent('generate_lead', { lead_source: 'whatsapp', ...params });
 }
-function makeElement(tag, className, text) {
-  const el = document.createElement(tag);
-  if (className) el.className = className;
-  if (typeof text === 'string') el.textContent = text;
-  return el;
+function escapeHtml(value) {
+  return String(value).replace(/[&<>"']/g, (char) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[char]));
+}
+
+function productCardMarkup(product) {
+  const url = `/productos/${encodeURIComponent(product.id)}.html`;
+  return `<article class="product-card card" data-product-id="${escapeHtml(product.id)}" data-product-name="${escapeHtml(product.name)}">
+    <a class="product-thumb" href="${url}" data-product-action="view" data-product-id="${escapeHtml(product.id)}" aria-label="Ver ${escapeHtml(product.name)}"><img src="${escapeHtml(product.image)}" alt="${escapeHtml(product.name)}" loading="lazy" decoding="async" width="1200" height="900"></a>
+    <div class="product-meta"><div><h3>${escapeHtml(product.name)}</h3><p>${escapeHtml(product.category)}</p></div><div class="product-price">${escapeHtml(product.price)}</div></div>
+    <p>${escapeHtml(product.shortDescription)}</p>
+    <div class="product-actions"><a class="link-button link-muted" href="${url}" data-product-action="view" data-product-id="${escapeHtml(product.id)}">Ver producto</a><a class="link-button link-accent" href="${escapeHtml(createWhatsappLink(formatInquiryMessage(product.name)))}" target="_blank" rel="noopener noreferrer" data-whatsapp data-track-location="catalog_card" data-product-id="${escapeHtml(product.id)}">Consultar</a></div>
+  </article>`;
 }
 
 function renderProducts(list) {
   const grid = document.getElementById('productGrid');
   if (!grid) return;
-  grid.replaceChildren();
-  if (!list.length) {
-    const empty = makeElement('div','empty-state','No encontramos productos con esa búsqueda.');
-    empty.setAttribute('role','status');
-    grid.appendChild(empty);
-    return;
-  }
-  const fragment = document.createDocumentFragment();
-  list.forEach((product) => {
-    const article = makeElement('article','product-card card');
-    article.dataset.productId = product.id;
-    article.dataset.productName = product.name;
-
-    const thumb = makeElement('a','product-thumb');
-    thumb.href = `producto.html?id=${encodeURIComponent(product.id)}`;
-    thumb.dataset.productAction = 'view';
-    thumb.dataset.productId = product.id;
-    thumb.setAttribute('aria-label', `Ver ${product.name}`);
-    const img = document.createElement('img');
-    img.src = product.image; img.alt = product.name; img.loading = 'lazy'; img.decoding = 'async'; img.width = 1200; img.height = 900;
-    thumb.appendChild(img);
-
-    const meta = makeElement('div','product-meta');
-    const metaText = document.createElement('div');
-    metaText.append(makeElement('h3','',product.name), makeElement('p','',product.category));
-    meta.append(metaText, makeElement('div','product-price',product.price));
-
-    const description = makeElement('p','',product.shortDescription);
-    const actions = makeElement('div','product-actions');
-    const view = makeElement('a','link-button link-muted','Ver producto');
-    view.href = `producto.html?id=${encodeURIComponent(product.id)}`;
-    view.dataset.productAction = 'view'; view.dataset.productId = product.id;
-    const consult = makeElement('a','link-button link-accent','Consultar');
-    consult.href = createWhatsappLink(formatInquiryMessage(product.name));
-    consult.target = '_blank'; consult.rel = 'noopener noreferrer';
-    consult.dataset.whatsapp = ''; consult.dataset.trackLocation = 'catalog_card'; consult.dataset.productId = product.id;
-    actions.append(view, consult);
-    article.append(thumb, meta, description, actions);
-    fragment.appendChild(article);
-  });
-  grid.appendChild(fragment);
+  grid.innerHTML = list.length ? list.map(productCardMarkup).join('') : '<div class="empty-state" role="status">No encontramos productos con esa búsqueda.</div>';
 }
 
 function bindSearch() {
@@ -161,7 +128,6 @@ function setupMenu() {
   const menuToggle = document.getElementById('menuToggle');
   const nav = document.getElementById('mainNav');
   if (!menuToggle || !nav) return;
-  let returnFocus = false;
   const closeMenu = (focusToggle = false) => {
     nav.classList.remove('open');
     menuToggle.classList.remove('is-open');
@@ -196,7 +162,7 @@ function setupMenu() {
 function updateProductMetadata(product) {
   const title = `${product.name} | Valturi Tapizados`;
   const description = `${product.shortDescription} Consultá disponibilidad y opciones por WhatsApp.`;
-  const url = `${SITE_CONFIG.baseUrl}/producto.html?id=${encodeURIComponent(product.id)}`;
+  const url = `${SITE_CONFIG.baseUrl}/productos/${encodeURIComponent(product.id)}.html`;
   const image = `${SITE_CONFIG.baseUrl}/${product.image}`;
   document.title = title;
   const setContent = (id, value) => { const el = document.getElementById(id); if (el) el.setAttribute('content', value); };
@@ -206,31 +172,33 @@ function updateProductMetadata(product) {
   if (structured) structured.textContent = JSON.stringify({
     '@context':'https://schema.org', '@type':'Product', name:product.name, image:[image], description:product.description, sku:product.id,
     brand:{'@type':'Brand',name:'Valturi'},
-    offers:{'@type':'Offer',url,priceCurrency:'ARS',price:product.priceValue,itemCondition:'https://schema.org/NewCondition',availability:'https://schema.org/InStock'}
+    offers:{'@type':'Offer',url,priceCurrency:'ARS',price:product.priceValue,itemCondition:'https://schema.org/NewCondition'}
   });
+}
+
+function productDetailMarkup(product) {
+  return `<div class="detail-layout">
+    <div class="detail-media card"><img src="${escapeHtml(product.image)}" alt="${escapeHtml(product.name)}" width="1200" height="900" decoding="async"></div>
+    <div class="detail-copy"><span class="detail-tag">${escapeHtml(product.category)}</span><h1>${escapeHtml(product.name)}</h1><div class="detail-price">${escapeHtml(product.price)}</div><p>${escapeHtml(product.description)}</p>
+      <ul class="detail-list">${product.features.map((feature) => `<li>${escapeHtml(feature)}</li>`).join('')}</ul>
+      <div class="contact-actions"><a class="button button-primary" href="${escapeHtml(createWhatsappLink(formatInquiryMessage(product.name)))}" target="_blank" rel="noopener noreferrer" data-whatsapp data-track-location="product_detail" data-product-id="${escapeHtml(product.id)}">Consultar por WhatsApp</a><a class="button button-secondary" href="/productos.html">Volver al catálogo</a></div>
+    </div>
+  </div>`;
 }
 
 function renderProductDetail() {
   const container = document.getElementById('productDetail');
   if (!container) return;
-  const params = new URLSearchParams(window.location.search);
-  const product = products.find((item) => item.id === params.get('id')) || products[0];
-  updateProductMetadata(product);
-  container.replaceChildren();
-
-  const layout = makeElement('div','detail-layout');
-  const media = makeElement('div','detail-media card');
-  const img = document.createElement('img'); img.src=product.image; img.alt=product.name; img.width=1200; img.height=900; img.decoding='async';
-  media.appendChild(img);
-  const copy = makeElement('div','detail-copy');
-  copy.append(makeElement('span','detail-tag',product.category), makeElement('h1','',product.name), makeElement('div','detail-price',product.price), makeElement('p','',product.description));
-  const list = makeElement('ul','detail-list');
-  product.features.forEach((feature) => list.appendChild(makeElement('li','',feature)));
-  const actions = makeElement('div','contact-actions');
-  const consult = makeElement('a','button button-primary','Consultar por WhatsApp');
-  consult.href=createWhatsappLink(formatInquiryMessage(product.name)); consult.target='_blank'; consult.rel='noopener noreferrer'; consult.dataset.whatsapp=''; consult.dataset.trackLocation='product_detail'; consult.dataset.productId=product.id;
-  const back = makeElement('a','button button-secondary','Volver al catálogo'); back.href='productos.html';
-  actions.append(consult,back); copy.append(list,actions); layout.append(media,copy); container.appendChild(layout);
+  const id = document.body.dataset.productId || new URLSearchParams(window.location.search).get('id');
+  const product = products.find((item) => item.id === id);
+  if (!product) {
+    container.innerHTML = '<div class="not-found"><h1>No encontramos ese producto.</h1><p>Explorá los modelos del catálogo o consultanos por tu proyecto.</p><a class="button button-primary" href="/productos.html">Ver productos</a></div>';
+    return;
+  }
+  if (container.dataset.rendered !== product.id) {
+    updateProductMetadata(product);
+    container.innerHTML = productDetailMarkup(product);
+  }
   const ecommerce = { currency:'ARS', value:product.priceValue, items:[{item_id:product.id,item_name:product.name,item_category:product.category,price:product.priceValue,currency:'ARS'}] };
   pushDataLayer('product_view',ecommerce); trackGoogleEvent('view_item',ecommerce);
 }
@@ -323,12 +291,42 @@ function setupHomeCarousel() {
   const getSlotFor = (cardIndex, index, slots) => slots[slotDistance(cardIndex, index)] || slots[slots.length - 1];
 
   // Symmetric easing: very gentle take-off and landing, no abrupt velocity change.
-  const easeInOutQuint = (t) => t < .5
-    ? 16 * t * t * t * t * t
-    : 1 - Math.pow(-2 * t + 2, 5) / 2;
+  const easeInOutSine = (t) => (1 - Math.cos(Math.PI * t)) / 2;
+  const easeOutCubic = (t) => 1 - Math.pow(1 - t, 3);
+  let layout = null;
+  let handoffCard = null;
+  let handoffIndex = -1;
+  let viewportWidth = window.innerWidth;
+
+  function measureLayout() {
+    // Read layout once, before writing any transforms. Reading offsetWidth
+    // between card updates forced six layout passes on every animation frame.
+    layout = {
+      width: carousel.clientWidth,
+      height: carousel.clientHeight || carousel.offsetHeight,
+      cardWidth: cards[0].offsetWidth
+    };
+  }
+
+  function clearHandoff() {
+    handoffCard?.remove();
+    handoffCard = null;
+    handoffIndex = -1;
+  }
+
+  function prepareHandoff(index) {
+    if (handoffCard && handoffIndex === index) return;
+    clearHandoff();
+    handoffCard = cards[index].cloneNode(true);
+    handoffCard.removeAttribute('data-home-card');
+    handoffCard.setAttribute('aria-hidden', 'true');
+    handoffCard.classList.add('fan-card-handoff');
+    carousel.appendChild(handoffCard);
+    handoffIndex = index;
+  }
 
   function applySlot(card, slot, dims) {
-    const x = dims.width * slot.x - card.offsetWidth / 2;
+    const x = dims.width * slot.x - dims.cardWidth / 2;
     const y = dims.height * slot.y;
     card.style.setProperty('--fan-x', `${x}px`);
     card.style.setProperty('--fan-y', `${y}px`);
@@ -387,21 +385,27 @@ function setupHomeCarousel() {
 
   function renderStatic(index = activeIndex) {
     const slots = getSlots();
-    const dims = { width: carousel.clientWidth, height: carousel.clientHeight || carousel.offsetHeight };
+    if (!layout) measureLayout();
+    const dims = layout;
     cards.forEach((card, cardIndex) => applySlot(card, getSlotFor(cardIndex, index, slots), dims));
+    clearHandoff();
     updateA11y();
   }
 
   function renderTransition(progress, direction, fromIndex = activeIndex) {
     const slots = getSlots();
-    const dims = { width: carousel.clientWidth, height: carousel.clientHeight || carousel.offsetHeight };
+    const dims = layout;
     const targetIndex = (fromIndex + direction + total) % total;
+    prepareHandoff(fromIndex);
 
     cards.forEach((card, cardIndex) => {
       const rawCurrent = getSlotFor(cardIndex, fromIndex, slots);
       const rawTarget = getSlotFor(cardIndex, targetIndex, slots);
       const pair = getWrapSafePair(rawCurrent, rawTarget, direction);
-      const z = progress < .48 ? pair.current.z : pair.target.z;
+      // Keep the destination stack fixed for the entire movement. An overlay
+      // of the outgoing photo hands over smoothly; changing z-index at 48%
+      // made overlapping photos appear to jump even with continuous transforms.
+      const z = pair.target.z;
       const slot = {
         x: lerp(pair.current.x, pair.target.x, progress),
         y: lerp(pair.current.y, pair.target.y, progress),
@@ -411,6 +415,11 @@ function setupHomeCarousel() {
         z
       };
       applySlot(card, slot, dims);
+      if (cardIndex === fromIndex) {
+        const blend = clamp((progress - .15) / .7, 0, 1);
+        const opacity = slot.opacity * (1 - blend * blend * (3 - 2 * blend));
+        applySlot(handoffCard, { ...slot, opacity, z: 8 }, dims);
+      }
     });
   }
 
@@ -442,7 +451,7 @@ function setupHomeCarousel() {
     carousel.classList.remove('is-animating');
   }
 
-  function animateProgress({ direction, fromIndex, fromProgress, toProgress, duration, commit, manual }) {
+  function animateProgress({ direction, fromIndex, fromProgress, toProgress, duration, commit, manual, released = false }) {
     cancelAnimation();
     stopAuto();
     isAnimating = true;
@@ -454,7 +463,7 @@ function setupHomeCarousel() {
 
     const frame = (now) => {
       const elapsed = clamp((now - startedAt) / scaledDuration, 0, 1);
-      const eased = easeInOutQuint(elapsed);
+      const eased = released ? easeOutCubic(elapsed) : easeInOutSine(elapsed);
       const progress = lerp(fromProgress, toProgress, eased);
       renderTransition(progress, direction, fromIndex);
 
@@ -469,7 +478,8 @@ function setupHomeCarousel() {
       // Keep transitions disabled while the invisible wrap card is put in its
       // true resting slot. This is the key to eliminating the quick snap.
       renderStatic(activeIndex);
-      requestAnimationFrame(() => {
+      animationFrame = requestAnimationFrame(() => {
+        animationFrame = null;
         isAnimating = false;
         carousel.classList.remove('is-animating');
         if (manual) {
@@ -546,7 +556,8 @@ function setupHomeCarousel() {
         toProgress: 1,
         duration: MOTION_DURATION,
         commit: true,
-        manual: true
+        manual: true,
+        released: true
       });
     } else {
       resetDrag();
@@ -557,13 +568,14 @@ function setupHomeCarousel() {
         toProgress: 0,
         duration: 520,
         commit: false,
-        manual: false
+        manual: false,
+        released: true
       });
     }
   }
 
   function handleTouchStart(event) {
-    if (window.innerWidth > mobileBreakpoint || !event.touches.length || isAnimating) return;
+    if (window.innerWidth > mobileBreakpoint || event.touches.length !== 1 || isAnimating) return;
     const touch = event.touches[0];
     startX = touch.clientX;
     startY = touch.clientY;
@@ -591,7 +603,7 @@ function setupHomeCarousel() {
     if (!dragLocked) return;
     event.preventDefault();
     dragDirection = dx < 0 ? 1 : -1;
-    dragProgress = clamp(Math.abs(dx) / (carousel.clientWidth * .68), 0, 1);
+    dragProgress = clamp(Math.abs(dx) / (layout.width * .68), 0, 1);
     renderTransition(dragProgress, dragDirection, activeIndex);
   }
 
@@ -603,6 +615,7 @@ function setupHomeCarousel() {
     cancelAnimation();
     setDraggingState(false);
     resetDrag();
+    measureLayout();
     renderStatic();
     startAuto();
   }
@@ -629,6 +642,10 @@ function setupHomeCarousel() {
   });
 
   window.addEventListener('resize', () => {
+    // Mobile browser toolbars resize the viewport height while scrolling.
+    // That must not cancel a swipe or an animation halfway through.
+    if (window.innerWidth === viewportWidth) return;
+    viewportWidth = window.innerWidth;
     clearTimeout(resizeTimer);
     resizeTimer = setTimeout(syncLayout, 140);
   });
@@ -657,7 +674,7 @@ function setupHomeCarousel() {
   carousel.addEventListener('touchstart', handleTouchStart, { passive: true });
   carousel.addEventListener('touchmove', handleTouchMove, { passive: false });
   carousel.addEventListener('touchend', handleTouchEnd, { passive: true });
-  carousel.addEventListener('touchcancel', handleTouchEnd, { passive: true });
+  carousel.addEventListener('touchcancel', () => { if (isDragging) settleDrag(false); }, { passive: true });
   document.addEventListener('visibilitychange', () => document.hidden ? stopAuto() : startAuto());
 
   updatePauseControl();
@@ -665,11 +682,14 @@ function setupHomeCarousel() {
   startAuto();
 }
 
-renderProducts(products);
-bindSearch();
-setupWhatsappButtons();
-setupTracking();
-setupMenu();
-setupHomeCarousel();
-setupBeforeAfter();
-renderProductDetail();
+// The static build also uses the renderers above, without a browser DOM.
+if (typeof document !== 'undefined') {
+  if (!document.getElementById('productGrid')?.hasChildNodes()) renderProducts(products);
+  bindSearch();
+  setupWhatsappButtons();
+  setupTracking();
+  setupMenu();
+  setupHomeCarousel();
+  setupBeforeAfter();
+  renderProductDetail();
+}

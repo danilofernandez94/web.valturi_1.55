@@ -414,7 +414,7 @@ h3 {
     0 12px 28px rgba(31, 26, 23, 0.10),
     inset 0 1px 0 rgba(255, 255, 255, 0.14);
 }
-.hero-fan-carousel .fan-card:first-child { z-index: 4; }
+.fan-card-handoff { pointer-events: none !important; }
 .fan-card.is-hidden { pointer-events: none; }
 .fan-card img,
 .gallery-card img,
@@ -1368,3 +1368,10 @@ h3 {
     transition-duration: 0.01ms !important;
   }
 }
+
+/* Service answers use the existing type, spacing and color system. */
+.service-faq { max-width: 900px; margin-inline: auto; }
+.service-faq details { padding: 20px 0; border-bottom: 1px solid var(--line); }
+.service-faq summary { cursor: pointer; font-size: 1.1rem; font-weight: 600; line-height: 1.5; }
+.service-faq details p { padding-top: 14px; color: var(--muted); line-height: 1.72; }
+.service-faq p a { color: var(--accent-strong); text-decoration: underline; text-underline-offset: 3px; }

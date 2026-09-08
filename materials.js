@@ -40,7 +40,7 @@ const APPLICATIONS = {
   cortineria: {
     title: "Cortinería",
     eyebrow: "Caída, luz y textura",
-    description: "Gazas, tejidos, tusor liviano y pesado, y blackout. Esta familia queda preparada para sumar muestrarios reales, lectura de transparencia y caída.",
+    description: "Gazas, tejidos, tusor liviano y pesado, y blackout. Consultanos por los muestrarios y las opciones de transparencia y caída para tu ambiente.",
     status: "Colecciones en preparación",
     families: [],
     image: "assets/applications/cortineria.webp"
@@ -80,7 +80,7 @@ const UPCOMING = {
     ],
     [
       "Lonas",
-      "Colecciones preparadas para sumar variantes y subcategorías."
+      "Consultanos por las opciones de lona para tu proyecto de exterior."
     ]
   ]
 };
@@ -1832,7 +1832,7 @@ function collectionPreview(item) {
 }
 
 function renderCollectionCard(item) {
-  return `<a class="collection-card" href="material.html?id=${encodeURIComponent(item.id)}" data-collection-id="${item.id}">
+  return `<a class="collection-card" href="/materiales/${encodeURIComponent(item.id)}.html" data-collection-id="${item.id}">
     ${collectionPreview(item)}
     <div class="collection-card-copy">
       <div class="collection-card-meta"><span>${familyLabel(item.family)}</span><span>${item.colors.length} colores</span></div>
@@ -1889,16 +1889,11 @@ function renderEssentialSheet(item) {
   </section>`;
 }
 
-function renderMaterialDetail() {
-  const root = document.getElementById('materialDetail');
-  if (!root) return;
-  const params = new URLSearchParams(window.location.search);
-  const item = findCollection(params.get('id')) || MATERIAL_COLLECTIONS[0];
-  document.title = `${item.title} | Valturi`;
+function materialDetailMarkup(item) {
   const intro = item.intro || `${item.title} reúne ${item.colors.length} referencias de color.`;
   const tags = item.tags || [familyLabel(item.family), `${item.colors.length} colores`];
   const uses = item.uses || ['Tapicería interior'];
-  root.innerHTML = `
+  return `
     <section class="material-detail-hero">
       <nav class="material-breadcrumb" aria-label="Breadcrumb"><a href="materiales.html">Materiales</a><span>•</span><span>${familyLabel(item.family)}</span><span>•</span><span>${item.title}</span></nav>
       <div class="material-detail-grid">
@@ -1911,8 +1906,20 @@ function renderMaterialDetail() {
       <div class="material-colors-grid">${item.colors.map((color, index) => `<button type="button" class="material-color-card" data-color-index="${index}"><div class="material-color-media"><img src="${colorMain(color)}" alt="${item.title} · ${color.name}" loading="lazy" decoding="async" class="texture-img" /></div><div class="material-color-caption"><strong>${color.name}</strong><span>Ver textura</span></div></button>`).join('')}</div>
     </section>
     <section class="material-info-grid"><article class="material-info-card"><span class="eyebrow">Aplicación</span><h3>Usos sugeridos</h3><ul>${uses.map((use) => `<li>${use}</li>`).join('')}</ul></article><article class="material-info-card"><span class="eyebrow">Referencia de color</span><h3>La luz también es parte del material.</h3><p>Los tonos oscuros pueden verse más claros bajo sol directo. Siempre recomendamos validar el color final con la muestra física y, cuando exista, sumar una segunda toma sin incidencia directa de sol.</p></article></section>
-    <section class="material-future-grid"><article class="material-future-card"><span class="eyebrow">Próxima capa</span><h3>Aplicado en proyectos</h3><p>Esta sección queda preparada para sumar trabajos reales de Valturi realizados con cada colección y, cuando corresponda, con el tono exacto.</p></article>${item.performanceNote ? `<article class="material-future-card"><span class="eyebrow">Performance</span><h3>Propiedades en acción</h3><p>${item.performanceNote}</p></article>` : ''}</section>
-    <div class="material-lightbox" id="materialLightbox" aria-hidden="true"><div class="material-lightbox-panel"><div class="material-lightbox-head"><div><strong id="materialLightboxTitle"></strong><span>Vista completa y acercamiento de textura en alta definición.</span></div><button type="button" class="material-lightbox-close" aria-label="Cerrar">×</button></div><div class="material-lightbox-views"><figure><div class="lightbox-image-stage"><img id="materialLightboxMain" src="" alt="" /></div></figure><figure><div class="lightbox-image-stage is-detail"><img id="materialLightboxZoom" src="" alt="" /></div></figure></div></div></div>`;
+    <section class="material-future-grid"><article class="material-future-card"><span class="eyebrow">Tu proyecto</span><h3>Encontrá una combinación para tu espacio.</h3><p>Podemos acompañarte en la elección de telas, colores y terminaciones según el mueble y el uso que le das. <a href="/contacto.html">Consultanos sobre tu proyecto.</a></p></article></section>
+    <div class="material-lightbox" id="materialLightbox" aria-hidden="true"><div class="material-lightbox-panel"><div class="material-lightbox-head"><div><strong id="materialLightboxTitle"></strong><span>Vista completa y acercamiento de textura en alta definición.</span></div><button type="button" class="material-lightbox-close" aria-label="Cerrar">×</button></div><div class="material-lightbox-views"><figure><div class="lightbox-image-stage"><img id="materialLightboxMain" alt="" /></div></figure><figure><div class="lightbox-image-stage is-detail"><img id="materialLightboxZoom" alt="" /></div></figure></div></div></div>`;
+}
+
+function renderMaterialDetail() {
+  const root = document.getElementById('materialDetail');
+  if (!root) return;
+  const id = document.body.dataset.materialId || new URLSearchParams(window.location.search).get('id');
+  const item = findCollection(id);
+  if (!item) {
+    root.innerHTML = '<section class="section not-found"><h1>No encontramos ese material.</h1><p>Podés explorar las colecciones disponibles en nuestro catálogo.</p><a class="button button-primary" href="/materiales.html">Ver materiales</a></section>';
+    return;
+  }
+  if (root.dataset.rendered !== item.id) root.innerHTML = materialDetailMarkup(item);
   setupMaterialLightbox(item);
 }
 
