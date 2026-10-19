@@ -1,7 +1,8 @@
-/* Independiente del carrusel y del formulario de la home actual. */
+/* Formulario de la home principal y su copia de revisión home2. */
 (() => {
   'use strict';
   const WHATSAPP_NUMBER = '543515930925';
+  const sourcePath = document.body?.dataset.homeVariant === 'home2' ? '/home2.html' : '/';
   const furnitureNames = { sillon: 'un sillón', sillas: 'unas sillas', otro: 'otro mueble' };
   const form = document.getElementById('lead-form');
   const status = document.getElementById('form-status');
@@ -18,7 +19,7 @@
 
   // Nunca incluir nombre, teléfono, localidad ni texto de WhatsApp en los eventos.
   function track(eventName, extra = {}) {
-    const parameters = { form_id: 'home2_consulta', page_variant: 'home2', ...extra };
+    const parameters = { form_id: 'home2_consulta', page_variant: sourcePath === '/' ? 'home' : 'home2', ...extra };
     window.dataLayer = window.dataLayer || [];
     if (typeof window.gtag === 'function') window.gtag('event', eventName, parameters);
     else window.dataLayer.push({ event: eventName, ...parameters });
@@ -101,7 +102,7 @@
       location: form.elements.location.value.trim(),
       consent: form.elements.consent.checked,
       website: form.elements.website.value,
-      source: '/home2.html',
+      source: sourcePath,
       campaign: campaign(),
       referrer: referrer()
     };

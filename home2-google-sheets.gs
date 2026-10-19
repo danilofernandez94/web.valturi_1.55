@@ -84,7 +84,8 @@ function doPost(event) {
     const count = Number(cache.get(rateKey) || 0);
     if (count >= 8) return home2Json_({ ok: false, code: 'RATE_LIMITED' });
     const campaign = lead.campaign || {};
-    const row = [new Date().toISOString(), lead.leadId, 'Nueva', name, phone, furniture[lead.furniture], location, 'Sí · consulta', '/home2.html', home2Text_(campaign.utm_source, 120), home2Text_(campaign.utm_medium, 120), home2Text_(campaign.utm_campaign, 120), home2Text_(campaign.utm_content, 120), home2Text_(campaign.utm_term, 120), home2Text_(lead.referrer, 300)].map(home2Cell_);
+    const origin = lead.source === '/home2.html' ? '/home2.html' : '/';
+    const row = [new Date().toISOString(), lead.leadId, 'Nueva', name, phone, furniture[lead.furniture], location, 'Sí · consulta', origin, home2Text_(campaign.utm_source, 120), home2Text_(campaign.utm_medium, 120), home2Text_(campaign.utm_campaign, 120), home2Text_(campaign.utm_content, 120), home2Text_(campaign.utm_term, 120), home2Text_(lead.referrer, 300)].map(home2Cell_);
     sheet.getRange(lastRow + 1, 1, 1, row.length).setNumberFormat('@').setValues([row]);
     SpreadsheetApp.flush();
     cache.put(rateKey, String(count + 1), 1200);
