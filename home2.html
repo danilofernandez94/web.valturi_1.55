@@ -1,0 +1,138 @@
+<!doctype html>
+<html lang="es-AR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Una nueva mirada para tus muebles | Valturi · Home 2</title>
+  <meta name="description" content="Retapizado y restauración de muebles en Córdoba. Descubrí el oficio, las texturas y los trabajos de Valturi y contanos qué querés renovar.">
+  <!-- Versión alternativa: no indexar hasta elegir la home definitiva. -->
+  <meta name="robots" content="noindex,follow">
+  <meta name="theme-color" content="#f4f0e8">
+  <link rel="canonical" href="https://web-valturi-1-55.vercel.app/home2.html">
+  <meta property="og:locale" content="es_AR">
+  <meta property="og:site_name" content="Valturi Tapizados">
+  <meta property="og:title" content="Una nueva mirada para tus muebles · Valturi">
+  <meta property="og:description" content="Oficio, texturas y una forma personal de habitar. Retapizado y restauración en Córdoba.">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://web-valturi-1-55.vercel.app/home2.html">
+  <meta property="og:image" content="https://web-valturi-1-55.vercel.app/assets/home-work-05-900.webp">
+  <meta property="og:image:alt" content="Sofá tapizado en tonos cálidos por Valturi">
+  <meta name="twitter:card" content="summary_large_image">
+  <link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
+  <link rel="preload" href="assets/fonts/Gilroy-Regular.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="preload" href="assets/fonts/Gilroy-Medium.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="stylesheet" href="home2.css">
+  <script src="analytics.js" defer></script>
+  <script src="home2.js" defer></script>
+</head>
+<body>
+  <a class="skip-link" href="#contenido">Ir al contenido</a>
+  <header class="site-header wrap">
+    <a class="wordmark header-brand" href="home2.html" aria-label="Valturi, inicio de esta versión">valturi</a>
+    <nav class="desktop-nav" aria-label="Principal">
+      <a href="#servicios">Qué hacemos</a>
+      <a href="#trabajos">Trabajos</a>
+      <a href="#materiales">Texturas</a>
+      <a href="#nosotros">La mirada Valturi</a>
+    </nav>
+    <a class="header-contact" href="#consulta">Hablemos <span aria-hidden="true">↗</span></a>
+  </header>
+
+  <main id="contenido">
+    <section class="hero wrap" aria-labelledby="hero-title">
+      <div class="hero-intro">
+        <p class="eyebrow"><span class="small-dot" aria-hidden="true"></span> Tapicería contemporánea · Córdoba</p>
+        <div class="wordmark hero-wordmark" aria-hidden="true">valturi</div>
+        <h1 id="hero-title">Volvé a elegir<br>tus muebles.</h1>
+        <p class="hero-description">Retapizado y restauración en Córdoba.<br>El oficio de renovar lo que tiene valor para vos.</p>
+        <svg class="hero-stitch" viewBox="0 0 180 170" fill="none" aria-hidden="true"><path d="M6 160V87C6 43 40 8 84 8h80v73c0 44-34 79-78 79H6Z" stroke="currentColor" stroke-width="1.3"/><path d="M19 147V88c0-37 28-67 65-67h67v60c0 37-28 66-65 66H19Z" stroke="currentColor" stroke-dasharray="3 6"/></svg>
+      </div>
+
+      <div class="inquiry" id="consulta">
+        <div class="form-heading"><span class="eyebrow">Tu próxima transformación</span><span class="tiny-arrow" aria-hidden="true">↗</span></div>
+        <h2>Empecemos<br>por tu idea.</h2>
+        <p class="form-intro">Dejanos estos datos y seguimos por WhatsApp. Las fotos y los detalles los vemos ahí.</p>
+        <form id="lead-form" method="post" action="/api/home2-leads" aria-describedby="form-privacy">
+          <div class="field-row">
+            <div class="field"><label for="lead-name">Tu nombre</label><input id="lead-name" name="name" autocomplete="given-name" minlength="2" maxlength="80" placeholder="¿Cómo te llamás?" required></div>
+            <div class="field"><label for="lead-phone">WhatsApp</label><input id="lead-phone" name="phone" type="tel" autocomplete="tel" inputmode="tel" minlength="8" maxlength="30" placeholder="Ej. 351 123 4567" aria-describedby="phone-hint" required><span class="sr-only" id="phone-hint">Ingresá entre 8 y 15 dígitos, con código de área.</span></div>
+          </div>
+          <fieldset class="furniture-field"><legend>¿Qué querés renovar?</legend><div class="furniture-options">
+            <label><input type="radio" name="furniture" value="sillon" required><span>Sillón</span></label>
+            <label><input type="radio" name="furniture" value="sillas"><span>Sillas</span></label>
+            <label><input type="radio" name="furniture" value="otro"><span>Otro mueble</span></label>
+          </div></fieldset>
+          <div class="field"><label for="lead-location">Barrio o localidad</label><input id="lead-location" name="location" autocomplete="address-level2" minlength="2" maxlength="100" placeholder="¿Dónde está tu mueble?" required></div>
+          <div class="bot-field" aria-hidden="true"><label for="lead-website">Dejá este campo vacío</label><input id="lead-website" name="website" tabindex="-1" autocomplete="off"></div>
+          <div class="consent"><input id="lead-consent" type="checkbox" name="consent" required><div><label for="lead-consent">Acepto que Valturi use estos datos para responder a mi consulta.</label> <button class="privacy-trigger" type="button" data-privacy>Ver más</button></div></div>
+          <button class="button button-dark submit-button" type="submit"><span data-submit-label>Continuar por WhatsApp</span><span aria-hidden="true">↗</span></button>
+          <p class="form-note" id="form-privacy">Primero registramos tu consulta. Después, conversamos.</p>
+          <div id="form-status" class="form-status" role="status" aria-live="polite" tabindex="-1" hidden></div>
+          <a id="whatsapp-followup" class="recovery-link" href="https://wa.me/543515930925?text=Hola%20Valturi%2C%20quiero%20consultar%20por%20un%20retapizado." rel="noreferrer" hidden>Continuar por WhatsApp</a>
+          <noscript><p>Para registrar tu consulta activá JavaScript. También podés <a href="https://wa.me/543515930925">escribirnos directamente por WhatsApp</a>.</p></noscript>
+        </form>
+      </div>
+
+      <figure class="hero-photo">
+        <img src="assets/home-work-05-900.webp" srcset="assets/home-work-05-480.webp 480w, assets/home-work-05-900.webp 900w" sizes="(max-width: 760px) calc(100vw - 36px), (max-width: 1100px) 52vw, 700px" width="900" height="1200" alt="Sofá de dos cuerpos tapizado en tono arena, con almohadones y patas de madera" fetchpriority="high" decoding="async">
+        <figcaption><span>Hecho para seguir siendo parte.</span><span aria-hidden="true">01 / Valturi</span></figcaption>
+      </figure>
+    </section>
+
+    <div class="brand-strip wrap" aria-label="Nuestra forma de trabajar"><span>Oficio artesanal</span><span class="strip-star" aria-hidden="true">✳</span><span>Materiales con intención</span><span class="strip-star" aria-hidden="true">✳</span><span>Una mirada personal</span></div>
+
+    <section class="section wrap introduction" aria-labelledby="intro-title">
+      <p class="eyebrow section-label">01 / Una nueva mirada</p>
+      <div><h2 id="intro-title" class="large-heading">Hay muebles que<br>merecen <span class="serif-word">otra historia.</span></h2><p class="body-copy">Una forma que te encanta. Un rincón que pide un cambio. Una pieza que te acompaña hace años. Trabajamos sobre lo que ya existe para volver a darle lugar en tu casa.</p><a class="text-link" href="#consulta">Contanos sobre el tuyo <span aria-hidden="true">↗</span></a></div>
+      <figure class="intro-detail"><img src="assets/home-work-06-480.webp" width="480" height="640" loading="lazy" decoding="async" alt="Detalle de un apoyabrazos y almohadón tapizados con textura clara"><figcaption>De cerca, el detalle lo dice todo.</figcaption></figure>
+    </section>
+
+    <section class="services section wrap" id="servicios" aria-labelledby="services-title">
+      <div class="section-heading"><p class="eyebrow">02 / Qué hacemos</p><h2 id="services-title">Tu mueble. <span class="serif-word">Nuevas posibilidades.</span></h2></div>
+      <div class="service-grid">
+        <a class="service-card" href="#consulta" data-furniture="sillon"><span class="service-top"><span>01</span><span aria-hidden="true">↗</span></span><svg class="service-icon" viewBox="0 0 160 100" fill="none" aria-hidden="true"><path d="M30 69V35c0-9 7-16 16-16h68c9 0 16 7 16 16v34M30 48H19v36h122V48h-11M30 69h100M30 84v10m100-10v10M80 22v45"/></svg><h3>Retapizado de sillones</h3><p>Renová la tela, la comodidad y la presencia de esa pieza que reúne todo.</p><span class="service-link">Quiero renovar mi sillón</span></a>
+        <a class="service-card" href="#consulta" data-furniture="sillas"><span class="service-top"><span>02</span><span aria-hidden="true">↗</span></span><svg class="service-icon" viewBox="0 0 160 100" fill="none" aria-hidden="true"><path d="M49 62V17h62v45M43 62h74v13H43zM49 75l-6 20m68-20 6 20M57 26h46v28H57z"/></svg><h3>Retapizado de sillas</h3><p>Texturas, colores y terminaciones para volver a disfrutar cada encuentro.</p><span class="service-link">Quiero renovar mis sillas</span></a>
+        <a class="service-card" href="#consulta" data-furniture="otro"><span class="service-top"><span>03</span><span aria-hidden="true">↗</span></span><svg class="service-icon" viewBox="0 0 160 100" fill="none" aria-hidden="true"><path d="M32 75V49c0-27 21-43 48-43s48 16 48 43v26H32ZM24 75h112v13H24zM34 88v8m92-8v8M46 59c20-8 48-8 68 0M80 8v43"/></svg><h3>Restauración y otras piezas</h3><p>Respaldos, banquetas y muebles con historia. Evaluamos juntos qué necesita cada uno.</p><span class="service-link">Tengo otra pieza en mente</span></a>
+      </div>
+      <p class="section-footnote">Cada trabajo se evalúa según el estado del mueble, sus medidas y los materiales elegidos.</p>
+    </section>
+
+    <section class="work-section" id="trabajos" aria-labelledby="work-title">
+      <div class="wrap section">
+        <div class="section-heading work-heading"><div><p class="eyebrow">03 / Trabajos Valturi</p><h2 id="work-title">Ideas que ya<br>encontraron <span class="serif-word">su lugar.</span></h2></div><a class="text-link" href="trabajos.html">Ver todos los trabajos <span aria-hidden="true">↗</span></a></div>
+        <div class="project-grid">
+          <figure class="project project-large"><div class="project-image"><img src="assets/home-work-03-900.webp" srcset="assets/home-work-03-480.webp 480w, assets/home-work-03-900.webp 900w" sizes="(max-width: 760px) calc(100vw - 36px), 50vw" width="900" height="1200" loading="lazy" decoding="async" alt="Par de sillones grises de líneas curvas, apoyabrazos integrados y patas de madera"></div><figcaption><span>Sillones de líneas curvas</span><span>01</span></figcaption></figure>
+          <figure class="project project-small"><div class="project-image"><img src="assets/home-work-02-480.webp" width="480" height="640" loading="lazy" decoding="async" alt="Cuatro sillas de comedor retapizadas en tono cálido"></div><figcaption><span>Un nuevo encuentro</span><span>02</span></figcaption></figure>
+          <figure class="project project-wide"><div class="project-image rotated-frame"><img class="turn-image" src="assets/home-work-01-900.webp" srcset="assets/home-work-01-480.webp 480w, assets/home-work-01-900.webp 900w" sizes="(max-width: 760px) calc(100vw - 36px), 60vw" width="900" height="1200" loading="lazy" decoding="async" alt="Par de sillones con estructura de madera y tapizado gris"></div><figcaption><span>Madera, textura y carácter</span><span>03</span></figcaption></figure>
+          <div class="project-note"><svg class="loop-mark" viewBox="0 0 160 160" fill="none" aria-hidden="true"><path d="M21 139V81a60 60 0 0 1 60-60h58v58a60 60 0 0 1-60 60H21Z"/><path d="M42 118V82a40 40 0 0 1 40-40h36v36a40 40 0 0 1-40 40H42Z" stroke-dasharray="2 6"/></svg><p>La diferencia<br>está en <span class="serif-word">cómo se siente.</span></p><a class="text-link" href="#consulta">Pensemos tu proyecto <span aria-hidden="true">↗</span></a></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="materials-section section wrap" id="materiales" aria-labelledby="materials-title">
+      <div class="materials-intro"><p class="eyebrow">04 / El punto de partida</p><h2 id="materials-title">Primero,<br>la <span class="serif-word">sensación.</span></h2><p class="body-copy">Suave, con cuerpo, con carácter. Elegir una tela también es elegir cómo querés vivir tu espacio. Te acompañamos a encontrar la indicada para tu mueble y su uso.</p><a class="text-link" href="materiales.html">Explorar telas y materiales <span aria-hidden="true">↗</span></a></div>
+      <div class="swatch-grid">
+        <a class="swatch" href="materiales/sheep.html"><div class="swatch-image"><img src="assets/materials/sheep/crudo-main.webp" alt="Textura de la colección Sheep en color crudo" width="300" height="380" loading="lazy" decoding="async"></div><span class="swatch-name">Sheep <span>01</span></span><span class="swatch-note">Crudo · Textura envolvente</span></a>
+        <a class="swatch" href="materiales/pana-velvet.html"><div class="swatch-image"><img src="assets/materials/pana-velvet/azafran-main.webp" alt="Muestra de pana Velvet en color azafrán" width="300" height="380" loading="lazy" decoding="async"></div><span class="swatch-name">Pana Velvet <span>02</span></span><span class="swatch-note">Azafrán · Color con presencia</span></a>
+        <a class="swatch" href="materiales/cuero-vacuno-mantra.html"><div class="swatch-image"><img src="assets/materials/cuero-vacuno-mantra/chocolate-main.webp" alt="Muestra de cuero vacuno Mantra color chocolate" width="300" height="380" loading="lazy" decoding="async"></div><span class="swatch-name">Cuero Mantra <span>03</span></span><span class="swatch-note">Chocolate · Carácter natural</span></a>
+      </div>
+    </section>
+
+    <section class="process-section" aria-labelledby="process-title"><div class="wrap section">
+      <div class="section-heading"><p class="eyebrow">05 / Así empezamos</p><h2 id="process-title">Del “lo estoy pensando”<br>al <span class="serif-word">“hagámoslo”.</span></h2></div>
+      <ol class="process-grid"><li><span class="step-number">01</span><h3>Nos contás tu idea</h3><p>Completás el formulario y seguimos por WhatsApp. Ahí nos compartís fotos y medidas de tu mueble.</p></li><li><span class="step-number">02</span><h3>Lo pensamos juntos</h3><p>Evaluamos el trabajo, te orientamos con los materiales y conversamos sobre el presupuesto y los tiempos.</p></li><li><span class="step-number">03</span><h3>Le damos una nueva vida</h3><p>Con la propuesta acordada, coordinamos los próximos pasos y trabajamos en cada detalle.</p></li></ol>
+    </div></section>
+
+    <section class="about-section section wrap" id="nosotros" aria-labelledby="about-title">
+      <figure class="about-photo rotated-frame"><img class="turn-image" src="assets/home-work-04-900.webp" width="900" height="1200" loading="lazy" decoding="async" alt="Detalle de una silla de madera con asiento tapizado en tono natural"></figure>
+      <div class="about-copy"><p class="eyebrow">06 / La mirada Valturi</p><h2 id="about-title">El oficio de hacer.<br>La intención de <span class="serif-word">cuidar.</span></h2><p class="body-copy">Creemos en los muebles que tienen algo para contar. En el valor de una buena elección. Y en el trabajo artesanal que transforma una pieza sin perder lo que la hace propia.</p><p class="body-copy">Desde Córdoba, le damos una mirada cálida y contemporánea al retapizado y la restauración.</p><a class="text-link" href="nosotros.html">Conocé más de Valturi <span aria-hidden="true">↗</span></a></div>
+    </section>
+
+    <section class="closing-section" aria-labelledby="closing-title"><div class="wrap closing-inner"><div><p class="eyebrow">Tu mueble tiene una próxima historia.</p><h2 id="closing-title">La empezamos<br><span class="serif-word">cuando quieras.</span></h2></div><a class="button button-cream" href="#consulta">Contanos tu idea <span aria-hidden="true">↗</span></a><svg class="closing-stitch" viewBox="0 0 180 170" fill="none" aria-hidden="true"><path d="M6 160V87C6 43 40 8 84 8h80v73c0 44-34 79-78 79H6Z" stroke="currentColor"/><path d="M19 147V88c0-37 28-67 65-67h67v60c0 37-28 66-65 66H19Z" stroke="currentColor" stroke-dasharray="3 6"/></svg></div></section>
+  </main>
+
+  <footer class="site-footer wrap"><div class="footer-top"><a class="wordmark footer-wordmark" href="home2.html" aria-label="Valturi, volver arriba">valturi</a><p>Tapicería contemporánea.<br>Oficio y diseño en Córdoba.</p><div class="footer-links"><a href="#consulta">Hablemos de tu mueble ↗</a><a href="https://www.instagram.com/valturi.tapizados/" target="_blank" rel="noopener noreferrer">Instagram ↗</a><a href="contacto.html">Cómo encontrarnos ↗</a></div></div><div class="footer-bottom"><span>Villa Rivera Indarte · Córdoba, Argentina</span><span>Visitas con coordinación previa.</span><button class="privacy-trigger" type="button" data-privacy>Datos y privacidad</button><span>© <span id="footer-year">2026</span> Valturi</span></div></footer>
+
+  <dialog id="privacy-dialog" class="privacy-dialog" aria-labelledby="privacy-title"><button type="button" class="dialog-close" aria-label="Cerrar información de privacidad" data-close-privacy>×</button><p class="eyebrow">Tu consulta, con claridad</p><h2 id="privacy-title">Sobre tus datos</h2><p>Valturi solicita tu nombre, WhatsApp, tipo de mueble y zona para responder a tu consulta y dar seguimiento a tu proyecto.</p><p>Al enviar el formulario, estos datos se registran en una planilla de acceso restringido del equipo, si la conexión está activa. Si el registro falla, te lo indicamos antes de ofrecerte continuar por WhatsApp.</p><p>También guardamos la fecha, la página de origen y, cuando existen, los identificadores de campaña. Los datos de contacto no se incluyen en los eventos de medición que envía esta página.</p><p>WhatsApp se abre con un mensaje preparado: vos decidís enviarlo. Podés pedir que Valturi corrija o elimine tu consulta escribiendo al mismo canal.</p><a class="text-link" href="https://wa.me/543515930925?text=Hola%20Valturi%2C%20quiero%20consultar%20sobre%20mis%20datos.">Consultar sobre mis datos ↗</a></dialog>
+</body>
+</html>
