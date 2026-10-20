@@ -17,6 +17,47 @@ vm.runInContext(await read('script.js'), context);
 vm.runInContext(await read('materials.js'), context);
 const data = vm.runInContext('({ SITE_CONFIG, products, MATERIAL_COLLECTIONS, FAMILY_META, productCardMarkup, productDetailMarkup, materialDetailMarkup })', context);
 const base = data.SITE_CONFIG.baseUrl.replace(/\/$/, '');
+const homeSource = await read('index.html');
+const homeHeader = homeSource.match(/<header\b[\s\S]*?<\/header>/)[0];
+const homeFooter = homeSource.match(/<footer\b[\s\S]*?<\/footer>/)[0];
+const homeMenu = homeSource.match(/<dialog\b[^>]*id="mobile-menu"[\s\S]*?<\/dialog>/)[0];
+const homePrivacy = homeSource.match(/<dialog\b[^>]*id="privacy-dialog"[\s\S]*?<\/dialog>/)[0];
+const fallbackNav = homeSource.match(/<noscript><nav class="noscript-nav[\s\S]*?<\/noscript>/)[0];
+
+function sharedChrome(html, { file, catalog = false }) {
+  let header = homeHeader;
+  let footer = homeFooter;
+  let menu = homeMenu;
+  let privacy = homePrivacy;
+  if (file !== 'index.html') {
+    header = header.replace(/href="#/g, 'href="/#');
+    footer = footer.replace('href="#consulta"', 'href="/#consulta"');
+    menu = menu.replace('href="#consulta"', 'href="/#consulta"');
+  }
+  if (catalog) {
+    header = header.replace(/<a class="nav-contact"[\s\S]*?<\/a>/, '');
+    menu = menu.replace(/<a class="menu-talk"[\s\S]*?<\/a>/, '').replace(/<p class="menu-location"[\s\S]*?<\/p>/, '');
+    footer = footer.replace('class="site-footer"', 'class="site-footer catalog-footer"')
+      .replace(/<div class="social-links">[\s\S]*?<\/div>/, '')
+      .replace(/<div class="footer-map">[\s\S]*?<\/div>/, '')
+      .replace('Desde Córdoba, con oficio.', 'El archivo de texturas')
+      .replace('Bienvenidos <span class="serif-word">al taller.</span>', 'Materiales para <span class="serif-word">mirar de cerca.</span>');
+    privacy = '<dialog id="privacy-dialog" class="privacy-dialog" aria-labelledby="privacy-title"><button type="button" class="dialog-close" aria-label="Cerrar información de privacidad" data-close-privacy>×</button><p class="eyebrow">Datos y privacidad</p><h2 id="privacy-title">Cómo mejoramos el catálogo</h2><p>Usamos Google Analytics y Microsoft Clarity para entender cómo se navega el sitio y mejorar la experiencia. El catálogo no tiene formularios ni solicita datos de contacto.</p><p>Las mediciones de materiales registran la colección o el color explorado, sin incluir datos personales.</p></dialog>';
+  }
+  const contentId = html.match(/<main\b[^>]*\bid=["']([^"']+)/)?.[1] || 'contenido';
+  footer = footer.replace('href="#contenido"', `href="#${contentId}"`);
+  const current = file.startsWith('materiales/') || file === 'material.html' ? '/materiales.html' : `/${file}`;
+  const markCurrent = (markup) => markup.replaceAll(`href="${current}"`, `aria-current="page" href="${current}"`);
+  header = markCurrent(header);
+  menu = markCurrent(menu);
+  html = html.replace(/<header\b[\s\S]*?<\/header>/, header).replace(/<footer\b[\s\S]*?<\/footer>/, footer)
+    .replace(/<dialog\b[^>]*id="(?:mobile-menu|privacy-dialog)"[\s\S]*?<\/dialog>/g, '')
+    .replace(/<noscript><nav class="noscript-nav[\s\S]*?<\/noscript>/g, '');
+  html = html.replace('</body>', `${menu}\n${fallbackNav}\n${privacy}\n</body>`);
+  if (!html.includes('home.css?')) html = html.replace('</head>', '<link rel="stylesheet" href="/home.css?v=20261020-4">\n</head>');
+  if (!html.includes('home-ui.js?')) html = html.replace('</head>', '<script src="/home-ui.js?v=20261020-4" defer></script>\n</head>');
+  return html;
+}
 
 function homeSwatchesMarkup() {
   const selection = [
@@ -96,7 +137,7 @@ ${index ? `<script id="pageStructuredData" type="application/ld+json">${json({ '
   html = html.replace('</head>', `${metadata}</head>`);
   // Initialize the existing event queue before the body scripts run. The
   // third-party analytics downloads already load asynchronously in analytics.js.
-  if (!/src=["'](?:\/)?analytics\.js["']/.test(html) && index) html = html.replace('</head>', '<script src="/analytics.js"></script>\n</head>');
+  if (!/src=["'](?:\/)?analytics\.js["']/.test(html)) html = html.replace('</head>', '<script src="/analytics.js"></script>\n</head>');
   return html;
 }
 
@@ -117,12 +158,12 @@ await mkdir(path.join(out, 'productos'), { recursive: true });
 
 const pages = [
   { file: 'index.html', title: 'Tapicería y retapizado en Córdoba | Valturi Tapizados', description: 'Retapizado y restauración artesanal de sillas, sillones y muebles en Córdoba. Telas seleccionadas, diseño cálido y atención a medida. Consultanos.' },
-  { file: 'servicios.html', title: 'Retapizado y restauración de muebles en Córdoba | Valturi', description: 'Renová sillas, sillones, banquetas y respaldos con Valturi. Retapizado, restauración y asesoramiento en telas y terminaciones en Córdoba.' },
+  { file: 'servicios.html', index: false, title: 'Retapizado y restauración de muebles en Córdoba | Valturi', description: 'Renová sillas, sillones, banquetas y respaldos con Valturi. Retapizado, restauración y asesoramiento en telas y terminaciones en Córdoba.' },
   { file: 'nosotros.html', type: 'AboutPage', title: 'Oficio artesanal y diseño en Córdoba | Valturi Tapizados', description: 'Conocé Valturi: tapicería y restauración en Córdoba con una mirada cálida y contemporánea. Atención personalizada para renovar cada pieza.' },
   { file: 'trabajos.html', type: 'CollectionPage', title: 'Trabajos de retapizado y restauración en Córdoba | Valturi', description: 'Explorá trabajos de tapicería y restauración de Valturi en Córdoba: sillas, sillones y detalles de terminación para inspirar tu próximo proyecto.' },
-  { file: 'materiales.html', type: 'CollectionPage', title: 'Telas y materiales para tapicería en Córdoba | Valturi', description: 'Explorá panas, linos, cuerinas, cuero vacuno y texturas para tapicería. Compará colecciones y colores y consultanos por tu proyecto en Córdoba.' },
-  { file: 'productos.html', type: 'CollectionPage', title: 'Sillas, sillones y piezas tapizadas en Córdoba | Valturi', description: 'Conocé el catálogo de Valturi: sillas, sillones, cabeceras y almohadones. Consultá disponibilidad, medidas y opciones de tapizado por WhatsApp.' },
-  { file: 'contacto.html', type: 'ContactPage', title: 'Contacto y presupuesto de retapizado en Córdoba | Valturi', description: 'Consultá por tu retapizado en Córdoba. Taller en Villa Rivera Indarte, con visitas a coordinar previamente por WhatsApp. Contanos sobre tu proyecto.' }
+  { file: 'materiales.html', type: 'CollectionPage', title: 'Telas y materiales para tapicería en Córdoba | Valturi', description: 'Explorá panas, linos, cuerinas, cuero vacuno y texturas para tapicería. Recorré las colecciones, mirá sus colores y explorá cada textura de cerca.' },
+  { file: 'productos.html', index: false, type: 'CollectionPage', title: 'Sillas, sillones y piezas tapizadas en Córdoba | Valturi', description: 'Conocé el catálogo de Valturi: sillas, sillones, cabeceras y almohadones. Consultá disponibilidad, medidas y opciones de tapizado por WhatsApp.' },
+  { file: 'contacto.html', index: false, type: 'ContactPage', title: 'Contacto y presupuesto de retapizado en Córdoba | Valturi', description: 'Consultá por tu retapizado en Córdoba. Taller en Villa Rivera Indarte, con visitas a coordinar previamente por WhatsApp. Contanos sobre tu proyecto.' }
 ];
 const urls = [];
 for (const page of pages) {
@@ -144,8 +185,9 @@ for (const page of pages) {
   if (page.file === 'servicios.html') {
     page.extra = ['Retapizado', 'Restauración', 'Asesoramiento', 'Proyectos especiales'].map((name) => ({ '@type': 'Service', name, provider: { '@id': business['@id'] }, areaServed: { '@type': 'City', name: 'Córdoba' }, url: `${base}/servicios.html` }));
   }
+  html = sharedChrome(html, { file: page.file, catalog: page.file === 'materiales.html' });
   await write(page.file, pageMetadata(html, page));
-  urls.push(`${base}/${page.file === 'index.html' ? '' : page.file}`);
+  if (page.index !== false) urls.push(`${base}/${page.file === 'index.html' ? '' : page.file}`);
 }
 
 for (const item of data.MATERIAL_COLLECTIONS) {
@@ -153,9 +195,10 @@ for (const item of data.MATERIAL_COLLECTIONS) {
   let html = await read('material.html');
   html = html.replace('data-page="material-detail"', `data-page="material-detail" data-material-id="${escape(item.id)}"`)
     .replace(/<main\b[^>]*\bid="materialDetail"[^>]*>[\s\S]*?<\/main>/, `<main id="materialDetail" data-rendered="${escape(item.id)}">${data.materialDetailMarkup(item)}</main>`);
+  html = sharedChrome(html, { file, catalog: true });
   await write(file, pageMetadata(html, {
     file, title: `${item.title}: colores y textura | Valturi Córdoba`,
-    description: `${item.description} Explorá sus ${item.colors.length} colores y consultá por tu proyecto en Valturi, Córdoba.`,
+    description: `${item.description} Explorá sus ${new Set(item.colors.map((color) => color.main)).size} referencias de color y mirá su textura en detalle.`,
     image: item.colors[0].main, parent: { name: 'Materiales', file: 'materiales.html' },
     extra: [{ '@type': 'ItemList', name: `Colores de ${item.title}`, itemListElement: item.colors.map((color, i) => ({ '@type': 'ListItem', position: i + 1, name: color.name, item: { '@type': 'ImageObject', name: `${item.title} · ${color.name}`, contentUrl: `${base}/${color.main}` } })) }]
   }));
@@ -167,17 +210,17 @@ for (const item of data.products) {
   html = html.replace(/data-page="[^"]+"/, `data-page="producto" data-product-id="${escape(item.id)}"`)
     .replace(/(<div\b[^>]*\bid="productDetail"[^>]*>)[\s\S]*?<\/div>/, `$1${data.productDetailMarkup(item)}</div>`)
     .replace('id="productDetail"', `id="productDetail" data-rendered="${escape(item.id)}"`);
+  html = sharedChrome(html, { file });
   await write(file, pageMetadata(html, {
-    file, title: `${item.name} | Valturi Tapizados Córdoba`, description: `${item.shortDescription} Consultá disponibilidad y opciones por WhatsApp.`,
+    file, index: false, title: `${item.name} | Valturi Tapizados Córdoba`, description: `${item.shortDescription} Consultá disponibilidad y opciones por WhatsApp.`,
     image: item.image, parent: { name: 'Productos', file: 'productos.html' },
     extra: [{ '@type': 'Product', name: item.name, image: [`${base}/${item.image}`], description: item.description, sku: item.id, brand: { '@type': 'Brand', name: 'Valturi' }, offers: { '@type': 'Offer', url: `${base}/${file}`, priceCurrency: 'ARS', price: item.priceValue } }]
   }));
-  urls.push(`${base}/${file}`);
 }
 
 // Unknown/missing IDs never masquerade as the first product or collection.
 for (const [file, title] of [['material.html', 'Material no encontrado | Valturi'], ['producto.html', 'Producto no encontrado | Valturi'], ['404.html', 'Página no encontrada | Valturi']]) {
-  await write(file, pageMetadata(await read(file), { file, title, description: 'Explorá los materiales, productos y servicios de Valturi Tapizados.', index: false }));
+  await write(file, pageMetadata(sharedChrome(await read(file), { file, catalog: file === 'material.html' }), { file, title, description: 'Explorá los materiales, productos y servicios de Valturi Tapizados.', index: false }));
 }
 await write('sitemap.xml', `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n${urls.map((url) => `  <url><loc>${escape(url)}</loc></url>`).join('\n')}\n</urlset>\n`);
 console.log(`Built ${urls.length} indexable pages with static content, metadata and sitemap.`);

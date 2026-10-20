@@ -1,5 +1,3 @@
-const MATERIALS_WHATSAPP = typeof WHATSAPP_LINK !== 'undefined' ? WHATSAPP_LINK : 'https://wa.link/ogxnv3';
-
 const FAMILY_META = {
   panas: {
     label: "Panas",
@@ -40,7 +38,7 @@ const APPLICATIONS = {
   cortineria: {
     title: "Cortinería",
     eyebrow: "Caída, luz y textura",
-    description: "Gazas, tejidos, tusor liviano y pesado, y blackout. Consultanos por los muestrarios y las opciones de transparencia y caída para tu ambiente.",
+    description: "Gazas, tejidos, tusor y blackout. Distintas transparencias, texturas y caídas para cada ambiente.",
     status: "Colecciones en preparación",
     families: [],
     image: "assets/applications/cortineria.webp"
@@ -80,7 +78,7 @@ const UPCOMING = {
     ],
     [
       "Lonas",
-      "Consultanos por las opciones de lona para tu proyecto de exterior."
+      "Texturas y colores para espacios al aire libre. Muestrarios en preparación."
     ]
   ]
 };
@@ -1769,7 +1767,147 @@ const MATERIAL_COLLECTIONS = [
   }
 ];
 
+// Repeat identical banks so the loop boundary never crosses different content.
+function wrapCatalogPosition(position, start, span) {
+  return span > 0 ? start + ((position - start) % span + span) % span : 0;
+}
+
+function setupCatalogCarousel(root) {
+  const track = root.querySelector('.catalog-track');
+  const original = root.querySelector('[data-catalog-original]');
+  const controls = root.querySelector('[data-catalog-controls]');
+  const play = root.querySelector('[data-catalog-play]');
+  const previous = root.querySelector('[data-catalog-prev]');
+  const next = root.querySelector('[data-catalog-next]');
+  const reduced = window.matchMedia('(prefers-reduced-motion: reduce)');
+  const removers = [];
+  let clones = [];
+  let span = 0;
+  let start = 0;
+  let step = 0;
+  let loop = false;
+  let automatic = !reduced.matches;
+  let visible = false;
+  let hovering = false;
+  let frame = 0;
+  let lastTime = null;
+  let motion = null;
+  let destroyed = false;
+  const listen = (node, event, callback, options) => {
+    node.addEventListener(event, callback, options);
+    removers.push(() => node.removeEventListener(event, callback, options));
+  };
+  const stop = () => { window.cancelAnimationFrame(frame); frame = 0; lastTime = null; motion = null; };
+  const paint = (position) => {
+    track.scrollLeft = loop ? wrapCatalogPosition(position, start, span) : 0;
+  };
+  const canPlay = () => automatic && loop && visible && !hovering && !document.hidden;
+  const tick = (time) => {
+    frame = 0;
+    if (destroyed) return;
+    if (motion) {
+      if (motion.time === null) motion.time = time;
+      const progress = Math.min(1, (time - motion.time) / 650);
+      const eased = (1 - Math.cos(Math.PI * progress)) / 2;
+      motion.value = motion.from + (motion.to - motion.from) * eased;
+      paint(motion.value);
+      if (progress < 1) frame = window.requestAnimationFrame(tick);
+      else { motion = null; schedule(); }
+    } else if (canPlay()) {
+      if (lastTime !== null) paint(track.scrollLeft + Math.min(64, time - lastTime) * .020);
+      lastTime = time;
+      frame = window.requestAnimationFrame(tick);
+    }
+  };
+  const schedule = () => {
+    if (motion || frame || destroyed) return;
+    lastTime = null;
+    if (canPlay()) frame = window.requestAnimationFrame(tick);
+  };
+  const updatePlay = () => {
+    play.textContent = automatic ? 'Pausar' : 'Reproducir';
+    play.setAttribute('aria-pressed', String(automatic));
+    play.setAttribute('aria-label', `${automatic ? 'Pausar' : 'Reproducir'} movimiento: ${root.getAttribute('aria-label')}`);
+  };
+  const pause = () => { automatic = false; stop(); updatePlay(); };
+  const measure = () => {
+    if (destroyed) return;
+    const phase = span ? (wrapCatalogPosition(track.scrollLeft, start, span) - start) / span : 0;
+    stop();
+    clones.forEach((clone) => clone.remove()); clones = [];
+    loop = original.children.length > 1 && original.getBoundingClientRect().width > track.clientWidth + 1;
+    if (loop) {
+      const cloneBank = () => {
+        const clone = original.cloneNode(true);
+        clone.removeAttribute('data-catalog-original');
+        clone.setAttribute('data-catalog-clone', '');
+        clone.setAttribute('aria-hidden', 'true');
+        clone.querySelectorAll('a,button,[tabindex]').forEach((node) => node.setAttribute('tabindex', '-1'));
+        return clone;
+      };
+      const before = cloneBank(); const after = cloneBank();
+      track.prepend(before); track.append(after); clones = [before, after];
+      start = original.offsetLeft - before.offsetLeft;
+      span = after.offsetLeft - original.offsetLeft;
+      step = original.children[1].offsetLeft - original.children[0].offsetLeft;
+      paint(start + phase * span);
+    } else { start = 0; span = 0; track.scrollLeft = 0; }
+    controls.hidden = !loop;
+    track.classList.toggle('is-looping', loop);
+    updatePlay(); schedule();
+  };
+  const advance = (direction) => {
+    if (!loop) return;
+    const from = track.scrollLeft;
+    // A second click keeps the next intended destination, rather than restarting.
+    const destination = from + (motion ? motion.to - motion.value : 0) + direction * step;
+    automatic = false; stop(); updatePlay();
+    if (reduced.matches) { paint(destination); return; }
+    motion = { from, to: destination, time: null, value: from };
+    frame = window.requestAnimationFrame(tick);
+  };
+  listen(previous, 'click', () => advance(-1));
+  listen(next, 'click', () => advance(1));
+  listen(play, 'click', () => {
+    if (automatic) pause();
+    else { automatic = true; stop(); updatePlay(); schedule(); }
+  });
+  listen(track, 'pointerdown', pause, { passive: true });
+  listen(track, 'wheel', pause, { passive: true });
+  listen(track, 'focusin', pause);
+  listen(root, 'pointerenter', (event) => { if (event.pointerType === 'mouse') { hovering = true; stop(); } });
+  listen(root, 'pointerleave', () => { hovering = false; schedule(); });
+  listen(track, 'scroll', () => {
+    if (!loop || motion) return;
+    if (track.scrollLeft < start || track.scrollLeft >= start + span) paint(track.scrollLeft);
+  }, { passive: true });
+  listen(track, 'keydown', (event) => {
+    if (!['ArrowLeft', 'ArrowRight', 'Home', 'End'].includes(event.key)) return;
+    event.preventDefault();
+    if (event.key === 'Home' || event.key === 'End') {
+      pause();
+      paint(start + (event.key === 'End' ? (original.children.length - 1) * step : 0));
+    } else advance(event.key === 'ArrowRight' ? 1 : -1);
+  });
+  listen(reduced, 'change', () => { if (reduced.matches) pause(); });
+  listen(document, 'visibilitychange', () => { if (document.hidden) stop(); else schedule(); });
+  listen(window, 'resize', measure, { passive: true });
+  listen(window, 'pagehide', stop);
+  listen(window, 'pageshow', schedule);
+  let observer = null;
+  if ('IntersectionObserver' in window) {
+    observer = new IntersectionObserver((entries) => {
+      visible = entries.some((entry) => entry.isIntersecting);
+      if (!visible) stop(); else schedule();
+    }, { threshold: .1 });
+    observer.observe(root);
+  } else visible = true;
+  measure();
+  return { destroy() { destroyed = true; stop(); observer?.disconnect(); removers.forEach((remove) => remove()); clones.forEach((clone) => clone.remove()); } };
+}
+
 const state = { application: 'tapiceria', family: 'all', query: '' };
+let libraryCarousels = [];
 
 function trackMaterialEvent(event, payload = {}) { if (Array.isArray(window.dataLayer)) window.dataLayer.push({ event, ...payload }); }
 function familyLabel(key) { return FAMILY_META[key]?.label || key; }
@@ -1804,7 +1942,7 @@ function renderApplicationPortals() {
     renderFamilyNavigation();
     renderMaterialsLibrary();
     trackMaterialEvent('materials_application_select', { materials_application: state.application });
-    document.getElementById('collectionsStart')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    document.getElementById('collectionsStart')?.scrollIntoView({ behavior: window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth', block: 'start' });
   }));
 }
 
@@ -1814,7 +1952,7 @@ function renderFamilyNavigation() {
   if (state.application !== 'tapiceria') { root.innerHTML = ''; return; }
   const keys = [...new Set(MATERIAL_COLLECTIONS.filter((item) => item.application === state.application).map((item) => item.family))]
     .sort((a, b) => (FAMILY_META[a]?.order || 99) - (FAMILY_META[b]?.order || 99));
-  root.innerHTML = [`<button type="button" class="family-chip ${state.family === 'all' ? 'is-active' : ''}" data-family="all">Todas</button>`, ...keys.map((key) => `<button type="button" class="family-chip ${state.family === key ? 'is-active' : ''}" data-family="${key}">${familyLabel(key)}</button>`)].join('');
+  root.innerHTML = [`<button type="button" class="family-chip ${state.family === 'all' ? 'is-active' : ''}" data-family="all" aria-pressed="${state.family === 'all'}">Todas</button>`, ...keys.map((key) => `<button type="button" class="family-chip ${state.family === key ? 'is-active' : ''}" data-family="${key}" aria-pressed="${state.family === key}">${familyLabel(key)}</button>`)].join('');
   root.querySelectorAll('[data-family]').forEach((button) => button.addEventListener('click', () => {
     state.family = button.dataset.family;
     renderFamilyNavigation();
@@ -1823,23 +1961,30 @@ function renderFamilyNavigation() {
   }));
 }
 
+function uniqueMaterialColors(item) {
+  const seen = new Set();
+  return item.colors.flatMap((color, index) => {
+    if (seen.has(color.main)) return [];
+    seen.add(color.main);
+    return [{ color, index }];
+  });
+}
+
 function collectionPreview(item) {
-  const samples = item.colors.slice(0, 3);
-  return `<div class="collection-preview ${samples.length < 3 ? 'is-compact' : ''}">
-    <div class="collection-preview-main"><img src="${colorMain(samples[0])}" alt="${item.title} · ${samples[0].name}" loading="lazy" decoding="async" class="texture-img" /></div>
-    <div class="collection-preview-stack">${samples.slice(1).map((color) => `<img src="${colorMain(color)}" alt="${item.title} · ${color.name}" loading="lazy" decoding="async" class="texture-img" />`).join('')}</div>
-  </div>`;
+  const colors = uniqueMaterialColors(item);
+  const { color } = colors[Math.floor(colors.length / 3)];
+  return `<div class="collection-preview" data-family="${item.family}"><img src="${colorMain(color)}" alt="${item.title}: trama en color ${color.name}" width="330" height="410" loading="lazy" decoding="async" class="texture-img" /><span class="sample-family">${familyLabel(item.family)}</span></div>`;
 }
 
 function renderCollectionCard(item) {
   return `<a class="collection-card" href="/materiales/${encodeURIComponent(item.id)}.html" data-collection-id="${item.id}">
     ${collectionPreview(item)}
-    <div class="collection-card-copy">
-      <div class="collection-card-meta"><span>${familyLabel(item.family)}</span><span>${item.colors.length} colores</span></div>
-      <div class="collection-card-title"><h3>${collectionName(item)}</h3><span aria-hidden="true">↗</span></div>
-      <p>${item.description}</p>
-    </div>
+    <div class="collection-card-copy"><div class="collection-card-title"><h3>${item.title}</h3><span aria-hidden="true">↗</span></div><span class="collection-color-count">${uniqueMaterialColors(item).length} colores</span><p>${item.description}</p></div>
   </a>`;
+}
+
+function catalogRailMarkup(name, id, cards) {
+  return `<div class="catalog-carousel" data-catalog-carousel role="region" aria-roledescription="carrusel" aria-label="${name}"><div class="catalog-track" id="${id}" tabindex="0" aria-label="${name}. Deslizá o usá las flechas del teclado."><div class="catalog-bank" data-catalog-original>${cards}</div></div><div class="catalog-controls" data-catalog-controls hidden><button class="catalog-play" type="button" data-catalog-play aria-pressed="false">Reproducir</button><span class="catalog-instruction">Deslizá para explorar</span><div class="sample-arrows"><button type="button" data-catalog-prev aria-label="Ver anteriores: ${name}" aria-controls="${id}">←</button><button type="button" data-catalog-next aria-label="Ver siguientes: ${name}" aria-controls="${id}">→</button></div></div></div>`;
 }
 
 function renderUpcoming(application) {
@@ -1853,11 +1998,15 @@ function renderUpcoming(application) {
 function renderMaterialsLibrary() {
   const root = document.getElementById('materialsLibrary');
   if (!root) return;
+  libraryCarousels.forEach((carousel) => carousel.destroy());
+  libraryCarousels = [];
   if (state.application !== 'tapiceria') { root.innerHTML = renderUpcoming(state.application); return; }
   const query = state.query.trim().toLowerCase();
   const filtered = MATERIAL_COLLECTIONS.filter((item) => item.application === state.application)
     .filter((item) => state.family === 'all' || item.family === state.family)
     .filter((item) => !query || `${item.title} ${item.description} ${familyLabel(item.family)} ${colorHaystack(item)}`.toLowerCase().includes(query));
+  const result = document.getElementById('materials-results');
+  if (result) result.textContent = `${filtered.length} colecciones disponibles.`;
   if (!filtered.length) {
     root.innerHTML = `<div class="materials-empty"><strong>No encontramos coincidencias.</strong><p>Probá buscando otra colección, familia o color.</p></div>`;
     return;
@@ -1867,9 +2016,15 @@ function renderMaterialsLibrary() {
   const orderedFamilies = Object.keys(grouped).sort((a, b) => (FAMILY_META[a]?.order || 99) - (FAMILY_META[b]?.order || 99));
   root.innerHTML = orderedFamilies.map((key) => `<section class="collection-family-section">
     <div class="collection-family-heading"><div><span class="eyebrow">Familia</span><h2>${familyLabel(key)}</h2></div><span>${grouped[key].length} ${grouped[key].length === 1 ? 'colección' : 'colecciones'}</span></div>
-    <div class="collections-grid">${grouped[key].map(renderCollectionCard).join('')}</div>
+    ${catalogRailMarkup(familyLabel(key), `catalog-${key}`, grouped[key].map(renderCollectionCard).join(''))}
   </section>`).join('');
-  root.querySelectorAll('[data-collection-id]').forEach((link) => link.addEventListener('click', () => trackMaterialEvent('material_collection_select', { material_collection: link.dataset.collectionId })));
+  if (typeof window.requestAnimationFrame === 'function') libraryCarousels = Array.from(root.querySelectorAll('[data-catalog-carousel]'), setupCatalogCarousel);
+  if (typeof window.requestAnimationFrame === 'function' && !root.dataset.trackingBound) { root.addEventListener('click', trackCollectionClick); root.dataset.trackingBound = 'true'; }
+}
+
+function trackCollectionClick(event) {
+  const link = event.target.closest('[data-collection-id]');
+  if (link) trackMaterialEvent('material_collection_select', { material_collection: link.dataset.collectionId });
 }
 
 function setupMaterialSearch() {
@@ -1882,32 +2037,20 @@ function setupMaterialSearch() {
 function findCollection(id) { return MATERIAL_COLLECTIONS.find((item) => item.id === id); }
 
 function renderEssentialSheet(item) {
-  const specs = item.specs?.length ? item.specs : [['Familia', familyLabel(item.family)], ['Colores cargados', `${item.colors.length}`]];
-  return `<section class="essential-sheet">
-    <div class="essential-heading"><span class="eyebrow">Ficha esencial</span><h2>Lo importante, de un vistazo.</h2></div>
-    <div class="essential-grid">${specs.map(([label, value]) => `<div class="essential-row"><span>${label}</span><strong>${value}</strong></div>`).join('')}</div>
-  </section>`;
+  const specs = item.specs?.length ? item.specs : [['Familia', familyLabel(item.family)], ['Colores', `${uniqueMaterialColors(item).length}`]];
+  return `<section class="essential-sheet"><div class="essential-heading"><span class="eyebrow">Ficha esencial</span><h2>De un <span class="serif-word">vistazo.</span></h2></div><div class="essential-grid">${specs.map(([label, value]) => `<div class="essential-row"><span>${label.replace('Colores cargados', 'Colores')}</span><strong>${/colores/i.test(label) ? uniqueMaterialColors(item).length : value}</strong></div>`).join('')}</div></section>`;
 }
 
 function materialDetailMarkup(item) {
-  const intro = item.intro || `${item.title} reúne ${item.colors.length} referencias de color.`;
-  const tags = item.tags || [familyLabel(item.family), `${item.colors.length} colores`];
+  const colors = uniqueMaterialColors(item);
+  const intro = item.intro || item.description;
+  const tags = item.tags || [familyLabel(item.family)];
   const uses = item.uses || ['Tapicería interior'];
   return `
-    <section class="material-detail-hero">
-      <nav class="material-breadcrumb" aria-label="Breadcrumb"><a href="materiales.html">Materiales</a><span>•</span><span>${familyLabel(item.family)}</span><span>•</span><span>${item.title}</span></nav>
-      <div class="material-detail-grid">
-        <div class="material-detail-copy"><span class="eyebrow">${familyLabel(item.family)}</span><h1>${item.title}</h1><p>${intro}</p><div class="material-tags">${tags.map((tag) => `<span>${tag}</span>`).join('')}</div><div class="material-detail-actions"><a class="material-primary-button" href="${MATERIALS_WHATSAPP}" target="_blank" rel="noreferrer">Consultar por WhatsApp</a><a class="material-secondary-button" href="materiales.html">Volver a materiales</a></div></div>
-        ${renderEssentialSheet(item)}
-      </div>
-    </section>
-    <section class="material-colors-section">
-      <div class="material-section-heading"><div><span class="eyebrow">Muestrario</span><h2>Colores disponibles</h2><p>Las imágenes ayudan a comparar tono y textura. Para una definición final, recomendamos validar la muestra física porque cada pantalla y tipo de luz puede modificar la percepción del color.</p></div><span class="color-count">${item.colors.length} ${item.colors.length === 1 ? 'color' : 'colores'}</span></div>
-      <div class="material-colors-grid">${item.colors.map((color, index) => `<button type="button" class="material-color-card" data-color-index="${index}"><div class="material-color-media"><img src="${colorMain(color)}" alt="${item.title} · ${color.name}" loading="lazy" decoding="async" class="texture-img" /></div><div class="material-color-caption"><strong>${color.name}</strong><span>Ver textura</span></div></button>`).join('')}</div>
-    </section>
-    <section class="material-info-grid"><article class="material-info-card"><span class="eyebrow">Aplicación</span><h3>Usos sugeridos</h3><ul>${uses.map((use) => `<li>${use}</li>`).join('')}</ul></article><article class="material-info-card"><span class="eyebrow">Referencia de color</span><h3>La luz también es parte del material.</h3><p>Los tonos oscuros pueden verse más claros bajo sol directo. Siempre recomendamos validar el color final con la muestra física y, cuando exista, sumar una segunda toma sin incidencia directa de sol.</p></article></section>
-    <section class="material-future-grid"><article class="material-future-card"><span class="eyebrow">Tu proyecto</span><h3>Encontrá una combinación para tu espacio.</h3><p>Podemos acompañarte en la elección de telas, colores y terminaciones según el mueble y el uso que le das. <a href="/contacto.html">Consultanos sobre tu proyecto.</a></p></article></section>
-    <div class="material-lightbox" id="materialLightbox" aria-hidden="true"><div class="material-lightbox-panel"><div class="material-lightbox-head"><div><strong id="materialLightboxTitle"></strong><span>Vista completa y acercamiento de textura en alta definición.</span></div><button type="button" class="material-lightbox-close" aria-label="Cerrar">×</button></div><div class="material-lightbox-views"><figure><div class="lightbox-image-stage"><img id="materialLightboxMain" alt="" /></div></figure><figure><div class="lightbox-image-stage is-detail"><img id="materialLightboxZoom" alt="" /></div></figure></div></div></div>`;
+    <section class="material-detail-hero wrap"><nav class="material-breadcrumb" aria-label="Ruta de navegación"><a href="/materiales.html">Materiales</a><span aria-hidden="true">/</span><a href="/materiales.html#catalog-${item.family}">${familyLabel(item.family)}</a><span aria-hidden="true">/</span><span aria-current="page">${item.title}</span></nav><div class="material-detail-grid"><div class="material-detail-copy"><p class="eyebrow">${familyLabel(item.family)}</p><h1>${item.title}</h1><p>${intro}</p><div class="material-tags">${tags.map((tag) => `<span>${tag}</span>`).join('')}</div><a class="text-link" href="/materiales.html">Volver al archivo <span aria-hidden="true">↗</span></a></div>${renderEssentialSheet(item)}</div></section>
+    <section class="material-colors-section wrap"><div class="material-section-heading"><div><p class="eyebrow">El muestrario · ${item.title}</p><h2>Un mundo de <span class="serif-word">matices.</span></h2><p>Recorré los tonos y tocá una muestra para ver la imagen completa y su trama de cerca.</p></div><span class="color-count">${colors.length} ${colors.length === 1 ? 'color' : 'colores'}</span></div>${catalogRailMarkup(`Colores de ${item.title}`, 'catalog-colors', colors.map(({ color, index }) => `<button type="button" class="material-color-card" data-color-index="${index}" aria-label="Ver textura ${item.title}, ${color.name}"><span class="material-color-media" data-family="${item.family}"><img src="${colorMain(color)}" alt="${item.title} · ${color.name}" width="330" height="410" loading="lazy" decoding="async" class="texture-img" /></span><span class="material-color-caption"><strong>${color.name}</strong><span aria-hidden="true">↗</span></span></button>`).join(''))}</section>
+    <section class="material-info-grid wrap"><article class="material-info-card"><p class="eyebrow">Aplicación</p><h3>Usos sugeridos</h3><ul>${uses.map((use) => `<li>${use}</li>`).join('')}</ul></article><article class="material-info-card"><p class="eyebrow">Referencia de color</p><h3>La luz también es parte del material.</h3><p>Las pantallas y la iluminación pueden modificar la percepción del tono. La muestra física es la referencia para definir el color final.</p></article></section>
+    <dialog class="material-lightbox" id="materialLightbox" aria-labelledby="materialLightboxTitle"><div class="material-lightbox-head"><div><strong id="materialLightboxTitle"></strong><span>Color y textura, de cerca.</span></div><button type="button" class="menu-close" data-close-material aria-label="Cerrar muestra"><svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><path d="m6 6 12 12M18 6 6 18"/></svg></button></div><div class="material-lightbox-views"><figure><div class="lightbox-image-stage"><img id="materialLightboxMain" alt="" /></div><figcaption>Vista de color</figcaption></figure><figure><div class="lightbox-image-stage is-detail"><img id="materialLightboxZoom" alt="" /></div><figcaption>Detalle de la trama</figcaption></figure></div></dialog>`;
 }
 
 function renderMaterialDetail() {
@@ -1920,6 +2063,7 @@ function renderMaterialDetail() {
     return;
   }
   if (root.dataset.rendered !== item.id) root.innerHTML = materialDetailMarkup(item);
+  root.querySelectorAll('[data-catalog-carousel]').forEach(setupCatalogCarousel);
   setupMaterialLightbox(item);
 }
 
@@ -1929,20 +2073,31 @@ function setupMaterialLightbox(item) {
   const title = document.getElementById('materialLightboxTitle');
   const main = document.getElementById('materialLightboxMain');
   const zoom = document.getElementById('materialLightboxZoom');
-  const closeButton = lightbox.querySelector('.material-lightbox-close');
-  const close = () => { lightbox.classList.remove('is-open'); lightbox.setAttribute('aria-hidden', 'true'); document.body.classList.remove('material-modal-open'); };
-  document.querySelectorAll('[data-color-index]').forEach((button) => button.addEventListener('click', () => {
-    const color = item.colors[Number(button.dataset.colorIndex)];
+  let selectedIndex = null;
+  document.getElementById('materialDetail').addEventListener('click', (event) => {
+    const button = event.target.closest('[data-color-index]');
+    if (!button) return;
+    selectedIndex = Number(button.dataset.colorIndex);
+    const color = item.colors[selectedIndex];
+    if (!color) return;
     title.textContent = `${color.name} · ${item.title}`;
     main.src = colorMain(color); zoom.src = colorDetail(color);
-    main.alt = `${item.title} · ${color.name}`; zoom.alt = `Detalle ampliado ${item.title} · ${color.name}`;
-    main.className = 'texture-img'; zoom.className = 'texture-img is-zoomed';
-    lightbox.classList.add('is-open'); lightbox.setAttribute('aria-hidden', 'false'); document.body.classList.add('material-modal-open');
+    main.alt = `${item.title} · ${color.name}`; zoom.alt = `Detalle de ${item.title} · ${color.name}`;
+    main.className = 'texture-img'; zoom.className = 'texture-img';
+    lightbox.showModal();
+    document.body.classList.add('material-modal-open');
     trackMaterialEvent('material_color_view', { material_collection: item.id, material_color: color.name });
-  }));
-  closeButton?.addEventListener('click', close);
-  lightbox.addEventListener('click', (event) => { if (event.target === lightbox) close(); });
-  document.addEventListener('keydown', (event) => { if (event.key === 'Escape') close(); });
+  });
+  lightbox.querySelector('[data-close-material]').addEventListener('click', () => lightbox.close());
+  lightbox.addEventListener('close', () => {
+    document.body.classList.remove('material-modal-open');
+    document.querySelector(`[data-catalog-original] [data-color-index="${selectedIndex}"]`)?.focus({ preventScroll: true });
+  });
+  lightbox.addEventListener('click', (event) => {
+    if (event.target !== lightbox) return;
+    const rect = lightbox.getBoundingClientRect();
+    if (event.clientX < rect.left || event.clientX > rect.right || event.clientY < rect.top || event.clientY > rect.bottom) lightbox.close();
+  });
 }
 
 window.addEventListener('DOMContentLoaded', () => {

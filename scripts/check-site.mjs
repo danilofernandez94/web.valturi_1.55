@@ -9,7 +9,7 @@ const walk = (dir) => readdirSync(dir, { withFileTypes: true }).flatMap((entry) 
 const attrs = (tag) => Object.fromEntries([...tag.matchAll(/([\w:-]+)\s*=\s*(["'])(.*?)\2/g)].map((match) => [match[1], match[3]]));
 const sitemap = readFileSync(path.join(root, 'sitemap.xml'), 'utf8');
 const urls = [...sitemap.matchAll(/<loc>(.*?)<\/loc>/g)].map((match) => match[1]);
-assert.equal(urls.length, 32);
+assert.equal(urls.length, 23);
 assert.equal(new Set(urls).size, urls.length);
 let checkedLinks = 0;
 const titles = new Set();
@@ -51,6 +51,19 @@ for (const file of walk(root).filter((file) => file.endsWith('.html'))) {
   assert.equal(canonical.length, 1, `${relative}: one canonical`);
   assert.equal(canonical[0].href, expectedUrl);
   assert.equal(metas.filter((meta) => meta.name === 'description').length, 1);
+  const scripts = [...html.matchAll(/<script\b[^>]*>/g)].map((match) => attrs(match[0]));
+  assert.equal(scripts.filter((script) => /(?:^|\/)analytics\.js$/.test(script.src || '')).length, 1, `${relative}: analytics once on every page`);
+  if (relative === 'materiales.html' || relative === 'material.html' || relative.startsWith('materiales/')) {
+    const body = html.split('<body')[1];
+    assert.ok(!/href=["'](?:https:\/\/(?:wa\.me|wa\.link)|[^"']*(?:#consulta|contacto\.html))/i.test(body), `${relative}: catalog has no contact links`);
+    assert.ok(!/<form\b/i.test(body), `${relative}: catalog has no inquiry forms`);
+  }
+  if (indexed) {
+    for (const nav of html.matchAll(/<nav\b[^>]*class="(?:desktop-nav|footer-nav)"[^>]*>([\s\S]*?)<\/nav>/g)) {
+      assert.ok(!/href=["'][^"']*(?:servicios|productos|contacto)\.html/i.test(nav[1]), `${relative}: hidden pages excluded from navigation`);
+    }
+  }
+
   const title = html.match(/<title>(.*?)<\/title>/)?.[1];
   assert.ok(title && !titles.has(title), `${relative}: unique title`);
   titles.add(title);

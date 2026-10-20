@@ -17,7 +17,6 @@
   let leadId = '';
   let savedPayload = '';
   let followupUrl = '';
-  let dialogTrigger = null;
 
   // Nunca incluir nombre, teléfono, localidad ni texto de WhatsApp en los eventos.
   function track(eventName, extra = {}) {
@@ -181,11 +180,4 @@
     openWhatsapp(followupUrl || followup.href, !!savedPayload && lastPayload === savedPayload);
   });
 
-  const privacy = document.getElementById('privacy-dialog');
-  document.querySelectorAll('[data-privacy]').forEach((button) => {
-    button.addEventListener('click', () => { dialogTrigger = button; privacy.showModal(); });
-  });
-  document.querySelector('[data-close-privacy]').addEventListener('click', () => privacy.close());
-  privacy.addEventListener('close', () => dialogTrigger?.focus({ preventScroll: true }));
-  document.getElementById('footer-year').textContent = new Date().getFullYear();
 })();

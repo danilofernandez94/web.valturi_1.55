@@ -43,6 +43,18 @@
     });
   }
 
+  const privacy = document.getElementById('privacy-dialog');
+  if (privacy) {
+    let dialogTrigger = null;
+    document.querySelectorAll('[data-privacy]').forEach((button) => {
+      button.addEventListener('click', () => { dialogTrigger = button; privacy.showModal(); });
+    });
+    privacy.querySelector('[data-close-privacy]')?.addEventListener('click', () => privacy.close());
+    privacy.addEventListener('close', () => dialogTrigger?.focus({ preventScroll: true }));
+  }
+  const year = document.getElementById('footer-year');
+  if (year) year.textContent = new Date().getFullYear();
+
   const carousel = document.getElementById('material-carousel');
   const track = document.getElementById('swatch-track');
   if (!carousel || !track) return;
