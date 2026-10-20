@@ -13,8 +13,8 @@
   --accent: #875626;
   --accent-strong: #70441b;
   --banner: #cec3ba;
-  --shadow-soft: inset 0 1px 0 rgba(255,255,255,.85), 0 2px 0 rgba(134,105,75,.22), 0 9px 18px -10px rgba(56,40,32,.24), 0 22px 36px -24px rgba(56,40,32,.3);
-  --shadow-card: inset 0 1px 0 rgba(255,255,255,.8), 0 3px 0 rgba(134,105,75,.25), 0 15px 26px -12px rgba(56,40,32,.24), 0 28px 44px -24px rgba(56,40,32,.28);
+  --shadow-soft: 0 2px 4px rgba(48,39,35,.025), 0 12px 28px -12px rgba(48,39,35,.12), 0 28px 56px -28px rgba(48,39,35,.12);
+  --shadow-card: 0 3px 6px rgba(48,39,35,.035), 0 18px 36px -14px rgba(48,39,35,.16), 0 36px 64px -30px rgba(48,39,35,.16);
   --radius-xl: 30px;
   --radius-lg: 24px;
   --radius-md: 18px;
