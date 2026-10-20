@@ -21,81 +21,67 @@
   <link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
   <link rel="preload" href="assets/fonts/Gilroy-Semibold.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="preload" href="assets/fonts/Gilroy-Medium.woff2" as="font" type="font/woff2" crossorigin>
-  <link rel="stylesheet" href="home2.css?v=20261019-2">
+  <link rel="stylesheet" href="home2.css?v=20261019-3">
   <script src="analytics.js" defer></script>
   <script src="home2.js?v=20261019-2" defer></script>
-  <script src="home-ui.js?v=20261019-2" defer></script>
+  <script src="home-ui.js?v=20261019-3" defer></script>
 </head>
 <body data-home-variant="home2">
 <svg xmlns="http://www.w3.org/2000/svg" class="svg-library" aria-hidden="true" focusable="false" width="0" height="0">
   <defs>
-    <pattern id="weave" width="6" height="6" patternUnits="userSpaceOnUse"><path d="M0 1h6M1 0v6" stroke="#8d725c" stroke-width=".35" opacity=".26"/></pattern>
-    <pattern id="hatch" width="5" height="5" patternUnits="userSpaceOnUse" patternTransform="rotate(28)"><path d="M0 0v5" stroke="#795b48" stroke-width=".55" opacity=".3"/></pattern>
+    <linearGradient id="v3-cloth" x1="0" y1="0" x2="0" y2="1"><stop stop-color="#f1e6d5"/><stop offset=".5" stop-color="#e4d3b9"/><stop offset="1" stop-color="#d1b995"/></linearGradient>
+    <linearGradient id="v3-side" x1="0" y1="0" x2="1" y2="0"><stop stop-color="#c4aa85"/><stop offset=".45" stop-color="#e7d6bd"/><stop offset="1" stop-color="#cbb18d"/></linearGradient>
+    <linearGradient id="v3-wood" x1="0" y1="0" x2="1" y2="0"><stop stop-color="#765339"/><stop offset=".45" stop-color="#a58058"/><stop offset="1" stop-color="#83603f"/></linearGradient>
+    <pattern id="v3-weave" width="5" height="5" patternUnits="userSpaceOnUse"><path d="M0 1h5M1 0v5" stroke="#826548" stroke-width=".35" opacity=".14"/></pattern>
   </defs>
   <symbol id="sillon" viewBox="0 0 480 320">
-    <g fill="none" stroke="#ae9278" stroke-width=".8" opacity=".55"><path d="M51 255 293 300 440 218M63 238v38m368-75v35M97 63 396 119M106 53v20m279 34v20"/><path d="m59 254 9-2-3 8m369-45 5 7-9 1M133 76 367 119" stroke-dasharray="3 5"/></g>
-    <ellipse cx="256" cy="248" rx="163" ry="18" fill="#4b3225" opacity=".055"/>
-    <g stroke="#4e382b" stroke-width="1.65" stroke-linejoin="round" stroke-linecap="round">
-      <path d="m98 225 12 3-4 36-7-2Zm204 35 12-4-4 30-7 3Zm98-63 9-4-5 31-6 4Z" fill="#8a5e3d"/>
-      <path d="m100 212 208 37 100-60v15l-100 61-208-39Z" fill="#a99278"/>
-      <path d="M136 144v-44q0-21 20-17l218 40q16 3 16 23v43L168 154Z" fill="#d6c6ae"/>
-      <path d="m149 100 213 39q11 2 11 15v24l-209-38q-15-3-15-18Z" fill="#e6dac7"/>
-      <path d="m149 100 213 39q11 2 11 15v24l-209-38q-15-3-15-18Z" fill="url(#weave)" stroke="none"/>
-      <path d="m262 122-1 34m-104-45 196 36m-195-9 203 38" fill="none" stroke="#9e8267" stroke-width=".9" stroke-dasharray="2 4"/>
-      <path d="m113 191 58-41 211 39-71 44Z" fill="#eaddc7"/>
-      <path d="m113 191 58-41 211 39-71 44Z" fill="url(#weave)" stroke="none"/>
-      <path d="m113 191 198 35 71-44v17l-71 46-198-36Z" fill="#cbb797"/>
-      <path d="m115 191 92 16 65-40-92-17q-8-2-16 4l-45 29q-6 3-4 8Z" fill="#e6d7be"/>
-      <path d="m211 209 95 17q5 1 10-2l59-36-101-19Z" fill="#e6d7be"/>
-      <path d="m125 191 78 14 57-35m-38 39 82 14 59-35" fill="none" stroke="#a88c6e" stroke-width=".9" stroke-dasharray="2 4"/>
-      <path d="M86 180q0-16 15-13l25 5q11 2 11 17v38l-51-9Z" fill="#c3aa87"/>
-      <path d="m86 180 51 10 44-29v-12q0-11-11-13l-19-3q-10-2-18 4l-39 27q-8 5-8 16Z" fill="#e2d3bc"/>
-      <path d="m137 190 44-29v30l-44 36Z" fill="#bfa584"/>
-      <path d="M310 219q0-17 13-24l63-40q13-8 25 0l12 7q8 6 0 14l-63 40q-10 6-10 20v12l-40 17Z" fill="#ccb390"/>
-      <path d="m311 219 39 10q0-11 12-18l60-38q8-6-1-12l-11-6q-10-5-22 3l-64 40q-14 8-13 21Z" fill="#e6d5bb"/>
-      <path d="m99 180 27 6 41-28m156 55 24 6 59-37" fill="none" stroke="#9a7a59" stroke-width=".9" stroke-dasharray="2 4"/>
-      <path d="m108 230 191 34" fill="none" stroke="#806348" stroke-width=".8"/>
+    <g fill="none" stroke="#baa78b" stroke-width=".7" opacity=".65"><path d="M78 279h324M93 271v15m294-15v15M110 69h260m-260-5v10m260-10v10"/><path d="M240 51v230" stroke-dasharray="3 6"/></g>
+    <ellipse cx="240" cy="271" rx="167" ry="9" fill="#60442d" opacity=".09"/>
+    <g stroke="#624b35" stroke-width="1.5" stroke-linejoin="round" stroke-linecap="round">
+      <path d="M93 236h17l-6 34H94Zm277 0h17l-1 34h-10Z" fill="url(#v3-wood)"/>
+      <path d="M92 179v-51q0-37 35-39h226q35 2 35 39v51Z" fill="url(#v3-cloth)"/>
+      <path d="M119 111q0-12 15-12h88q15 0 15 14v66H119Zm124 2q0-14 15-14h88q15 0 15 12v68H243Z" fill="#eaddc8"/>
+      <path d="M119 111q0-12 15-12h88q15 0 15 14v66H119Zm124 2q0-14 15-14h88q15 0 15 12v68H243Z" fill="url(#v3-weave)" stroke="none"/>
+      <path d="M129 116q0-7 8-7h82q8 0 8 8v49m26 0v-49q0-8 8-8h82q8 0 8 7" fill="none" stroke="#b79b76" stroke-width=".85" stroke-dasharray="2 3"/>
+      <path d="M90 206h300v31q0 11-13 11H103q-13 0-13-11Z" fill="#cbb18d"/>
+      <path d="M114 189q0-14 15-14h93q15 0 15 14v17q0 11-12 11h-98q-13 0-13-11Zm129 0q0-14 15-14h93q15 0 15 14v17q0 11-13 11h-98q-12 0-12-11Z" fill="url(#v3-cloth)"/>
+      <path d="M114 189q0-14 15-14h93q15 0 15 14v17q0 11-12 11h-98q-13 0-13-11Zm129 0q0-14 15-14h93q15 0 15 14v17q0 11-13 11h-98q-12 0-12-11Z" fill="url(#v3-weave)" stroke="none"/>
+      <path d="M125 207h100m30 0h100M122 185q51-6 107 0m22 0q53-6 107 0" fill="none" stroke="#b19470" stroke-width=".9"/>
+      <path d="M66 176q0-20 19-20h15q20 0 20 20v60q0 12-13 12H79q-13 0-13-12Zm294 0q0-20 20-20h15q19 0 19 20v60q0 12-13 12h-28q-13 0-13-12Z" fill="url(#v3-side)"/>
+      <path d="M75 179q0-13 12-13h11q12 0 12 13v54q0 5-5 5H80q-5 0-5-5Zm295 0q0-13 12-13h11q12 0 12 13v54q0 5-5 5h-25q-5 0-5-5Z" fill="none" stroke="#ab8c66" stroke-width=".75"/>
+      <path d="M123 237h234" stroke="#9e815d" stroke-width=".8"/>
     </g>
-    <g fill="#8c6b50" font-family="Georgia,serif" font-size="10" font-style="italic"><text x="64" y="48">volumen &amp; confort</text><text x="343" y="290">el detalle importa.</text></g>
-    <path d="M81 58h38M378 269l16-20" stroke="#ad8567" stroke-width=".8" fill="none"/>
   </symbol>
   <symbol id="sillas" viewBox="0 0 480 320">
-    <g stroke="#ae9278" stroke-width=".8" fill="none" opacity=".55"><path d="M143 272h205M154 260v25m183-25v25M360 74v177m-10-166h20m-20 155h20"/><path d="M177 50v231M306 63v213M130 225h233" stroke-dasharray="3 6"/></g>
-    <ellipse cx="246" cy="269" rx="99" ry="14" fill="#4b3225" opacity=".055"/>
-    <g stroke="#4e382b" stroke-width="1.65" stroke-linejoin="round" stroke-linecap="round">
-      <path d="m186 209-8 65 8 3 18-63m103-7 13 59 8-2-7-64m-157-4-7 62 8 3 14-62" fill="#9c7350"/>
-      <path d="m191 157-3-91q0-13 15-15l95 9q16 3 16 18l-5 83-19 16Z" fill="#c6ae8a"/>
-      <path d="m198 66 94 9q8 0 8 11l-4 67q-1 11-12 12l-74-8q-12-2-12-12Z" fill="#e5d5ba"/>
-      <path d="m198 66 94 9q8 0 8 11l-4 67q-1 11-12 12l-74-8q-12-2-12-12Z" fill="url(#weave)" stroke="none"/>
-      <path d="m205 76 85 7-3 70-78-7Z" fill="none" stroke="#a98b67" stroke-width=".8" stroke-dasharray="2 4"/>
-      <path d="m172 176 34-18 100 10 28 33-38 23-124-17Z" fill="#b9a17d"/>
-      <path d="m164 174 38-23q5-3 12-2l94 11q10 1 16 10l13 24q5 8-6 13l-29 16q-5 3-14 2l-115-16q-10-1-11-12Z" fill="#e3d0af"/>
-      <path d="m164 174 38-23q5-3 12-2l94 11q10 1 16 10l13 24q5 8-6 13l-29 16q-5 3-14 2l-115-16q-10-1-11-12Z" fill="url(#weave)" stroke="none"/>
-      <path d="m175 177 32-19 102 12 17 27-33 18-118-17Z" fill="none" stroke="#ac8d65" stroke-width=".85" stroke-dasharray="2 4"/>
-      <path d="m165 185 128 19 42-21m-42 21v18" fill="none" stroke="#bc9b70" stroke-width="1"/>
-      <path d="m194 162 1-77m112 77 3-80M189 226l-5 41m130-45 9 34" fill="none" stroke="#785236" stroke-width=".8"/>
+    <g fill="none" stroke="#baa78b" stroke-width=".7" opacity=".65"><path d="M129 291h222M151 284v14m178-14v14M345 76v153m-5-153h10m-10 153h10"/><path d="M240 44v250" stroke-dasharray="3 6"/></g>
+    <ellipse cx="240" cy="285" rx="105" ry="9" fill="#60442d" opacity=".09"/>
+    <g stroke="#624b35" stroke-width="1.5" stroke-linejoin="round" stroke-linecap="round">
+      <path d="M184 214h12l-9 60h-10Zm100 0h12l7 60h-10Z" fill="#a28560"/>
+      <path d="M158 96q0-29 32-31h100q32 2 32 31l-9 104H167Z" fill="url(#v3-wood)"/>
+      <path d="M170 98q-1-20 22-21h96q23 1 22 21l-7 89H177Z" fill="url(#v3-cloth)"/>
+      <path d="M170 98q-1-20 22-21h96q23 1 22 21l-7 89H177Z" fill="url(#v3-weave)" stroke="none"/>
+      <path d="M180 101q0-14 15-14h90q15 0 15 14l-6 75H186Z" fill="none" stroke="#b79b76" stroke-width=".8" stroke-dasharray="2 3"/>
+      <path d="M164 218h152v18q-76 11-152 0Z" fill="url(#v3-wood)"/>
+      <path d="M163 229h16l-14 60h-12Zm138 0h16l10 60h-12Z" fill="url(#v3-wood)"/>
+      <path d="M145 201q0-15 16-19 79-15 158 0 16 4 16 19v17q0 12-16 12H161q-16 0-16-12Z" fill="url(#v3-cloth)"/>
+      <path d="M145 201q0-15 16-19 79-15 158 0 16 4 16 19v17q0 12-16 12H161q-16 0-16-12Z" fill="url(#v3-weave)" stroke="none"/>
+      <path d="M154 202q86-13 172 0m-168 18q82 7 164 0" fill="none" stroke="#ad8e66" stroke-width=".95"/>
+      <path d="m171 238-11 42m149-42 11 42" stroke="#c4a17b" stroke-width=".7"/>
     </g>
-    <g fill="#8c6b50" font-family="Georgia,serif" font-size="10" font-style="italic"><text x="65" y="78">líneas que acompañan</text><text x="309" y="297">la forma de encontrarnos.</text></g>
-    <path d="m98 86 62 20 28 4M292 276l20 7" stroke="#ad8567" stroke-width=".8" fill="none"/>
   </symbol>
   <symbol id="otras-piezas" viewBox="0 0 480 320">
-    <g stroke="#ae9278" stroke-width=".8" fill="none" opacity=".55"><path d="M69 246 297 279 425 222M72 234v25m347-49v24M102 58l282 41"/><path d="m104 52-1 14m270 23-1 14M126 50v207m249-176v153" stroke-dasharray="3 6"/></g>
-    <ellipse cx="246" cy="253" rx="164" ry="16" fill="#4b3225" opacity=".055"/>
-    <g stroke="#4e382b" stroke-width="1.65" stroke-linejoin="round" stroke-linecap="round">
-      <path d="m100 215-1 40 8 2 8-39m179 28 2 34 8-3 6-36m85-43 3 28 7-4 4-33" fill="#9c7350"/>
-      <path d="M106 177v-58q0-41 42-35l212 31q36 5 36 37v44L309 244Z" fill="#d3bda0"/>
-      <path d="M120 163v-42q0-28 29-23l207 31q27 3 27 27v30l-77 44Z" fill="#e8dbc7"/>
-      <path d="M120 163v-42q0-28 29-23l207 31q27 3 27 27v30l-77 44Z" fill="url(#weave)" stroke="none"/>
-      <path d="m157 108-1 63m38-57-1 64m38-58-1 66m38-60-1 66m38-60-1 67m38-60-1 60" fill="none" stroke="#b69a77" stroke-width=".9"/>
-      <path d="m108 177 83-30 202 41-82 44-203-38Z" fill="#b8a082"/>
-      <path d="m91 175 78-34q9-4 22-2l208 40q16 3 15 13v14l-99 48-223-37Z" fill="#d5bd9b"/>
-      <path d="m91 175 78-34q9-4 22-2l208 40q16 3 15 13l-99 48-216-34q-11-2-8-14Z" fill="#e9d8bb"/>
-      <path d="m100 182 73-32q8-3 18-1l206 39-84 42-209-33Z" fill="none" stroke="#b1936e" stroke-width=".9" stroke-dasharray="2 4"/>
-      <path d="m314 240 1 14m-215-42 211 36m-180-45 63-29m-2 40 63-29m-2 40 63-29" fill="none" stroke="#a98b68" stroke-width=".8"/>
-      <path d="m107 219 195 32 100-47" fill="none" stroke="#735137" stroke-width="1"/>
+    <g fill="none" stroke="#baa78b" stroke-width=".7" opacity=".65"><path d="M76 283h328M111 275v15m258-15v15M96 50h288m-288-5v10m288-10v10"/><path d="M240 37v249" stroke-dasharray="3 6"/></g>
+    <ellipse cx="240" cy="274" rx="157" ry="9" fill="#60442d" opacity=".09"/>
+    <g stroke="#624b35" stroke-width="1.5" stroke-linejoin="round" stroke-linecap="round">
+      <path d="M105 243h18v32h-18Zm252 0h18v32h-18Z" fill="url(#v3-wood)"/>
+      <path d="M90 255V145c0-48 46-81 100-81h100c54 0 100 33 100 81v110Z" fill="url(#v3-wood)"/>
+      <path d="M103 245V146c0-40 40-69 88-69h98c48 0 88 29 88 69v99Z" fill="url(#v3-cloth)"/>
+      <path d="M103 245V146c0-40 40-69 88-69h98c48 0 88 29 88 69v99Z" fill="url(#v3-weave)" stroke="none"/>
+      <path d="M114 235v-88c0-34 35-59 78-59h96c43 0 78 25 78 59v88Z" fill="none" stroke="#b19470" stroke-width=".8" stroke-dasharray="2 3"/>
+      <path d="M165 91v144m75-147v147m75-144v144" fill="none" stroke="#bea280" stroke-width="1"/>
+      <path d="M169 94v137m75-139v139m75-137v137" fill="none" stroke="#f3e8d8" stroke-width="1.15" opacity=".7"/>
+      <path d="M106 254h268" fill="none" stroke="#cba77d" stroke-width=".8"/>
     </g>
-    <g fill="#8c6b50" font-family="Georgia,serif" font-size="10" font-style="italic"><text x="57" y="49">cada pieza, una posibilidad</text><text x="327" y="298">oficio para transformar.</text></g>
-    <path d="M85 59h50m244 212 13-16" stroke="#ad8567" stroke-width=".8" fill="none"/>
   </symbol>
 </svg>
 
@@ -152,18 +138,12 @@
       </figure>
     </section>
 
-    <div class="signature-band wrap" aria-label="Materia, oficio y una mirada personal">
-      <div class="signature-piece"><span class="signature-index">V / 01</span><span class="signature-title">Materia<span class="signature-subtitle">que invita a sentir.</span></span><span class="woven-mark" aria-hidden="true"></span></div>
-      <div class="signature-piece"><span class="signature-index">V / 02</span><span class="signature-title">Oficio<span class="signature-subtitle">que se ve de cerca.</span></span><span class="woven-mark weave-cross" aria-hidden="true"></span></div>
-      <div class="signature-piece"><span class="signature-index">V / 03</span><span class="signature-title">Mirada<span class="signature-subtitle">que hace algo propio.</span></span><span class="woven-mark weave-diagonal" aria-hidden="true"></span></div>
-    </div>
-
     <section class="services section wrap" id="servicios" aria-labelledby="services-title">
       <div class="section-heading"><p class="eyebrow">01 / Qué hacemos</p><h2 id="services-title">Tu mueble.<br><span class="serif-word">Nuevas posibilidades.</span></h2><p class="section-description">Una nueva tela. Otra comodidad. La misma pieza, con una mirada distinta.</p></div>
       <div class="service-grid">
         <a class="service-card" href="#consulta" data-furniture="sillon"><div class="service-drawing"><span class="service-top"><span>Estudio de una pieza / 01</span><span aria-hidden="true">↗</span></span><svg class="service-sketch" viewBox="0 0 480 320" aria-hidden="true"><use href="#sillon"></use></svg><span class="sketch-caption">Forma, textura &amp; confort</span></div><div class="service-copy"><h3>Retapizado <br>de sillones</h3><p>Renová la tela, la comodidad y la presencia de esa pieza que reúne todo.</p><span class="service-link">Pensemos tu sillón <span aria-hidden="true">↗</span></span></div></a>
         <a class="service-card" href="#consulta" data-furniture="sillas"><div class="service-drawing"><span class="service-top"><span>Estudio de una pieza / 02</span><span aria-hidden="true">↗</span></span><svg class="service-sketch" viewBox="0 0 480 320" aria-hidden="true"><use href="#sillas"></use></svg><span class="sketch-caption">La forma de encontrarnos</span></div><div class="service-copy"><h3>Retapizado <br>de sillas</h3><p>Texturas, colores y terminaciones para volver a disfrutar cada encuentro.</p><span class="service-link">Pensemos tus sillas <span aria-hidden="true">↗</span></span></div></a>
-        <a class="service-card" href="#consulta" data-furniture="otro"><div class="service-drawing"><span class="service-top"><span>Estudio de una pieza / 03</span><span aria-hidden="true">↗</span></span><svg class="service-sketch" viewBox="0 0 480 320" aria-hidden="true"><use href="#otras-piezas"></use></svg><span class="sketch-caption">Una historia para continuar</span></div><div class="service-copy"><h3>Restauración <br>y otras piezas</h3><p>Respaldos, banquetas y muebles con historia. Evaluamos juntos qué necesita cada uno.</p><span class="service-link">Descubramos sus posibilidades <span aria-hidden="true">↗</span></span></div></a>
+        <a class="service-card" href="#consulta" data-furniture="otro"><div class="service-drawing"><span class="service-top"><span>Estudio de una pieza / 03</span><span aria-hidden="true">↗</span></span><svg class="service-sketch" viewBox="0 0 480 320" aria-hidden="true"><use href="#otras-piezas"></use></svg><span class="sketch-caption">Respaldos &amp; piezas especiales</span></div><div class="service-copy"><h3>Restauración <br>y otras piezas</h3><p>Respaldos, banquetas y muebles con historia. Evaluamos juntos qué necesita cada uno.</p><span class="service-link">Descubramos sus posibilidades <span aria-hidden="true">↗</span></span></div></a>
       </div>
       <p class="section-footnote">Cada trabajo se evalúa según el estado del mueble, sus medidas y los materiales elegidos.</p>
     </section>
@@ -185,14 +165,15 @@
       <div class="material-carousel" id="material-carousel" role="region" aria-roledescription="carrusel" aria-label="Muestrario de telas y materiales">
         <div class="sample-heading"><span class="eyebrow">El archivo de texturas</span><span class="sample-count">06 selecciones</span></div>
         <div class="swatch-track" id="swatch-track" tabindex="0" aria-label="Deslizá para explorar los materiales. También podés usar las flechas del teclado.">
-          <a class="swatch-card is-current" href="materiales/sheep.html" data-material="sheep"><div class="sample-fabric"><img src="assets/materials/sheep/crudo-main.webp" alt="Textura de la colección Sheep en color crudo" width="300" height="380" loading="lazy" decoding="async"><span class="sample-hole" aria-hidden="true"></span></div><span class="sample-label"><span class="sample-number">V / 01</span><span class="swatch-name">Sheep</span><span class="swatch-note">Crudo · Envolvente</span></span></a>
-          <a class="swatch-card" href="materiales/pana-velvet.html" data-material="pana-velvet"><div class="sample-fabric"><img src="assets/materials/pana-velvet/azafran-main.webp" alt="Muestra de pana Velvet en color azafrán" width="300" height="380" loading="lazy" decoding="async"><span class="sample-hole" aria-hidden="true"></span></div><span class="sample-label"><span class="sample-number">V / 02</span><span class="swatch-name">Pana Velvet</span><span class="swatch-note">Azafrán · Con presencia</span></span></a>
-          <a class="swatch-card" href="materiales/cuero-vacuno-mantra.html" data-material="cuero-mantra"><div class="sample-fabric"><img src="assets/materials/cuero-vacuno-mantra/chocolate-main.webp" alt="Muestra de cuero vacuno Mantra color chocolate" width="300" height="380" loading="lazy" decoding="async"><span class="sample-hole" aria-hidden="true"></span></div><span class="sample-label"><span class="sample-number">V / 03</span><span class="swatch-name">Cuero Mantra</span><span class="swatch-note">Chocolate · Natural</span></span></a>
-          <a class="swatch-card" href="materiales/lino-dot.html" data-material="lino-dot"><div class="sample-fabric"><img src="assets/materials/lino-dot/blue-main.webp" alt="Muestra de lino Dot en color azul" width="300" height="380" loading="lazy" decoding="async"><span class="sample-hole" aria-hidden="true"></span></div><span class="sample-label"><span class="sample-number">V / 04</span><span class="swatch-name">Lino Dot</span><span class="swatch-note">Blue · Trama y calma</span></span></a>
-          <a class="swatch-card" href="materiales/pana-velvet.html" data-material="pana-velvet-oxido"><div class="sample-fabric"><img src="assets/materials/pana-velvet/oxido-main.webp" alt="Muestra de pana Velvet en color óxido" width="300" height="380" loading="lazy" decoding="async"><span class="sample-hole" aria-hidden="true"></span></div><span class="sample-label"><span class="sample-number">V / 05</span><span class="swatch-name">Pana Velvet</span><span class="swatch-note">Óxido · Calidez</span></span></a>
-          <a class="swatch-card" href="materiales/cuerina-marbella.html" data-material="cuerina-marbella"><div class="sample-fabric"><img src="assets/materials/cuerina-marbella/arena-main.webp" alt="Muestra de cuerina Marbella color arena" width="300" height="380" loading="lazy" decoding="async"><span class="sample-hole" aria-hidden="true"></span></div><span class="sample-label"><span class="sample-number">V / 06</span><span class="swatch-name">Cuerina Marbella</span><span class="swatch-note">Arena · Sutileza</span></span></a>
+          <a class="swatch-card is-current" href="materiales/sheep.html" data-material="sheep"><div class="sample-fabric"><img src="assets/materials/sheep/crudo-main.webp" alt="Textura de la colección Sheep en color crudo" width="300" height="380" loading="lazy" decoding="async"><span class="sample-tag" aria-hidden="true">01</span></div><span class="sample-label"><span class="swatch-name">Sheep</span><span class="swatch-note">Crudo · Envolvente</span></span></a>
+          <a class="swatch-card" href="materiales/pana-velvet.html" data-material="pana-velvet"><div class="sample-fabric"><img src="assets/materials/pana-velvet/azafran-main.webp" alt="Muestra de pana Velvet en color azafrán" width="300" height="380" loading="lazy" decoding="async"><span class="sample-tag" aria-hidden="true">02</span></div><span class="sample-label"><span class="swatch-name">Pana Velvet</span><span class="swatch-note">Azafrán · Con presencia</span></span></a>
+          <a class="swatch-card" href="materiales/cuero-vacuno-mantra.html" data-material="cuero-mantra"><div class="sample-fabric"><img src="assets/materials/cuero-vacuno-mantra/chocolate-main.webp" alt="Muestra de cuero vacuno Mantra color chocolate" width="300" height="380" loading="lazy" decoding="async"><span class="sample-tag" aria-hidden="true">03</span></div><span class="sample-label"><span class="swatch-name">Cuero Mantra</span><span class="swatch-note">Chocolate · Natural</span></span></a>
+          <a class="swatch-card" href="materiales/lino-dot.html" data-material="lino-dot"><div class="sample-fabric"><img src="assets/materials/lino-dot/blue-main.webp" alt="Muestra de lino Dot en color azul" width="300" height="380" loading="lazy" decoding="async"><span class="sample-tag" aria-hidden="true">04</span></div><span class="sample-label"><span class="swatch-name">Lino Dot</span><span class="swatch-note">Blue · Trama y calma</span></span></a>
+          <a class="swatch-card" href="materiales/pana-velvet.html" data-material="pana-velvet-oxido"><div class="sample-fabric"><img src="assets/materials/pana-velvet/oxido-main.webp" alt="Muestra de pana Velvet en color óxido" width="300" height="380" loading="lazy" decoding="async"><span class="sample-tag" aria-hidden="true">05</span></div><span class="sample-label"><span class="swatch-name">Pana Velvet</span><span class="swatch-note">Óxido · Calidez</span></span></a>
+          <a class="swatch-card" href="materiales/cuerina-marbella.html" data-material="cuerina-marbella"><div class="sample-fabric"><img src="assets/materials/cuerina-marbella/arena-main.webp" alt="Muestra de cuerina Marbella color arena" width="300" height="380" loading="lazy" decoding="async"><span class="sample-tag" aria-hidden="true">06</span></div><span class="sample-label"><span class="swatch-name">Cuerina Marbella</span><span class="swatch-note">Arena · Sutileza</span></span></a>
         </div>
-        <div class="sample-controls" data-carousel-controls hidden><button class="carousel-play" type="button" id="sample-play" aria-label="Pausar movimiento de materiales" aria-pressed="true"><svg width="12" height="12" viewBox="0 0 12 12" fill="currentColor" aria-hidden="true"><path class="pause-shape" d="M2 1h3v10H2zm5 0h3v10H7z"/><path class="play-shape" d="m3 1 8 5-8 5z"/></svg><span data-play-label>Pausar</span></button><span class="sample-instruction">Deslizá. Elegí. Imaginá.</span><div class="sample-arrows"><button type="button" id="sample-prev" aria-label="Ver materiales anteriores" aria-controls="swatch-track">←</button><button type="button" id="sample-next" aria-label="Ver más materiales" aria-controls="swatch-track">→</button></div></div>
+        <div class="sample-progress" aria-hidden="true"><span data-carousel-progress></span></div>
+        <div class="sample-controls" data-carousel-controls hidden><button class="carousel-play" type="button" id="sample-play" aria-label="Pausar movimiento de materiales" aria-pressed="true"><svg width="12" height="12" viewBox="0 0 12 12" fill="currentColor" aria-hidden="true"><path class="pause-shape" d="M2 1h3v10H2zm5 0h3v10H7z"/><path class="play-shape" d="m3 1 8 5-8 5z"/></svg><span data-play-label>Pausar</span></button><span class="sample-instruction">Deslizá para explorar</span><div class="sample-arrows"><button type="button" id="sample-prev" aria-label="Ver materiales anteriores" aria-controls="swatch-track">←</button><button type="button" id="sample-next" aria-label="Ver más materiales" aria-controls="swatch-track">→</button></div></div>
         <p id="sample-announcement" class="sr-only" aria-live="polite" aria-atomic="true"></p>
       </div>
     </section>
