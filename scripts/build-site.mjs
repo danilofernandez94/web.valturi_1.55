@@ -1,4 +1,4 @@
-import { cp, mkdir, readFile, readdir, rm, writeFile } from 'node:fs/promises';
+import { cp, mkdir, readFile, rm, writeFile } from 'node:fs/promises';
 import { fileURLToPath } from 'node:url';
 import path from 'node:path';
 import vm from 'node:vm';
@@ -79,11 +79,16 @@ ${index ? `<script id="pageStructuredData" type="application/ld+json">${json({ '
 
 await rm(out, { recursive: true, force: true });
 await mkdir(out, { recursive: true });
-for (const entry of await readdir(root, { withFileTypes: true })) {
-  if (entry.name === 'assets' || (entry.isFile() && /\.(?:html|css|js|txt)$/.test(entry.name))) {
-    await cp(path.join(root, entry.name), path.join(out, entry.name), { recursive: true });
-  }
-}
+// Sólo se publica esta lista. Una copia de la API, un archivo de configuración
+// o un respaldo agregado a la raíz nunca debe terminar en el sitio público.
+const publicFiles = [
+  '404.html', 'index.html', 'servicios.html', 'nosotros.html', 'trabajos.html',
+  'materiales.html', 'material.html', 'productos.html', 'producto.html', 'contacto.html',
+  'styles.css', 'materials.css', 'home.css', 'script.js', 'materials.js',
+  'analytics.js', 'home-form.js', 'home-ui.js', 'robots.txt'
+];
+for (const file of publicFiles) await cp(path.join(root, file), path.join(out, file));
+await cp(path.join(root, 'assets'), path.join(out, 'assets'), { recursive: true });
 await mkdir(path.join(out, 'materiales'), { recursive: true });
 await mkdir(path.join(out, 'productos'), { recursive: true });
 

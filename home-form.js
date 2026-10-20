@@ -1,8 +1,9 @@
-/* Formulario de la home principal y su copia de revisión home2. */
+/* Formulario de la home principal. Los nombres de eventos se conservan
+   para mantener la continuidad de las mediciones existentes. */
 (() => {
   'use strict';
   const WHATSAPP_NUMBER = '543515930925';
-  const sourcePath = document.body?.dataset.homeVariant === 'home2' ? '/home2.html' : '/';
+  const sourcePath = '/';
   const furnitureNames = { sillon: 'un sillón', sillas: 'unas sillas', otro: 'otro mueble' };
   const form = document.getElementById('lead-form');
   const status = document.getElementById('form-status');
@@ -19,7 +20,7 @@
 
   // Nunca incluir nombre, teléfono, localidad ni texto de WhatsApp en los eventos.
   function track(eventName, extra = {}) {
-    const parameters = { form_id: 'home2_consulta', page_variant: sourcePath === '/' ? 'home' : 'home2', ...extra };
+    const parameters = { form_id: 'home2_consulta', page_variant: 'home', ...extra };
     window.dataLayer = window.dataLayer || [];
     if (typeof window.gtag === 'function') window.gtag('event', eventName, parameters);
     else window.dataLayer.push({ event: eventName, ...parameters });
@@ -36,7 +37,12 @@
     // Conserva únicamente la atribución de campaña dentro de esta pestaña.
     try {
       if (Object.keys(result).length) sessionStorage.setItem('valturi_home2_campaign', JSON.stringify(result));
-      else return JSON.parse(sessionStorage.getItem('valturi_home2_campaign') || '{}');
+      else {
+        const stored = JSON.parse(sessionStorage.getItem('valturi_home2_campaign') || '{}');
+        if (stored && typeof stored === 'object' && !Array.isArray(stored)) {
+          for (const key of keys) if (typeof stored[key] === 'string') result[key] = stored[key].slice(0, 120);
+        }
+      }
     } catch (_) { /* El formulario también funciona con almacenamiento bloqueado. */ }
     return result;
   }

@@ -13,10 +13,34 @@ assert.equal(urls.length, 32);
 assert.equal(new Set(urls).size, urls.length);
 let checkedLinks = 0;
 const titles = new Set();
+const publicRootFiles = new Set([
+  '404.html', 'index.html', 'servicios.html', 'nosotros.html', 'trabajos.html',
+  'materiales.html', 'material.html', 'productos.html', 'producto.html', 'contacto.html',
+  'styles.css', 'materials.css', 'home.css', 'script.js', 'materials.js',
+  'analytics.js', 'home-form.js', 'home-ui.js', 'robots.txt', 'sitemap.xml'
+]);
+for (const entry of readdirSync(root, { withFileTypes: true })) {
+  assert.ok(entry.isDirectory() ? ['assets', 'materiales', 'productos'].includes(entry.name) : publicRootFiles.has(entry.name), `Unexpected public file: ${entry.name}`);
+}
+const usedAssets = new Set();
+for (const file of walk(root).filter((file) => /\.(?:html|css|js)$/.test(file))) {
+  for (const match of readFileSync(file, 'utf8').matchAll(/assets\/[a-zA-Z0-9_./-]+\.(?:webp|jpg|svg|woff2)/g)) usedAssets.add(match[0]);
+}
+for (const asset of walk(path.join(root, 'assets'))) {
+  const relative = path.relative(root, asset).split(path.sep).join('/');
+  assert.ok(usedAssets.has(relative), `Unused or unexpected public asset: ${relative}`);
+}
+for (const asset of usedAssets) assert.ok(existsSync(path.join(root, asset)), `Missing asset: ${asset}`);
 
 for (const file of walk(root).filter((file) => file.endsWith('.html'))) {
   const html = readFileSync(file, 'utf8');
   const relative = path.relative(root, file).split(path.sep).join('/');
+  assert.ok(!/\bon[a-z]+\s*=\s*["']/i.test(html), `${relative}: inline event handler`);
+  assert.ok(!/\b(?:href|src)\s*=\s*["']\s*javascript:/i.test(html), `${relative}: executable URL`);
+  for (const match of html.matchAll(/<script\b([^>]*)>([\s\S]*?)<\/script>/gi)) {
+    const attributes = attrs(match[1]);
+    if (match[2].trim()) assert.equal(attributes.type, 'application/ld+json', `${relative}: executable inline script violates CSP`);
+  }
   const expectedUrl = new URL(relative === 'index.html' ? '' : relative, base).href;
   const metas = [...html.matchAll(/<meta\b[^>]*>/g)].map((match) => attrs(match[0]));
   const robots = metas.filter((meta) => meta.name === 'robots');
