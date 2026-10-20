@@ -18,6 +18,29 @@ vm.runInContext(await read('materials.js'), context);
 const data = vm.runInContext('({ SITE_CONFIG, products, MATERIAL_COLLECTIONS, FAMILY_META, productCardMarkup, productDetailMarkup, materialDetailMarkup })', context);
 const base = data.SITE_CONFIG.baseUrl.replace(/\/$/, '');
 
+function homeSwatchesMarkup() {
+  const selection = [
+    ['sheep', 'crudo'], ['pana-velvet', 'azafran'], ['lino-dot', 'blue'],
+    ['cuero-vacuno-mantra', 'chocolate'], ['lino-boucle-largo', 'beige'],
+    ['pana-panne', 'dulce-de-leche'], ['cuerina-marbella', 'arena'],
+    ['pana-thor', 'alga'], ['lino-mecha', 'arena'], ['cuero-vacuno-riviera', 'angora'],
+    ['pana-hulk', 'dijon'], ['cuerina-legards', 'grey'], ['lino-scandal', 'coral'],
+    ['pana-velutti', 'almond'], ['cuero-vacuno-novapelli', 'moss'],
+    ['lino-spazio', 'africano'], ['cuerina-nebraska', 'chocolate'],
+    ['cuero-vacuno-stragrain', 'biscuit'], ['cuerina-dakota', 'color-2']
+  ];
+  const order = new Map(selection.map(([id, color], i) => [id, { color, order: i }]));
+  return [...data.MATERIAL_COLLECTIONS]
+    .sort((a, b) => (order.get(a.id)?.order ?? 999) - (order.get(b.id)?.order ?? 999))
+    .map((item, index) => {
+      const preferred = order.get(item.id)?.color;
+      const color = item.colors.find((color) => color.main.endsWith(`/${preferred}-main.webp`)) || item.colors[0];
+      const count = new Set(item.colors.map((color) => color.main)).size;
+      const family = data.FAMILY_META[item.family].label;
+      return `<a class="swatch-card${index === 0 ? ' is-current' : ''}" href="/materiales/${encodeURIComponent(item.id)}.html" data-material="${escape(item.id)}" data-family="${escape(item.family)}"><div class="sample-fabric"><img src="${escape(color.main)}" alt="${escape(item.title)}: trama en color ${escape(color.name)}" width="300" height="380" loading="lazy" decoding="async" fetchpriority="low"><span class="sample-tag" aria-hidden="true">${String(index + 1).padStart(2, '0')}</span><span class="sample-family">${escape(family)}</span></div><span class="sample-label"><span class="swatch-name">${escape(item.title)}</span><span class="swatch-note">${escape(color.name)} · ${count} colores <span aria-hidden="true">↗</span></span></span></a>`;
+    }).join('\n          ');
+}
+
 const business = {
   '@type': 'LocalBusiness', '@id': `${base}/#business`, name: 'Valturi Tapizados',
   url: `${base}/`, telephone: `+${data.SITE_CONFIG.whatsappNumber}`,
@@ -104,6 +127,10 @@ const pages = [
 const urls = [];
 for (const page of pages) {
   let html = await read(page.file);
+  if (page.file === 'index.html') {
+    html = html.replace(/(<div\b[^>]*\bid="swatch-track"[^>]*>)[\s\S]*?(<\/div>\s*<div\b[^>]*\bclass="sample-progress"[^>]*>)/, `$1\n          ${homeSwatchesMarkup()}\n        $2`);
+    html = html.replace(/(<span\b[^>]*\bid="sample-count"[^>]*>)[^<]*/, `$1${data.MATERIAL_COLLECTIONS.length} colecciones`);
+  }
   if (page.file === 'productos.html') html = html.replace(/(<div\b[^>]*\bid="productGrid"[^>]*>)[\s\S]*?<\/div>/, `$1${data.products.map(data.productCardMarkup).join('')}</div>`);
   if (page.file === 'materiales.html') {
     // Minimal sinks for the existing string renderers; no DOM or new runtime dependency.

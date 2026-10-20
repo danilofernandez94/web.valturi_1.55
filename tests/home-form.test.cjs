@@ -88,3 +88,17 @@ test('Un bloqueo al abrir WhatsApp conserva el guardado confirmado y ofrece el e
   assert.ok(h.window.dataLayer.some((event) => event.event === 'home2_lead_saved'));
   assert.ok(!h.window.dataLayer.some((event) => event.event === 'home2_form_error'));
 });
+
+test('El enlace de recuperación conserva el mensaje fuera de los atributos del DOM', async () => {
+  const h = harness();
+  h.followup.href = 'https://wa.me/543515930925';
+  h.context.respond = async () => ({ ok: false, json: async () => ({ ok: false, code: 'SAVE_UNCONFIRMED' }) });
+  await h.submit();
+  assert.equal(h.followup.href, 'https://wa.me/543515930925');
+  let prevented = false;
+  h.followup.listeners.click({ preventDefault() { prevented = true; } });
+  assert.ok(prevented);
+  assert.match(decodeURIComponent(h.navigations[0]), /Persona de prueba/);
+  assert.match(decodeURIComponent(h.navigations[0]), /Barrio de prueba/);
+  assert.equal(h.window.dataLayer.at(-1).lead_registered, false);
+});

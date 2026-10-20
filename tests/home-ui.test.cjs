@@ -11,12 +11,12 @@ function node(extra = {}) {
     focus() { this.focused = true; },
     fire(name, event = {}) { for (const fn of this.listeners[name] || []) fn(event); }, ...extra };
 }
-function harness(reduce = false, desktop = false) {
+function harness(reduce = false, desktop = false, count = 6) {
   const timers = new Map(); let clockId = 0;
   const frames = new Map(); let frameId = 0; let frameClock = 0;
-  const samples = Array.from({ length: 6 }, (_, index) => node({ offsetLeft: 6 + index * (desktop ? 320 : 235) }));
+  const samples = Array.from({ length: count }, (_, index) => node({ offsetLeft: 6 + index * (desktop ? 320 : 235) }));
   const moves = [];
-  const track = node({ scrollWidth: desktop ? 1920 : 1416, clientWidth: desktop ? 960 : 354, scrollLeft: 0,
+  const track = node({ scrollWidth: desktop ? count * 320 : count * 235 + 6, clientWidth: desktop ? 960 : 354, scrollLeft: 0,
     querySelectorAll: () => samples,
     scrollTo(options) { this.scrollLeft = options.left; moves.push(options); this.fire('scroll'); }
   });
@@ -144,4 +144,14 @@ test('Varios clics rápidos avanzan hacia el destino solicitado sin reiniciar de
   const tail = h.moves.slice(h.moves.findIndex((move) => move.left === before));
   assert.ok(tail.every((move) => move.left >= before));
   assert.ok(!h.track.classList.contains('is-gliding'), 'se restaura el ajuste sólo al terminar el recorrido');
+});
+
+test('Las 19 colecciones se recorren hasta ambos extremos con posiciones continuas', () => {
+  const h = harness(false, false, 19);
+  for (let i = 0; i < 25; i++) { h.fields['sample-next'].fire('click'); h.settle(); }
+  assert.equal(h.track.scrollLeft, h.track.scrollWidth - h.track.clientWidth);
+  assert.equal(h.fields['sample-next'].disabled, true);
+  for (let i = 0; i < 25; i++) { h.fields['sample-prev'].fire('click'); h.settle(); }
+  assert.equal(h.track.scrollLeft, 0);
+  assert.equal(h.fields['sample-prev'].disabled, true);
 });

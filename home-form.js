@@ -16,6 +16,7 @@
   let lastPayload = '';
   let leadId = '';
   let savedPayload = '';
+  let followupUrl = '';
   let dialogTrigger = null;
 
   // Nunca incluir nombre, teléfono, localidad ni texto de WhatsApp en los eventos.
@@ -119,7 +120,7 @@
     }
     const snapshot = JSON.stringify(data);
     const url = whatsappUrl(data);
-    followup.href = url;
+    followupUrl = url;
     if (snapshot === savedPayload) {
       openWhatsapp(url, true);
       return;
@@ -175,8 +176,9 @@
     }
   });
 
-  followup.addEventListener('click', () => {
-    track('whatsapp_open_attempt', { lead_registered: !!savedPayload && lastPayload === savedPayload });
+  followup.addEventListener('click', (event) => {
+    event.preventDefault();
+    openWhatsapp(followupUrl || followup.href, !!savedPayload && lastPayload === savedPayload);
   });
 
   const privacy = document.getElementById('privacy-dialog');

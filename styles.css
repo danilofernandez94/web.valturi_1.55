@@ -13,8 +13,8 @@
   --accent: #875626;
   --accent-strong: #70441b;
   --banner: #cec3ba;
-  --shadow-soft: 0 18px 42px rgba(31, 26, 23, 0.08);
-  --shadow-card: 0 24px 46px rgba(31, 26, 23, 0.12);
+  --shadow-soft: inset 0 1px 0 rgba(255,255,255,.85), 0 2px 0 rgba(134,105,75,.22), 0 9px 18px -10px rgba(56,40,32,.24), 0 22px 36px -24px rgba(56,40,32,.3);
+  --shadow-card: inset 0 1px 0 rgba(255,255,255,.8), 0 3px 0 rgba(134,105,75,.25), 0 15px 26px -12px rgba(56,40,32,.24), 0 28px 44px -24px rgba(56,40,32,.28);
   --radius-xl: 30px;
   --radius-lg: 24px;
   --radius-md: 18px;

@@ -31,4 +31,12 @@
   gaScript.src = `https://www.googletagmanager.com/gtag/js?id=${encodeURIComponent(GA4_ID)}`;
   document.head.appendChild(gaScript);
 
+  window.clarity = window.clarity || function () {
+    (window.clarity.q = window.clarity.q || []).push(arguments);
+  };
+  const clarityScript = document.createElement('script');
+  clarityScript.async = true;
+  clarityScript.src = 'https://www.clarity.ms/tag/z0wf6alyom';
+  document.head.appendChild(clarityScript);
+
 })();
