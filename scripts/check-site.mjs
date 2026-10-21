@@ -42,6 +42,12 @@ for (const file of walk(root).filter((file) => file.endsWith('.html'))) {
     if (match[2].trim()) assert.equal(attributes.type, 'application/ld+json', `${relative}: executable inline script violates CSP`);
   }
   const expectedUrl = new URL(relative === 'index.html' ? '' : relative, base).href;
+  if (['index.html', 'trabajos.html', 'nosotros.html', 'materiales.html', 'material.html'].includes(relative) || relative.startsWith('materiales/')) {
+    const skip = [...html.matchAll(/<a\b[^>]*>/g)].map((match) => attrs(match[0])).find((link) => link.class === 'skip-link');
+    const contentId = relative === 'material.html' || relative.startsWith('materiales/') ? 'materialDetail' : 'contenido';
+    assert.equal(skip.href, `/${relative === 'index.html' ? '' : relative}#${contentId}`, `${relative}: skip link stays on this page despite the base URL`);
+  }
+
   const metas = [...html.matchAll(/<meta\b[^>]*>/g)].map((match) => attrs(match[0]));
   const robots = metas.filter((meta) => meta.name === 'robots');
   assert.equal(robots.length, 1, `${relative}: one robots directive`);

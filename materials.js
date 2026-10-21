@@ -1791,6 +1791,7 @@ function setupCatalogCarousel(root) {
   let hovering = false;
   let frame = 0;
   let lastTime = null;
+  let autoPosition = 0;
   let motion = null;
   let destroyed = false;
   const listen = (node, event, callback, options) => {
@@ -1814,7 +1815,11 @@ function setupCatalogCarousel(root) {
       if (progress < 1) frame = window.requestAnimationFrame(tick);
       else { motion = null; schedule(); }
     } else if (canPlay()) {
-      if (lastTime !== null) paint(track.scrollLeft + Math.min(64, time - lastTime) * .020);
+      if (lastTime !== null) {
+        // Keep subpixel progress even when the browser rounds scrollLeft.
+        autoPosition = wrapCatalogPosition(autoPosition + Math.min(64, time - lastTime) * .020, start, span);
+        paint(autoPosition);
+      }
       lastTime = time;
       frame = window.requestAnimationFrame(tick);
     }
@@ -1822,6 +1827,7 @@ function setupCatalogCarousel(root) {
   const schedule = () => {
     if (motion || frame || destroyed) return;
     lastTime = null;
+    autoPosition = track.scrollLeft;
     if (canPlay()) frame = window.requestAnimationFrame(tick);
   };
   const updatePlay = () => {
@@ -1873,6 +1879,7 @@ function setupCatalogCarousel(root) {
     else { automatic = true; stop(); updatePlay(); schedule(); }
   });
   listen(track, 'pointerdown', pause, { passive: true });
+  listen(track, 'click', pause);
   listen(track, 'wheel', pause, { passive: true });
   listen(track, 'focusin', pause);
   listen(root, 'pointerenter', (event) => { if (event.pointerType === 'mouse') { hovering = true; stop(); } });
@@ -2006,7 +2013,7 @@ function renderMaterialsLibrary() {
     .filter((item) => state.family === 'all' || item.family === state.family)
     .filter((item) => !query || `${item.title} ${item.description} ${familyLabel(item.family)} ${colorHaystack(item)}`.toLowerCase().includes(query));
   const result = document.getElementById('materials-results');
-  if (result) result.textContent = `${filtered.length} colecciones disponibles.`;
+  if (result) result.textContent = `${filtered.length} ${filtered.length === 1 ? 'colección disponible' : 'colecciones disponibles'}.`;
   if (!filtered.length) {
     root.innerHTML = `<div class="materials-empty"><strong>No encontramos coincidencias.</strong><p>Probá buscando otra colección, familia o color.</p></div>`;
     return;

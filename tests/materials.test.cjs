@@ -16,7 +16,7 @@ function events(extra = {}) {
     removeAttribute(key) { delete this.attrs[key]; },
     fire(key, event = {}) { for (const fn of handlers.get(key) || []) fn(event); }, ...extra };
 }
-function harness({ count = 5, reduced = false, width = 700 } = {}) {
+function harness({ count = 5, reduced = false, width = 700, roundScroll = false } = {}) {
   let clock = 0; let id = 0; let intersection;
   const frames = new Map();
   const preference = events({ matches: reduced });
@@ -36,6 +36,10 @@ function harness({ count = 5, reduced = false, width = 700 } = {}) {
     prepend(node) { node.parent = this; this.children.unshift(node); },
     append(node) { node.parent = this; this.children.push(node); }
   });
+  if (roundScroll) {
+    let left = 0;
+    Object.defineProperty(track, 'scrollLeft', { get() { return left; }, set(value) { left = Math.round(value); } });
+  }
   function bank() {
     const node = events({ children: Array.from({ length: count }, (_, i) => events({ offsetLeft: i * 300 })) });
     Object.defineProperty(node, 'offsetLeft', { get() { return 8 + track.children.indexOf(node) * (count * 300); } });
@@ -68,8 +72,8 @@ test('El bucle atraviesa el límite con el mismo contenido y respeta interacció
   assert.equal(h.track.children.length, 3);
   assert.equal(h.controls.hidden, false);
   assert.equal(h.frames.size, 0, 'no se anima fuera de pantalla');
-  h.visible(true);
   h.track.scrollLeft = 2999.5;
+  h.visible(true);
   h.frame(); h.frame(50);
   assert.equal(h.track.scrollLeft, 1500.5, 'el límite se normaliza a la copia idéntica, conservando el avance de un píxel');
   assert.equal(h.track.children[0].attrs['aria-hidden'], 'true');
@@ -138,4 +142,16 @@ test('Cada ficha conserva sus colores reales y no ofrece contactos ni formulario
     assert.ok(!/(?:wa\.me|wa\.link|contacto\.html|<form\b)/i.test(html));
     assert.ok(html.includes('<dialog'));
   }
+});
+
+test('La reproducción conserva los avances subpíxel en navegadores que redondean el scroll', () => {
+  const h = harness({ roundScroll: true });
+  h.visible(true);
+  const start = h.track.scrollLeft;
+  for (let i = 0; i < 61; i++) h.frame(16);
+  assert.equal(h.track.scrollLeft, start + 19, 'avanza de forma acumulada aunque cada cuadro aporte menos de un píxel');
+  h.track.fire('click');
+  const paused = h.track.scrollLeft;
+  for (let i = 0; i < 10; i++) h.frame(16);
+  assert.equal(h.track.scrollLeft, paused, 'abrir una muestra detiene el movimiento del fondo');
 });

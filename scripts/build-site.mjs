@@ -54,6 +54,7 @@ function sharedChrome(html, { file, catalog = false }) {
     .replace(/<dialog\b[^>]*id="(?:mobile-menu|privacy-dialog)"[\s\S]*?<\/dialog>/g, '')
     .replace(/<noscript><nav class="noscript-nav[\s\S]*?<\/noscript>/g, '');
   html = html.replace('</body>', `${menu}\n${fallbackNav}\n${privacy}\n</body>`);
+  html = html.replaceAll(`href="#${contentId}"`, `href="/${file === 'index.html' ? '' : file}#${contentId}"`);
   if (!html.includes('home.css?')) html = html.replace('</head>', '<link rel="stylesheet" href="/home.css?v=20261020-4">\n</head>');
   if (!html.includes('home-ui.js?')) html = html.replace('</head>', '<script src="/home-ui.js?v=20261020-4" defer></script>\n</head>');
   return html;
